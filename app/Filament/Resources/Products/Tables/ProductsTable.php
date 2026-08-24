@@ -11,7 +11,7 @@ use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Support\Icons\Heroicon;
-use Filament\Tables\Columns\CheckboxColumn;
+use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
@@ -19,7 +19,6 @@ use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
-use Livewire\Attributes\Layout;
 
 class ProductsTable
 {
@@ -33,28 +32,29 @@ class ProductsTable
                     ->offIcon(Heroicon::OutlinedXMark)
                     ->onColor('success')
                     ->offColor('danger'),
+                ImageColumn::make('images.image_path')
+                    ->label('Image')
+                    ->getStateUsing(fn (Product $record) => $record->images->first()?->image_path),
                 TextColumn::make('name')->label('Name')->sortable()->searchable(),
                 TextColumn::make('category.name')->label('Category')->sortable()->searchable(),
 
-                // TextColumn::make('description')->label('Description')->searchable(),
-
-                TextColumn::make('price')->label('Price')->sortable()->money('USD'),
-                TextColumn::make('cost')->label('Cost')->sortable()->money('USD'),
+                TextColumn::make('variants.price')->label('Price')->money('USD')->badge()
+                    ->getStateUsing((fn (Product $record) => $record->variants->min('price'))),
+                TextColumn::make('variants.cost')->label('Cost')->money('USD')->badge()
+                    ->getStateUsing((fn (Product $record) => $record->variants->min('cost'))),
                 // SelectColumn::make('status')->label('Status')->options(ProductStatusEnum::class)->searchableOptions(),
                 TextColumn::make('stock_count')
                     ->label('Quantity')
-                    ->state(fn(Product $record) => $record->variants->sum('stock_qty'))
+                    ->state(fn (Product $record) => $record->variants->sum('stock_qty'))
                     ->sortable()
                     ->badge()
-                    ->color(fn($state) => $state < 10 ? 'danger' : 'success'),
+                    ->color(fn ($state) => $state < 10 ? 'danger' : 'success'),
                 TextColumn::make('created_at')->label('Created At')->since()->sortable()->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')->label('Updated At')->since()->sortable()->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters(
                 [
-                    SelectFilter::make('status')
-                        ->label('Status')
-                        ->options(ProductStatusEnum::class),
+
                     SelectFilter::make('category_id')
                         ->label('Category')
                         ->relationship('category', 'name'),
@@ -77,15 +77,15 @@ class ProductsTable
                             }
                         }),
 
-
                 ],
                 layout: FiltersLayout::AboveContent
             )
+
             ->recordActions([
                 EditAction::make(),
                 DeleteAction::make(),
                 ViewAction::make()
-                    ->modalHeading('Product Details')
+                    ->modalHeading('Product Details'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
