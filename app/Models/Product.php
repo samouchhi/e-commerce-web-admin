@@ -7,23 +7,25 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Product extends Model
 {
     protected $table = 'products';
+
     protected $fillable = [
         'name',
         'description',
-        'price',
-        'cost',
+        'product_code',
+        'product_images_id',
         'category_id',
         'is_active',
     ];
+
     protected $casts = [
         'status' => ProductStatusEnum::class,
         'price' => 'decimal:2',
     ];
+
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
@@ -33,12 +35,19 @@ class Product extends Model
     {
         return $this->hasMany(ProductVariant::class);
     }
+
     public function attributes(): BelongsToMany
     {
         return $this->belongsToMany(Attribute::class, 'product_attributes', 'product_id', 'attribute_id');
     }
+
     public function unit(): BelongsTo
     {
-        return $this->BelongsTo(Unit::class);
+        return $this->belongsTo(Unit::class);
+    }
+
+    public function images(): HasMany
+    {
+        return $this->hasMany(ProductImage::class);
     }
 }

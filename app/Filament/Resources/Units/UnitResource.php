@@ -12,7 +12,6 @@ use Filament\Actions\EditAction;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use UnitEnum;
@@ -20,9 +19,10 @@ use UnitEnum;
 class UnitResource extends Resource
 {
     protected static ?string $model = Unit::class;
-    protected static string | UnitEnum | null $navigationGroup = 'Products';
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|UnitEnum|null $navigationGroup = 'Products';
+
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-s-cube';
 
     public static function form(Schema $schema): Schema
     {
@@ -42,6 +42,7 @@ class UnitResource extends Resource
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('short_name')
+                    ->badge()
                     ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()
