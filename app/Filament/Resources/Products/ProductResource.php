@@ -5,9 +5,9 @@ namespace App\Filament\Resources\Products;
 use App\Filament\Resources\Products\Pages\CreateProduct;
 use App\Filament\Resources\Products\Pages\EditProduct;
 use App\Filament\Resources\Products\Pages\ListProducts;
-use App\Filament\Resources\Products\RelationManagers\VariantsRelationManager;
 use App\Filament\Resources\Products\Schemas\ProductForm;
 use App\Filament\Resources\Products\Tables\ProductsTable;
+use App\Filament\Resources\Products\Widgets\ProductStats;
 use App\Models\Product;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -19,7 +19,8 @@ use UnitEnum;
 class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
-    protected static string | UnitEnum | null $navigationGroup = 'Products';
+
+    protected static string|UnitEnum|null $navigationGroup = 'Products';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedShoppingBag;
 
@@ -27,6 +28,8 @@ class ProductResource extends Resource
     // {
     //     return auth()->user()->can('view products');
     // }
+    protected static ?string $slug = 'shop/products';
+
     public static function getNavigationBadgeTooltip(): ?string
     {
         return 'The number of products in the system.';
@@ -35,6 +38,13 @@ class ProductResource extends Resource
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();
+    }
+
+    public static function getWidgets(): array
+    {
+        return [
+            ProductStats::class,
+        ];
     }
 
     public static function form(Schema $schema): Schema

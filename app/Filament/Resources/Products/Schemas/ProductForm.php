@@ -87,47 +87,28 @@ class ProductForm
                     ])
                     ->columnSpanFull(),
 
-                Repeater::make('variants')
-
-                    ->label('Variants')
-                    ->relationship('variants')
-
+                Section::make()
                     ->schema([
-                        TextInput::make('name')->label('Variant Name')->required(),
+                        Repeater::make('variants')
+                            ->relationship('variants')
+                            ->schema([
+                                TextInput::make('name')->label('Variant Name')->required(),
 
-                        TextInput::make('price')->label('Price')->numeric()->required()->prefix('$')->minValue(0)->step('0.01'),
-                        TextInput::make('cost')->label('Cost')->numeric()->required()->prefix('$')->minValue(0)->step('0.01'),
-                        TextInput::make('stock_qty')->label('Stock Quantity')->numeric()->required(),
-                        // Select::make('attribute_id')
-                        //     ->label('Attribute')
-                        //     ->options(Attribute::pluck('name', 'id'))
-                        //     ->live()
-                        //     ->afterStateUpdated(fn(Set $set) => $set('attributeValues', null))
-                        //     ->afterStateHydrated(function (Select $component, $record) {
-                        //         $attributeValue = $record?->attributeValues()->first();
-                        //         $component->state($attributeValue?->attribute_id);
-                        //     })
-                        //     ->dehydrated(false),
+                                TextInput::make('price')->label('Price')->numeric()->required()->prefix('$')->minValue(0)->step('0.01'),
+                                TextInput::make('cost')->label('Cost')->numeric()->required()->prefix('$')->minValue(0)->step('0.01'),
+                                TextInput::make('stock_qty')->label('Stock Quantity')->numeric()->required(),
 
-                        // Select::make('attributeValues')
-                        //     ->label('Value')
-                        //     ->relationship(
-                        //         name: 'attributeValues',
-                        //         titleAttribute: 'value',
-                        //         modifyQueryUsing: fn(Builder $query, Get $get) => $query->where('attribute_id', $get('attribute_id')),
-                        //     )
-                        //     ->disabled(fn(Get $get) => blank($get('attribute_id')))
+                                Select::make('is_active')->label('Active')->required()
+                                    ->options([
+                                        1 => 'Active',
+                                        0 => 'Inactive',
+                                    ]),
 
-                        //     ->live(),
-                        Select::make('is_active')->label('Active')->required()
-                            ->options([
-                                1 => 'Active',
-                                0 => 'Inactive',
-                            ]),
-
+                            ])
+                            ->required()
+                            ->columns(3)
+                            ->columnSpanFull(),
                     ])
-                    ->required()
-                    ->columns(3)
                     ->columnSpanFull(),
 
             ]);

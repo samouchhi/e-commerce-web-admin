@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Products\Tables;
 
 use App\Enums\ProductStatusEnum;
 use App\Models\Product;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -35,12 +36,27 @@ class ProductsTable
                 ImageColumn::make('images.image_path')
                     ->label('Image')
                     ->getStateUsing(fn (Product $record) => $record->images->first()?->image_path),
-                TextColumn::make('name')->label('Name')->sortable()->searchable(),
-                TextColumn::make('category.name')->label('Category')->sortable()->searchable(),
+                TextColumn::make('name')
+                    ->label('Name')
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('category.name')
+                    ->label('Category')
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('unit.short_name')
+                    ->label('Unit')
+                    ->sortable()
+                    ->searchable()
+                    ->badge(),
 
-                TextColumn::make('variants.price')->label('Price')->money('USD')->badge()
+                TextColumn::make('variants.price')
+                    ->label('Price')
+                    ->money('USD')
                     ->getStateUsing((fn (Product $record) => $record->variants->min('price'))),
-                TextColumn::make('variants.cost')->label('Cost')->money('USD')->badge()
+                TextColumn::make('variants.cost')
+                    ->label('Cost')
+                    ->money('USD')
                     ->getStateUsing((fn (Product $record) => $record->variants->min('cost'))),
                 // SelectColumn::make('status')->label('Status')->options(ProductStatusEnum::class)->searchableOptions(),
                 TextColumn::make('stock_count')
@@ -49,12 +65,19 @@ class ProductsTable
                     ->sortable()
                     ->badge()
                     ->color(fn ($state) => $state < 10 ? 'danger' : 'success'),
-                TextColumn::make('created_at')->label('Created At')->since()->sortable()->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')->label('Updated At')->since()->sortable()->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('created_at')
+                    ->label('Created At')
+                    ->since()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('updated_at')
+                    ->label('Updated At')
+                    ->since()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters(
                 [
-
                     SelectFilter::make('category_id')
                         ->label('Category')
                         ->relationship('category', 'name'),
@@ -82,10 +105,11 @@ class ProductsTable
             )
 
             ->recordActions([
-                EditAction::make(),
-                DeleteAction::make(),
-                ViewAction::make()
-                    ->modalHeading('Product Details'),
+                ActionGroup::make([
+                    ViewAction::make(),
+                    EditAction::make(),
+                    DeleteAction::make(),
+                ]),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Categories;
 use App\Filament\Resources\Categories\Pages\ManageCategories;
 use App\Models\Category;
 use BackedEnum;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -57,9 +58,9 @@ class CategoryResource extends Resource
                     ->label('Stock Quantity')
                     ->sortable(),
                 TextColumn::make('stock_value')
-                ->getStateUsing(function (Category $record) {
-                    return $record->variants()->sum('cost');
-                })
+                    ->getStateUsing(function (Category $record) {
+                        return $record->variants()->sum('cost');
+                    })
                     ->label('Stock Value')
                     ->money('usd', true)
                     ->badge()
@@ -70,7 +71,7 @@ class CategoryResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
                     ->dateTime()
-                    
+
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
@@ -78,8 +79,10 @@ class CategoryResource extends Resource
                 //
             ])
             ->recordActions([
-                EditAction::make(),
-                DeleteAction::make(),
+                ActionGroup::make([
+                    EditAction::make(),
+                    DeleteAction::make(),
+                ]),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

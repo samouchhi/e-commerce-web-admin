@@ -16,4 +16,9 @@ class ListProducts extends ListRecords
             CreateAction::make(),
         ];
     }
+
+    protected function getHeaderWidgets(): array
+    {
+        return ProductResource::getWidgets();
+    }
 }
