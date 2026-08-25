@@ -11,11 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('attributes', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->foreignId('attribute_values_id')->constrained()->onDelete('cascade');
-            $table->timestamps();
+        Schema::table('purchases', function (Blueprint $table) {
+            $table->string('image_path')->nullable()->after('shipping_status');
         });
     }
 
@@ -24,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('attributes');
+        Schema::table('purchases', function (Blueprint $table) {
+            //
+        });
     }
 };
