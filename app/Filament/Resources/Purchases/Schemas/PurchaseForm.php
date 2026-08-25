@@ -113,7 +113,7 @@ class PurchaseForm
                                             ->afterStateUpdated(function ($state, Set $set) {
                                                 $set('unit_price', ProductVariant::find($state)?->price ?? 0);
                                                 $variant = ProductVariant::with('product.unit')->find($state);
-                                                $set('unit_id', $variant?->product?->unit?->short_name ?? null);
+                                                $set('unit_id', $variant?->product?->unit?->id ?? null);
                                             })
                                             ->distinct()
                                             ->disableOptionsWhenSelectedInSiblingRepeaterItems()
@@ -125,6 +125,7 @@ class PurchaseForm
                                             ->live()
                                             ->afterStateUpdated(fn ($state, Set $set, $get) => $set('sub_total', $state * $get('unit_price'))),
                                         TextInput::make('unit_id')
+
                                             ->label('Unit')
                                             ->dehydrated()
                                             ->required()
