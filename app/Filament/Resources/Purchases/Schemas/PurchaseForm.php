@@ -2,12 +2,17 @@
 
 namespace App\Filament\Resources\Purchases\Schemas;
 
-use App\Models\Product;
+use App\Enums\PaymentStatus;
+use App\Enums\ShippingStatus;
 use App\Models\ProductVariant;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Repeater\TableColumn;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\ToggleButtons;
+use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Utilities\Get;
 use Filament\Schemas\Components\Utilities\Set;
@@ -15,183 +20,200 @@ use Filament\Schemas\Schema;
 
 class PurchaseForm
 {
-    protected static function updateLineTotals(Get $get, Set $set): void
-    {
-        $quantity = (float) ($get('quantity') ?: 0);
-        $unitCost = (float) ($get('unit_cost') ?: 0);
-
-        $set('subtotal', number_format($quantity * $unitCost, 2, '.', ''));
-    }
-
-    protected static function updatePurchaseTotal(Get $get, Set $set): void
-    {
-        $items = collect($get('items') ?? []);
-
-        $total = $items->sum(function (array $item): float {
-            return (float) ($item['subtotal'] ?? 0);
-        });
-
-        $set('total_price', number_format($total, 2, '.', ''));
-    }
-
     public static function configure(Schema $schema): Schema
     {
         return $schema
             ->components([
-                Section::make([
-                    TextInput::make('reference')->label('Reference')->required(),
-                    DatePicker::make('date')->label('Date')->required()->default(now()),
-                    Select::make('supplier_id')->label('Supplier')->required()
-                        ->relationship('supplier', 'name')
-                        ->searchable()
-                        ->preload(),
-                    Select::make('payment_status')->label('Payment Status')->required()
-                        ->options([
-                            'paid' => 'Paid',
-                            'unpaid' => 'Unpaid',
-                            'partial' => 'Partial',
-                        ]),
-
-                    TextInput::make('total_price')
-                        ->label('Total')
-                        ->numeric()
-                        ->prefix('$')
-                        ->readOnly()
-                        ->default(0)
-                        ->dehydrated(),
-
-                    Repeater::make('items')
-                        ->label('Purchase Items')
-                        ->relationship('items')
-                        ->required()
-                        ->defaultItems(1)
-                        ->columns(12)
-                        ->reorderable(false)
-                        ->live()
-                        ->afterStateUpdated(fn (Get $get, Set $set) => self::updatePurchaseTotal($get, $set))
-                        ->schema([
-                            Select::make('product_id')
-                                ->label('Product')
-                                ->options(fn () => Product::query()->pluck('name', 'id'))
+                Group::make()
+                    ->schema([
+                        Section::make([
+                            TextInput::make('reference')
+                                ->default('OR-'.random_int(100000, 999999))
+                                ->disabled()
+                                ->label('Reference')
+                                ->dehydrated()
+                                ->required(),
+                            DatePicker::make('purchase_date')
+                                ->label('Purchase Date')
+                                ->required()
+                                ->default(now()),
+                            Select::make('supplier_id')
+                                ->label('Supplier')
+                                ->required()
+                                ->relationship('supplier', 'name')
                                 ->searchable()
-                                ->preload()
-                                ->dehydrated(false)
-                                ->live()
-                                ->afterStateUpdated(function (Set $set) {
-                                    $set('product_variant_id', null);
-                                    $set('unit_cost', 0);
-                                    $set('subtotal', 0);
-                                })
-                                ->columnSpan(4),
+                                ->preload(),
 
-                            Select::make('product_variant_id')
-                                ->label('Variant (Code + Stock)')
-                                ->required()
-                                ->searchable()
-                                ->options(function (Get $get): array {
-                                    $productId = $get('product_id');
-
-                                    if (! $productId) {
-                                        return [];
-                                    }
-
-                                    return ProductVariant::query()
-                                        ->where('product_id', $productId)
-                                        ->with('product:id,product_code,name')
-                                        ->get()
-                                        ->mapWithKeys(function (ProductVariant $variant): array {
-                                            $label = sprintf(
-                                                '%s | %s | %s | Stock: %d',
-                                                $variant->product?->product_code ?? '-',
-                                                $variant->product?->name ?? '-',
-                                                $variant->name,
-                                                (int) $variant->stock_qty,
-                                            );
-
-                                            return [$variant->id => $label];
-                                        })
-                                        ->all();
-                                })
-                                ->live()
-                                ->afterStateUpdated(function ($state, Set $set, Get $get): void {
-                                    if (! $state) {
-                                        $set('unit_cost', 0);
-                                        $set('subtotal', 0);
-                                        self::updatePurchaseTotal($get, $set);
-
-                                        return;
-                                    }
-
-                                    $variant = ProductVariant::query()->find($state);
-                                    $set('unit_cost', $variant?->cost ?? 0);
-                                    self::updateLineTotals($get, $set);
-                                    self::updatePurchaseTotal($get, $set);
-                                })
-                                ->columnSpan(4),
-
-                            TextInput::make('quantity')
-                                ->label('Qty')
+                            TextInput::make('shipping_cost')
+                                ->label('Shipping Cost')
                                 ->required()
                                 ->numeric()
-                                ->minValue(1)
-                                ->default(1)
-                                ->live()
-                                ->afterStateUpdated(function (Get $get, Set $set): void {
-                                    self::updateLineTotals($get, $set);
-                                    self::updatePurchaseTotal($get, $set);
-                                })
-                                ->columnSpan(1),
-
-                            TextInput::make('unit_cost')
-                                ->label('Unit Cost')
-                                ->required()
-                                ->numeric()
-                                ->prefix('$')
-                                ->readOnly()
-                                ->live()
-                                ->afterStateUpdated(function (Get $get, Set $set): void {
-                                    self::updateLineTotals($get, $set);
-                                    self::updatePurchaseTotal($get, $set);
-                                })
-                                ->columnSpan(1),
-
-                            TextInput::make('subtotal')
-                                ->label('Subtotal')
-                                ->required()
-                                ->numeric()
-                                ->prefix('$')
-                                ->readOnly()
                                 ->default(0)
-                                ->columnSpan(2),
+                                ->prefix('$')
+                                ->live()
+                                ->afterStateUpdated(fn ($state, Set $set) => $set('shipping_cost', $state)),
+
                         ])
-                        ->columnSpanFull(),
+                            ->columns(2),
+                        Section::make('Attachment')
+                            ->schema([
+                                FileUpload::make('image_path')
+                                    ->directory('attachments/purchases')
+                                    ->maxSize(1024),
+                            ])
+                            ->collapsible(),
+                    ])
+                    ->columnSpan(['lg' => 2]),
 
-                    DatePicker::make('purchase_status')
-                        ->label('Received Date')
-                        ->default(now())
-                        ->required(),
+                Group::make()
+                    ->schema([
+                        Section::make('Status')
+                            ->schema([
+                                ToggleButtons::make('payment_status')
+                                    ->inline()
+                                    ->options(PaymentStatus::class),
+                                ToggleButtons::make('shipping_status')
+                                    ->inline()
+                                    ->label('Shipping Status')
+                                    ->options(ShippingStatus::class)
+                                    ->required(),
+                            ]),
+                    ])
+                    ->columnSpan(['lg' => 1]),
+                Group::make()
+                    ->schema([
+                        Section::make('Purchase Items')
 
-                    TextInput::make('shipping_cost')
-                        ->label('Shipping Cost')
-                        ->required()
-                        ->numeric()
-                        ->default(0)
-                        ->prefix('$'),
+                            ->schema([
+                                Repeater::make('items')
+                                    ->relationship('items')
+                                    ->table([
+                                        TableColumn::make('Product Name'),
 
-                    Select::make('shipping_status')
-                        ->label('Shipping Status')
-                        ->required()
-                        ->default('pending')
-                        ->options([
-                            'pending' => 'Pending',
-                            'shipped' => 'Shipped',
-                            'received' => 'Received',
-                        ]),
+                                        TableColumn::make('Quantity')
+                                            ->width(100),
+                                        TableColumn::make('Unit')
+                                            ->width(100),
+                                        TableColumn::make('Price')
+                                            ->width(150),
+                                        TableColumn::make('Sub Total')
+                                            ->width(150),
+                                    ])
+                                    ->schema([
+                                        Select::make('product_variant_id')
+                                            ->options(
+                                                fn () => ProductVariant::with('product')
+                                                    ->get()
+                                                    ->mapWithKeys(fn ($variant) => [
+                                                        $variant->id => "{$variant->name} | {$variant->product->name}",
+                                                    ])
+                                            )
+                                            ->required()
+                                            ->live()
+                                            ->afterStateUpdated(function ($state, Set $set) {
+                                                $set('unit_price', ProductVariant::find($state)?->price ?? 0);
+                                                $variant = ProductVariant::with('product.unit')->find($state);
+                                                $set('unit_id', $variant?->product?->unit?->short_name ?? null);
+                                            })
+                                            ->distinct()
+                                            ->disableOptionsWhenSelectedInSiblingRepeaterItems()
+                                            ->searchable(),
+                                        TextInput::make('quantity')
+                                            ->label('Quantity')
+                                            ->numeric()
+                                            ->required()
+                                            ->live()
+                                            ->afterStateUpdated(fn ($state, Set $set, $get) => $set('sub_total', $state * $get('unit_price'))),
+                                        TextInput::make('unit_id')
+                                            ->label('Unit')
+                                            ->dehydrated()
+                                            ->required()
+                                            ->live()
+                                            ->disabled(),
+                                        TextInput::make('unit_price')
+                                            ->label('Price')
+                                            ->numeric()
+                                            ->required()
+                                            ->disabled()
+                                            ->prefix('$')
+                                            ->dehydrated()
+                                            ->live()
+                                            ->afterStateUpdated(fn ($state, Set $set, $get) => $set('sub_total', $state * $get('quantity'))),
 
-                ])
-                    ->label('Purchase Detail')
-                    ->columns(3)
+                                        TextInput::make('sub_total')
+                                            ->label('Sub Total')
+                                            ->numeric()
+                                            ->required()
+                                            ->prefix('$')
+                                            ->disabled()
+                                            ->dehydrated()
+                                            ->live(),
+
+                                    ])
+                                    ->live()
+                                    ->afterStateUpdated(function ($state, Set $set, Get $get) {
+                                        $items = $state ?? [];
+                                        $subTotal = collect($items)->sum(fn ($i) => ($i['quantity'] ?? 0) * ($i['unit_price'] ?? 0));
+                                        $shipping = $get('shipping_cost') ?? 0;
+
+                                        $set('items_count', count($items));
+                                        $set('total_price', $subTotal);
+                                        $set('grand_total', $subTotal + $shipping);
+                                    })
+                                    ->afterStateHydrated(function ($state, Set $set, Get $get) {
+                                        $items = $state ?? [];
+                                        $subTotal = collect($items)->sum(fn ($i) => ($i['quantity'] ?? 0) * ($i['unit_price'] ?? 0));
+                                        $shipping = $get('shipping_cost') ?? 0;
+
+                                        $set('items_count', count($items));
+                                        $set('total_price', $subTotal);
+                                        $set('grand_total', $subTotal + $shipping);
+                                    }),
+                            ]),
+                    ])
                     ->columnSpanFull(),
-            ]);
+                Group::make()
+                    ->schema([
+                        Section::make('Summary')
+                            ->schema([
+                                TextInput::make('items_count')
+                                    ->label('Items Count')
+                                    ->numeric()
+                                    ->disabled()
+                                    ->default(0)
+                                    ->dehydrated(),
+
+                                TextInput::make('shipping_cost')
+                                    ->label('Shipping Cost')
+                                    ->numeric()
+                                    ->prefix('$')
+                                    ->reactive()
+                                    ->default(0)
+                                    ->disabled()
+                                    ->dehydrated(),
+                                TextInput::make('total_price')
+                                    ->label('Total Price')
+                                    ->numeric()
+                                    ->prefix('$')
+                                    ->reactive()
+                                    ->disabled()
+                                    ->default(0)
+                                    ->dehydrated(),
+
+                                TextInput::make('grand_total')
+                                    ->label('Grand Total')
+                                    ->numeric()
+                                    ->prefix('$')
+                                    ->disabled()
+                                    ->default(0)
+                                    ->reactive()
+                                    ->dehydrated(),
+
+                            ])
+                            ->columns(4),
+                    ])->columnSpanFull(),
+
+            ])
+            ->columns(3);
     }
 }

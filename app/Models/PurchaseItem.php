@@ -10,9 +10,10 @@ class PurchaseItem extends Model
     protected $fillable = [
         'purchase_id',
         'product_variant_id',
+        'unit_id',
         'quantity',
-        'unit_cost',
-        'subtotal',
+        'unit_price',
+        'sub_total',
     ];
 
     public function purchase(): BelongsTo
@@ -23,5 +24,10 @@ class PurchaseItem extends Model
     public function variant(): BelongsTo
     {
         return $this->belongsTo(ProductVariant::class, 'product_variant_id');
+    }
+
+    public function unit(): BelongsTo
+    {
+        return $this->belongsTo(Unit::class, 'unit_id');
     }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\PaymentStatus;
+use App\Enums\ShippingStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -10,16 +12,32 @@ class Purchase extends Model
 {
     protected $fillable = [
         'reference',
-        'date',
-        'product_id',
-        'quantity',
         'total_price',
-        'purchase_status',
-        'unit_id',
+        'grand_total',
+        'purchase_item_id',
         'supplier_id',
         'payment_status',
         'shipping_cost',
         'shipping_status',
+        'purchase_date',
+        'image_path',
+    ];
+
+    protected static function booted(): void
+    {
+        static::deleting(function (Purchase $purchase) {
+            if ($purchase->shipping_status === ShippingStatus::Delivered) {
+                $purchase->items->each(function ($item) {
+                    $item->variant?->decrement('stock_qty', $item->quantity);
+                });
+            }
+        });
+    }
+
+    protected $casts = [
+        'payment_status' => PaymentStatus::class,
+        'shipping_status' => ShippingStatus::class,
+        'purchase_date' => 'date',
     ];
 
     public function product(): BelongsTo
