@@ -89,7 +89,7 @@ class PurchaseForm
                                 Repeater::make('items')
                                     ->relationship('items')
                                     ->table([
-                                        TableColumn::make('Product Name'),
+                                        TableColumn::make('Name'),
 
                                         TableColumn::make('Quantity')
                                             ->width(100),
