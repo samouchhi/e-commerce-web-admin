@@ -18,7 +18,6 @@ return new class extends Migration
             $table->date('purchase_date')->nullable();
             $table->date('received_date')->nullable();
             $table->decimal('grand_total', 10, 2)->default(0);
-            $table->foreignId('purchase_item_id')->nullable()->constrained('purchase_items')->cascadeOnDelete();
             $table->foreignId('supplier_id')->constrained('suppliers')->cascadeOnDelete();
             $table->enum('payment_status', ['pending', 'paid', 'partial'])->default('pending');
             $table->decimal('shipping_cost', 10, 2)->default(0);

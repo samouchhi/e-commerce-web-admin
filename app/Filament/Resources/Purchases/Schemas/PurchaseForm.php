@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Purchases\Schemas;
 use App\Enums\PaymentStatus;
 use App\Enums\ShippingStatus;
 use App\Models\ProductVariant;
+use App\Models\Unit;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
@@ -124,8 +125,8 @@ class PurchaseForm
                                             ->required()
                                             ->live()
                                             ->afterStateUpdated(fn ($state, Set $set, $get) => $set('sub_total', $state * $get('unit_price'))),
-                                        TextInput::make('unit_id')
-
+                                        Select::make('unit_id')
+                                            ->options(Unit::pluck('short_name', 'id'))
                                             ->label('Unit')
                                             ->dehydrated()
                                             ->required()
