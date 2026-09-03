@@ -7,13 +7,20 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Sanctum\HasApiTokens;
 
-#[Fillable(['name', 'email', 'phone', 'password'])]
+
 #[Hidden(['password'])]
 class Customer extends Model
 {
     use HasApiTokens;
 
     protected $table = 'customers';
+
+    protected $fillable = [
+        'name',
+        'email',
+        'phone',
+        'password',
+    ];
 
     protected function casts(): array
     {
