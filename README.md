@@ -1,58 +1,131 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# E-Commerce Platform
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A Laravel-based ecommerce platform for managing products, inventory-related data, purchases, suppliers, and delivery logistics. The application provides a Filament admin panel for day-to-day operations and JSON APIs for storefront and service integrations.
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- Product catalog management with categories, units, variants, attributes, images, pricing, and product status.
+- Purchase management for recording incoming stock and supplier activity.
+- Logistics management for delivery and shipping data.
+- Supplier and unit management.
+- User and role management with permission-based access control through Filament Shield.
+- RESTful API endpoints for products, categories, and logistics.
+- Storefront product proxy at `/shop-products`, backed by the configured store API.
+- Sanctum authentication for protected API user access.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Admin Panel
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+The Filament administration panel is available at:
 
-## Learning Laravel
-
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
-
-```bash
-composer require laravel/boost --dev
-
-php artisan boost:install
+```text
+/panel
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+The panel includes resources for products, purchases, categories, logistics, suppliers, units, users, and roles. Access is controlled through the application's roles and permissions.
 
-## Contributing
+## API Endpoints
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+The API is available under `/api`:
 
-## Code of Conduct
+| Methods | Endpoint          | Description                           |
+| ------- | ----------------- | ------------------------------------- |
+| GET     | `/api/products`   | View products and product variants    |
+| GET     | `/api/categories` | View product categories               |
+| GET     | `/api/logistics`  | View logistics records                |
+| GET     | `/api/user`       | Return the authenticated Sanctum user |
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+The exact route methods generated by Laravel's API resources can be inspected with:
 
-## Security Vulnerabilities
+```bash
+php artisan route:list --path=api
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Requirements
+
+- PHP 8.3 or newer
+- Composer
+- Node.js and npm
+- A database supported by Laravel
+
+## Installation
+
+Clone the repository and install its dependencies:
+
+```bash
+git clone <repository-url>
+cd e-commerce
+composer install
+npm install
+```
+
+Create the environment file and generate the application key:
+
+```bash
+copy .env.example .env
+php artisan key:generate
+```
+
+Configure the database connection in `.env`, then run the migrations:
+
+```bash
+php artisan migrate
+```
+
+Configure the upstream storefront service with `STORE_API_URL`:
+
+```dotenv
+STORE_API_URL=https://your-store-api.example.com
+```
+
+Build the frontend assets:
+
+```bash
+npm run build
+```
+
+## Local Development
+
+Run the complete local development stack with Laravel's Composer script:
+
+```bash
+composer run dev
+```
+
+This starts the Laravel server, queue listener, and Vite development server. To run services individually:
+
+```bash
+php artisan serve
+php artisan queue:listen --tries=1 --timeout=0
+npm run dev
+```
+
+## Testing
+
+Run the application's test suite with:
+
+```bash
+composer test
+```
+
+Or run the Laravel test command directly:
+
+```bash
+php artisan test --compact
+```
+
+## Technology Stack
+
+- Laravel 13
+- PHP 8.3+
+- Filament 5
+- Filament Shield 4
+- Laravel Sanctum 4
+- Spatie Laravel Permission 8
+- Vue 3
+- Tailwind CSS 4
+- Vite 8
+- Pest 5
 
 ## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+This project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
