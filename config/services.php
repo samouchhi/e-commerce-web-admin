@@ -13,6 +13,9 @@ return [
     | a conventional file to locate the various service credentials.
     |
     */
+    'store_api' => [
+        'url' => env('STORE_API_URL', 'https://e-commerce.test'),
+    ],
 
     'postmark' => [
         'key' => env('POSTMARK_API_KEY'),

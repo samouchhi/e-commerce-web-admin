@@ -18,7 +18,9 @@ class Product extends Model
         'product_code',
         'product_images_id',
         'category_id',
+        'unit_id',
         'is_active',
+        'status',
     ];
 
     protected $casts = [
