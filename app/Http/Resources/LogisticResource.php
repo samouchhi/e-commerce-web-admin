@@ -16,10 +16,12 @@ class LogisticResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
+
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
             'image' => Storage::disk('public')->url($this->image),
+            'price' => $this->price,
         ];
     }
 }

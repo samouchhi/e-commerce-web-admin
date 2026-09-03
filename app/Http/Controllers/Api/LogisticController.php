@@ -15,7 +15,11 @@ class LogisticController extends Controller
     public function index()
     {
         $logistic = Logistic::all();
-        return LogisticResource::collection($logistic);
+
+        return response()->json([
+            'success' => true,
+            'data' => LogisticResource::collection($logistic),
+        ]);
     }
 
     /**
@@ -29,9 +33,9 @@ class LogisticController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Logistic $logistic): LogisticResource
     {
-        //
+        return new LogisticResource($logistic);
     }
 
     /**
