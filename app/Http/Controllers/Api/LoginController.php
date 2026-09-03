@@ -27,7 +27,7 @@ class LoginController extends Controller
 
         return response()->json([
             'customer' => $customer,
-            'token' => $customer->createToken('api-token')->plainTextToken,
+            'token' => $customer->createToken('api-token', [], now()->addDays(7))->plainTextToken,
         ]);
     }
 }
