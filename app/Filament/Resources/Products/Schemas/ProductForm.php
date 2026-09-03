@@ -66,13 +66,14 @@ class ProductForm
 
                 Section::make()
                     ->schema([
-                        Repeater::make('images')
+                        Repeater::make('product_images_id')
                             ->label('Product Images')
                             ->relationship('images')
                             ->schema([
                                 FileUpload::make('image_path')
                                     ->label('Image')
                                     ->image()
+                                    ->disk('public')
                                     ->directory('product-images')
                                     ->required(),
                                 TextInput::make('sort_order')
