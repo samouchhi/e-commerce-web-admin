@@ -13,5 +13,6 @@ class Logistic extends Model
         'description',
         'contact_number',
         'image',
+        'price',
     ];
 }

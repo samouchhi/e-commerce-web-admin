@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Logistics;
 use App\Filament\Resources\Logistics\Pages\ManageLogistics;
 use App\Models\Logistic;
 use BackedEnum;
+use Dom\Text;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -35,6 +36,10 @@ class LogisticResource extends Resource
                     ->required(),
                 TextInput::make('description'),
                 TextInput::make('contact_number'),
+                TextInput::make('price')
+                    ->numeric()
+                    ->required()
+                    ->prefix('$'),
                 FileUpload::make('image')
                     ->image()
                     ->directory('logistics-images')
@@ -50,6 +55,10 @@ class LogisticResource extends Resource
                     ->searchable()
                     ->disk('public'),
                 TextColumn::make('name')
+                    ->searchable(),
+                TextColumn::make('price')
+                    ->money('usd', true)
+                    ->sortable()
                     ->searchable(),
                 TextColumn::make('description')
                     ->searchable(),
