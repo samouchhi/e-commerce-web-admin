@@ -12,7 +12,7 @@ class RegisterController extends Controller
     public function __invoke(Request $request): JsonResponse
     {
         $customer = Customer::create($request->validate([
-            'name' => ['required', 'string', 'max:255'],
+            'name' => ['nullable', 'string', 'max:255'],
             'email' => ['required', 'email', 'unique:customers,email'],
             'phone' => ['nullable', 'string', 'max:30'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
