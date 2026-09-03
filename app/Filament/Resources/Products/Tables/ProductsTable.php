@@ -2,7 +2,6 @@
 
 namespace App\Filament\Resources\Products\Tables;
 
-use App\Enums\ProductStatusEnum;
 use App\Models\Product;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
@@ -13,7 +12,6 @@ use Filament\Actions\ViewAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\ImageColumn;
-use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Enums\FiltersLayout;
@@ -35,6 +33,7 @@ class ProductsTable
                     ->offColor('danger'),
                 ImageColumn::make('images.image_path')
                     ->label('Image')
+                    ->disk('public')
                     ->getStateUsing(fn (Product $record) => $record->images->first()?->image_path),
                 TextColumn::make('name')
                     ->label('Name')
@@ -75,7 +74,7 @@ class ProductsTable
                     ->since()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-            ])
+            ])->defaultSort('created_at', 'desc')
             ->filters(
                 [
                     SelectFilter::make('category_id')
