@@ -2,6 +2,11 @@
 
 A Laravel-based ecommerce platform for managing products, inventory-related data, purchases, suppliers, and delivery logistics. The application provides a Filament admin panel for day-to-day operations and JSON APIs for storefront and service integrations.
 
+## Demo
+
+https://demo.chhin.tech/panel/login (Under Development)
+
+
 ## Features
 
 - Product catalog management with categories, units, variants, attributes, images, pricing, and product status.
