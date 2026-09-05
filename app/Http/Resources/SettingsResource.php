@@ -27,6 +27,13 @@ class SettingsResource extends JsonResource
             'site_email' => $this->site_email ?? null,
             'site_phone' => $this->site_phone ?? null,
             'site_address' => $this->site_address ?? null,
+            'site_description' => $this->site_description ?? null,
+            'site_facebook_url' => $this->site_facebook_url ?? null,
+            'site_twitter_url' => $this->site_twitter_url ?? null,
+            'site_instagram_url' => $this->site_instagram_url ?? null,
+            'site_linkedin_url' => $this->site_linkedin_url ?? null,
+            'site_youtube_url' => $this->site_youtube_url ?? null,
+            'site_telegram_url' => $this->site_telegram_url ?? null,
         ];
     }
 }

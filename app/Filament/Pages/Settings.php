@@ -38,21 +38,67 @@ class Settings extends Page
             ->components([
                 Section::make('Site Information')
                     ->schema([
-                        TextInput::make('site_name')->label('Site name')->maxLength(255),
-                        TextInput::make('site_email')->label('Site email')->email()->maxLength(255),
-                        TextInput::make('site_phone')->label('Site phone')->tel()->maxLength(255),
-                        Textarea::make('site_address')->label('Site address')->rows(3)->columnSpanFull(),
+                        TextInput::make('site_name')
+                            ->label('Name')
+                            ->maxLength(255),
+                        TextInput::make('site_email')
+                            ->label('Email')
+                            ->prefixIcon(Heroicon::Envelope)
+                            ->email()
+                            ->maxLength(255),
+                        TextInput::make('site_phone')
+                            ->label('Phone')
+                            ->prefixIcon(Heroicon::Phone)
+                            ->tel()
+                            ->maxLength(255),
+                        TextInput::make('site_address')
+                            ->prefixIcon(Heroicon::MapPin)
+                            ->label('Address'),
+                        Textarea::make('site_description')
+                            ->label('Description')
+                            ->rows(3)
+                            ->columnSpanFull(),
+                        TextInput::make('site_facebook_url')
+                            ->prefixIcon('fab-facebook')
+                            ->label('Facebook URL')
+                            ->url()
+                            ->maxLength(255),
+                        TextInput::make('site_twitter_url')
+                            ->prefixIcon('fab-twitter')
+                            ->label('Twitter URL')
+                            ->url()
+                            ->maxLength(255),
+                        TextInput::make('site_instagram_url')
+                            ->prefixIcon('fab-instagram')
+                            ->label('Instagram URL')
+                            ->url()
+                            ->maxLength(255),
+                        TextInput::make('site_linkedin_url')
+                            ->prefixIcon('fab-linkedin')
+                            ->label('LinkedIn URL')
+                            ->url()
+                            ->maxLength(255),
+                        TextInput::make('site_youtube_url')
+                            ->prefixIcon('fab-youtube')
+                            ->label('YouTube URL')
+                            ->url()
+                            ->maxLength(255),
+                        TextInput::make('site_telegram_url')
+                            ->prefixIcon('fab-telegram')
+                            ->label('Telegram URL')
+                            ->url()
+                            ->maxLength(255),
                     ])
                     ->columns(2),
                 Section::make('Branding Logo')
                     ->schema([
                         FileUpload::make('site_logo')
-                            ->label('Site logo')
+                            ->label('Logo')
                             ->image()
                             ->disk('public')
                             ->directory('settings'),
                         FileUpload::make('site_favicon')
-                            ->label('Site favicon')
+                            ->label('Favicon')
                             ->image()
                             ->disk('public')
                             ->directory('settings'),
