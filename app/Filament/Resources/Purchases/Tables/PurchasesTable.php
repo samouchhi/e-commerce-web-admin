@@ -7,7 +7,11 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Enums\FiltersLayout;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -23,14 +27,15 @@ class PurchasesTable
                     ->label('Items')
                     ->badge()
                     ->wrap()
-                    ->getStateUsing(fn ($record) => $record->items
-                        ->map(fn ($item) => ($item->variant?->name ?? '?').' | '.($item->variant?->product?->name ?? '?'))
-                        ->toArray()
+                    ->getStateUsing(
+                        fn($record) => $record->items
+                            ->map(fn($item) => ($item->variant?->name ?? '?') . ' | ' . ($item->variant?->product?->name ?? '?'))
+                            ->toArray()
                     )
                     ->searchable(query: function (Builder $query, string $search): Builder {
                         return $query->whereHas('items', function ($q) use ($search) {
-                            $q->whereHas('variant', fn ($q) => $q->where('name', 'like', "%{$search}%"))
-                                ->orWhereHas('variant.product', fn ($q) => $q->where('name', 'like', "%{$search}%"));
+                            $q->whereHas('variant', fn($q) => $q->where('name', 'like', "%{$search}%"))
+                                ->orWhereHas('variant.product', fn($q) => $q->where('name', 'like', "%{$search}%"));
                         });
                     }),
                 TextColumn::make('supplier.name')->label('Supplier')->searchable(),
@@ -40,21 +45,34 @@ class PurchasesTable
                 TextColumn::make('shipping_status')->label('Shipping Status')->sortable()
                     ->badge(),
                 TextColumn::make('Items Qty')
-                    ->getStateUsing(fn ($record) => $record->items->sum('quantity'))
+                    ->getStateUsing(fn($record) => $record->items->sum('quantity'))
                     ->label('Items Qty')->sortable()->badge(),
             ])
-                //
+
+            //
+
+            ->filters(
+                [
+                    SelectFilter::make('supplier_id')
+                        ->label('Supplier')
+                        ->relationship('supplier', 'name')
+                        ->searchable()
+                        ->preload()
+                        ->placeholder('Select Supplier'),
+                ],
+
+            )
 
             ->recordActions([
-                                ActionGroup::make([
-                                    EditAction::make(),
-                                    DeleteAction::make(),
-                                ]),
-                            ])
+                ActionGroup::make([
+                    EditAction::make(),
+                    DeleteAction::make(),
+                ]),
+            ])
             ->toolbarActions([
-                                BulkActionGroup::make([
-                                    DeleteBulkAction::make(),
-                                ]),
-                            ]);
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
+                ]),
+            ]);
     }
 }
