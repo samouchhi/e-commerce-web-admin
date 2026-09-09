@@ -7,11 +7,13 @@ use App\Filament\Resources\Purchases\Pages\EditPurchase;
 use App\Filament\Resources\Purchases\Pages\ListPurchases;
 use App\Filament\Resources\Purchases\Schemas\PurchaseForm;
 use App\Filament\Resources\Purchases\Tables\PurchasesTable;
+use App\Filament\Resources\Purchases\Widgets\PurchaseStats;
 use App\Models\Purchase;
 use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
+use Override;
 use UnitEnum;
 
 class PurchaseResource extends Resource
@@ -36,6 +38,14 @@ class PurchaseResource extends Resource
     {
         return PurchasesTable::configure($table);
     }
+
+
+    public static function getWidgets(): array
+    {
+        return [PurchaseStats::class];
+    }
+
+
 
     public static function getRelations(): array
     {
