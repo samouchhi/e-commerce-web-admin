@@ -20,6 +20,7 @@ use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class AdminPanelProvider extends PanelProvider
@@ -28,12 +29,19 @@ class AdminPanelProvider extends PanelProvider
     {
         return $panel
             ->default()
-            ->id('admin')
-            ->path('panel')
-            ->brandName(fn (): string => GeneralSetting::query()->value('site_name') ?: config('app.name'))
+            ->id('dashboard')
+            ->path('dashboard')
+            ->topbar(false)
+            ->databaseNotifications()
+
+            ->brandLogo(fn (): ?string => ($logo = GeneralSetting::query()->value('site_logo'))
+                ? Storage::disk('public')->url($logo)
+                : null)
+            ->brandLogoHeight('3rem')
+            ->sidebarCollapsibleOnDesktop()
+
             ->login(Login::class)
 
-            ->registration()
             ->colors([
                 'primary' => Color::Blue,
 
