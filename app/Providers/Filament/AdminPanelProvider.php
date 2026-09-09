@@ -33,13 +33,14 @@ class AdminPanelProvider extends PanelProvider
             ->path('dashboard')
             ->topbar(false)
             ->databaseNotifications()
+            ->viteTheme('resources/css/filament/dashboard/theme.css')
 
-            ->brandLogo(fn (): ?string => ($logo = GeneralSetting::query()->value('site_logo'))
+            ->brandLogo(fn(): ?string => ($logo = GeneralSetting::query()->value('site_logo'))
                 ? Storage::disk('public')->url($logo)
                 : null)
             ->brandLogoHeight('3rem')
             ->sidebarCollapsibleOnDesktop()
-
+            ->spa()
             ->login(Login::class)
 
             ->colors([
