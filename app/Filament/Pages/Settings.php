@@ -51,9 +51,17 @@ class Settings extends Page
                             ->prefixIcon(Heroicon::Phone)
                             ->tel()
                             ->maxLength(255),
-                        TextInput::make('site_address')
-                            ->prefixIcon(Heroicon::MapPin)
-                            ->label('Address'),
+                        TextInput::make('alert_stock')
+                            ->label('Stock Alert')
+                            ->prefixIcon(Heroicon::ExclamationTriangle)
+                            ->numeric()
+                            ->minValue(0)
+                            ->maxValue(1000)
+                            ->default(5),
+                        Textarea::make('site_address')
+                            ->rows(3)
+                            ->label('Address')
+                            ->columnSpanFull(),
                         Textarea::make('site_description')
                             ->label('Description')
                             ->rows(3)

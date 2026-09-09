@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class GeneralSetting extends Model
 {
     protected $fillable = [
+        'alert_stock',
         'site_name',
         'site_logo',
         'site_favicon',
