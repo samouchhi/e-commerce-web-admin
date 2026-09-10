@@ -13,12 +13,16 @@ return [
     | a conventional file to locate the various service credentials.
     |
     */
-    'bakong' => [
-        'account_id' => env('BAKONG_ACCOUNT_ID'),
-        'merchant_name' => env('BAKONG_MERCHANT_NAME'),
-        'merchant_city' => env('BAKONG_MERCHANT_CITY'),
-        'api_token' => env('BAKONG_API_TOKEN'),
+    'aba' => [
+        'payment_link' => env('ABA_PAYMENT_LINK'),
     ],
+
+    // 'bakong' => [
+    //     'account_id' => env('BAKONG_ACCOUNT_ID'),
+    //     'merchant_name' => env('BAKONG_MERCHANT_NAME'),
+    //     'merchant_city' => env('BAKONG_MERCHANT_CITY'),
+    //     'api_token' => env('BAKONG_API_TOKEN'),
+    // ],
 
     'store_api' => [
         'url' => env('STORE_API_URL', 'https://e-commerce.test'),

@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Api\BakongPaymentController;
+use App\Http\Controllers\Api\AbaPaymentController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Api\LogisticController;
@@ -29,11 +29,11 @@ Route::apiResource('categories', CategoryController::class);
 Route::apiResource('logistics', LogisticController::class);
 Route::apiResource('settings', SettingsController::class);
 
-Route::get('orders/{order}/payment', [BakongPaymentController::class, 'generatePayment'])
-    ->middleware('auth:sanctum');
+Route::match(['get', 'post'], 'orders/{order}/payment', [AbaPaymentController::class, 'generatePayment'])
+    ->middleware(['auth:sanctum', 'throttle:20,1']);
 
 Route::apiResource('orders', OrderController::class)
     ->middleware('auth:sanctum');
 
-Route::get('orders/{order}/verify', [BakongPaymentController::class, 'verifyPayment'])
-    ->middleware('auth:sanctum');
+Route::get('orders/{order}/verify', [AbaPaymentController::class, 'verifyPayment'])
+    ->middleware(['auth:sanctum', 'throttle:30,1']);
