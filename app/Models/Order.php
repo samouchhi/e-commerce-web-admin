@@ -41,6 +41,11 @@ class Order extends Model
         return $this->hasMany(OrderItems::class);
     }
 
+    public function address(): HasOne
+    {
+        return $this->hasOne(OrderAddress::class);
+    }
+
     protected $casts = [
         'payment_status' => PaymentStatus::class,
         'shipping_status' => ShippingStatus::class,
