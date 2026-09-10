@@ -5,6 +5,7 @@ namespace App\Observers;
 use App\Models\GeneralSetting;
 use App\Models\ProductVariant;
 use Filament\Notifications\Notification;
+use Illuminate\Support\Facades\Auth;
 
 class ProductVariantObserver
 {
@@ -21,19 +22,22 @@ class ProductVariantObserver
      */
     public function updated(ProductVariant $productVariant): void
     {
-        $user = auth()->user();
+        $user = Auth::user();
         $alertStock = GeneralSetting::query()->value('alert_stock');
 
         if (
-            $productVariant->wasChanged('stock_qty') &&
-            $productVariant->stock_qty <= $alertStock
+            $user === null ||
+            ! $productVariant->wasChanged('stock_qty') ||
+            $productVariant->stock_qty > $alertStock
         ) {
-            Notification::make()
-                ->title('Low Stock Alert!')
-                ->body("{$productVariant->product->name} | ({$productVariant->name}) has only {$productVariant->stock_qty} items left.")
-                ->warning()
-                ->sendToDatabase($user);
+            return;
         }
+
+        Notification::make()
+            ->title('Low Stock Alert!')
+            ->body("{$productVariant->product->name} | ({$productVariant->name}) has only {$productVariant->stock_qty} items left.")
+            ->warning()
+            ->sendToDatabase($user);
     }
 
     /**
