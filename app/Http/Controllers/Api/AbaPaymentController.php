@@ -32,8 +32,9 @@ class AbaPaymentController extends Controller
             'order_id' => $order->id,
             'amount' => $payment->amount,
             'currency' => $payment->currency,
+            'merchant_name' => $this->merchantName($payment->qr_string),
             'qr_image' => $image,
-            'deeplink_url' => 'abamobilebank://ababank.com?'.http_build_query([
+            'deeplink_url' => 'abamobilebank://ababank.com?' . http_build_query([
                 'type' => 'payway',
                 'qrcode' => $payment->qr_string,
             ], '', '&', PHP_QUERY_RFC3986),
