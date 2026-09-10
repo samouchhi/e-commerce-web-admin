@@ -63,9 +63,9 @@ class BakongPaymentController extends Controller
             $order->payment()->update(['status' => 'paid']);
             $order->payment()->update(['qr_paid_at' => now()]);
 
-            return response()->json(['message' => 'Payment is completed.']);
+            return response()->json(['success' => true, 'message' => 'Payment is completed.']);
         } else {
-            return response()->json(['message' => 'Payment is not completed.'], 422);
+            return response()->json(['success' => false, 'message' => 'Payment is not completed.'], 422);
         }
     }
 }

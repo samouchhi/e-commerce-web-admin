@@ -7,6 +7,7 @@ use App\Filament\Resources\Orders\Pages\EditOrder;
 use App\Filament\Resources\Orders\Pages\ListOrders;
 use App\Filament\Resources\Orders\Schemas\OrderForm;
 use App\Filament\Resources\Orders\Tables\OrdersTable;
+use App\Filament\Resources\Orders\Widgets\OrderStats;
 use App\Models\Order;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -21,6 +22,13 @@ class OrderResource extends Resource
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();
+    }
+
+    public static function getWidgets(): array
+    {
+        return [
+            OrderStats::class,
+        ];
     }
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;

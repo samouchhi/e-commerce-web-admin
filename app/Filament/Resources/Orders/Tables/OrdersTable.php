@@ -6,6 +6,7 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
 class OrdersTable
@@ -52,7 +53,19 @@ class OrdersTable
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                SelectFilter::make('payment_status')
+                    ->options([
+                        'pending' => 'Pending',
+                        'paid' => 'Paid',
+                        'failed' => 'Failed',
+                    ]),
+                SelectFilter::make('shipping_status')
+                    ->options([
+                        'pending' => 'Pending',
+                        'shipped' => 'Shipped',
+                        'delivered' => 'Delivered',
+                        'returned' => 'Returned',
+                    ]),
             ])
             ->recordActions([
                 EditAction::make(),

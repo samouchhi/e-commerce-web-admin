@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Orders\Schemas;
 
 use App\Enums\PaymentStatus;
 use App\Enums\ShippingStatus;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\ToggleButtons;
 use Filament\Schemas\Schema;
@@ -16,22 +17,30 @@ class OrderForm
             ->components([
                 TextInput::make('order_number')
                     ->required(),
-                TextInput::make('customer_id')
-                    ->required()
-                    ->numeric(),
-                TextInput::make('logistic_id')
-                    ->numeric(),
+                Select::make('customer_id')
+                    ->relationship('customer', 'name')
+                    ->searchable()
+                    ->prefixIcon('heroicon-m-user')
+                    ->required(),
+                Select::make('logistic_id')
+                    ->relationship('logistic', 'name')
+                    ->searchable()
+                    ->prefixIcon('heroicon-m-truck')
+                    ->preload()
+                    ->required(),
                 TextInput::make('total_amount')
                     ->required()
+                    ->prefixIcon('heroicon-m-currency-dollar')
                     ->numeric(),
                 TextInput::make('subtotal_amount')
                     ->required()
+                    ->prefixIcon('heroicon-m-currency-dollar')
                     ->numeric(),
                 TextInput::make('shipping_cost')
                     ->required()
                     ->numeric()
                     ->default(0)
-                    ->prefix('$'),
+                    ->prefixIcon('heroicon-m-currency-dollar'),
                 ToggleButtons::make('payment_status')
                     ->options(PaymentStatus::class)
                     ->required()
