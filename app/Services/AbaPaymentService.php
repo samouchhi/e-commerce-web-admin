@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Enums\PaymentStatus;
 use App\Models\Order;
+use App\Models\PaymentMethod;
 use App\Models\Payments;
 use GuzzleHttp\Cookie\CookieJar;
 use Illuminate\Http\Client\ConnectionException;
@@ -27,7 +28,6 @@ class AbaPaymentService
             $order = $payment->order()->lockForUpdate()->firstOrFail();
 
             abort_unless($order->payment_status === PaymentStatus::Pending && $payment->status === 'pending', 422, 'Order is not pending payment.');
-            abort_if($payment->md5_hash !== null, 409, 'This order already has a Bakong payment. Verify that payment first.');
 
             if ($payment->qr_string !== null) {
                 abort_if($payment->qr_expiration_at->isPast(), 409, 'QR expired. Verify this payment before creating another order.');
@@ -59,11 +59,11 @@ class AbaPaymentService
     {
         abort_unless(preg_match('/^\d{1,6}(?:\.\d{1,2})?$/D', $amount) && (float) $amount >= 0.01 && (float) $amount <= 100000, 422, 'Payment amount must be between 0.01 and 100000 USD.');
         $amount = number_format((float) $amount, 2, '.', '');
-        $link = (string) config('services.aba.payment_link');
+        $link = (string) PaymentMethod::query()->whereKey(1)->value('aba_payway_link');
         abort_unless(
             preg_match('~^https://link\.payway\.com\.kh/[A-Za-z0-9_-]+$~D', $link),
             503,
-            'Configure a valid ABA_PAYMENT_LINK before accepting payments.',
+            'ABA payment unavailable. Please contact the site administrator.',
         );
 
         $http = $this->http($link)->withOptions(['cookies' => new CookieJar]);
@@ -85,7 +85,7 @@ class AbaPaymentService
                 'additional_fields' => $additional,
                 'request_time' => $requestTime,
                 'aba_data' => $abaData,
-                'hash' => hash('sha512', $requestTime.$abaData.$additional),
+                'hash' => hash('sha512', $requestTime . $abaData . $additional),
             ]);
         } catch (ConnectionException) {
             abort(502, 'ABA is unavailable. Payment has not been confirmed.');
@@ -102,8 +102,8 @@ class AbaPaymentService
         $returnedAmount = data_get($details, 'amount');
         abort_unless(
             data_get($details, 'currency') === 'USD'
-            && is_numeric($returnedAmount)
-            && (float) $returnedAmount === (float) $amount,
+                && is_numeric($returnedAmount)
+                && (float) $returnedAmount === (float) $amount,
             502,
             'ABA returned a different amount or currency.',
         );
@@ -142,7 +142,7 @@ class AbaPaymentService
                     'client_id' => $context['client_id'],
                     'device_id' => $context['device_id'],
                     'request_time' => $context['request_time'],
-                    'hash' => hash('sha512', $context['client_id'].$context['device_id'].$context['request_time']),
+                    'hash' => hash('sha512', $context['client_id'] . $context['device_id'] . $context['request_time']),
                 ]);
         } catch (ConnectionException) {
             abort(502, 'ABA verification is unavailable. Payment remains unconfirmed.');
@@ -152,8 +152,8 @@ class AbaPaymentService
         $action = data_get($result, 'data.action');
         abort_unless(
             $response->successful()
-            && (string) data_get($result, 'status.code') === '00'
-            && is_string($action),
+                && (string) data_get($result, 'status.code') === '00'
+                && is_string($action),
             502,
             'ABA verification is unavailable. Payment remains unconfirmed.',
         );
@@ -215,7 +215,7 @@ class AbaPaymentService
 
     private function pageField(string $state, string $pattern): string
     {
-        $matched = preg_match('~'.$pattern.'("(?:[^"\\\\]|\\\\.)*")~', $state, $matches);
+        $matched = preg_match('~' . $pattern . '("(?:[^"\\\\]|\\\\.)*")~', $state, $matches);
         abort_unless($matched === 1, 502, 'ABA payment page format has changed.');
         $value = json_decode($matches[1]);
         abort_unless(is_string($value), 502, 'ABA payment page returned invalid data.');

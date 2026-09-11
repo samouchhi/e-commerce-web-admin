@@ -28,7 +28,6 @@ class ProductResource extends Resource
     // {
     //     return auth()->user()->can('view products');
     // }
-    protected static ?string $slug = 'shop/products';
 
     public static function getNavigationBadgeTooltip(): ?string
     {
