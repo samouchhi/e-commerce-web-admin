@@ -52,6 +52,7 @@ class AdminPanelProvider extends PanelProvider
                 'Products',
                 'Orders',
                 'Purchases',
+                'Peoples',
                 'Settings',
 
             ])
