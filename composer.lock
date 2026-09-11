@@ -4,8 +4,74 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "dfb1d189cea7ba66ae8af86ab2b90b08",
+    "content-hash": "15ae78a54a31ae9debdc071656199b9b",
     "packages": [
+        {
+            "name": "andreia/filament-ui-switcher",
+            "version": "v1.1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/andreia/filament-ui-switcher.git",
+                "reference": "877fbe668271ee0ea66bfc57531e7ce711e12e82"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/andreia/filament-ui-switcher/zipball/877fbe668271ee0ea66bfc57531e7ce711e12e82",
+                "reference": "877fbe668271ee0ea66bfc57531e7ce711e12e82",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^5.0|^4.1",
+                "illuminate/contracts": "^13.0|^12.0|^11.0",
+                "livewire/livewire": "^4.0|^3.0",
+                "php": "^8.5|^8.4|^8.3|^8.2",
+                "spatie/laravel-package-tools": "^1.92"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^11.0|^10.0|^9.0",
+                "pestphp/pest": "^4.0|^3.0|^2.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Andreia\\FilamentUiSwitcher\\FilamentUiSwitcherServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Andreia\\FilamentUiSwitcher\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Andréia Bohner",
+                    "email": "andreiabohner@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Add a modal with options to switch between different UI layouts and styles (colors, fonts, font sizes).",
+            "homepage": "https://github.com/andreia/filament-ui-switcher",
+            "keywords": [
+                "customization",
+                "dashboard",
+                "filament",
+                "laravel",
+                "layout",
+                "switcher",
+                "ui"
+            ],
+            "support": {
+                "issues": "https://github.com/andreia/filament-ui-switcher/issues",
+                "source": "https://github.com/andreia/filament-ui-switcher"
+            },
+            "time": "2026-09-06T23:58:11+00:00"
+        },
         {
             "name": "anourvalar/eloquent-serialize",
             "version": "1.3.11",
@@ -3709,6 +3775,53 @@
                 }
             ],
             "time": "2026-01-02T08:56:05+00:00"
+        },
+        {
+            "name": "nehalpatel/filament-compact-theme",
+            "version": "v1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/NehalPatel/filament-compact-theme.git",
+                "reference": "152cd516b30bdb8a108fbc7352b77bfada56cae9"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/NehalPatel/filament-compact-theme/zipball/152cd516b30bdb8a108fbc7352b77bfada56cae9",
+                "reference": "152cd516b30bdb8a108fbc7352b77bfada56cae9",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^5.0",
+                "php": "^8.2"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "NehalPatel\\FilamentCompactTheme\\FilamentCompactThemeServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "NehalPatel\\FilamentCompactTheme\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Nehal Patel"
+                }
+            ],
+            "description": "Reusable compact dark-first Filament v5 admin theme (Tailwind CSS, CSS hooks)",
+            "support": {
+                "issues": "https://github.com/NehalPatel/filament-compact-theme/issues",
+                "source": "https://github.com/NehalPatel/filament-compact-theme/tree/v1.0.0"
+            },
+            "time": "2026-04-12T17:06:51+00:00"
         },
         {
             "name": "nesbot/carbon",
