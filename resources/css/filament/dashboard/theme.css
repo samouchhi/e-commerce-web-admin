@@ -1,4 +1,4 @@
-/* @import '../../../../vendor/nehalpatel/filament-compact-theme/resources/css/theme.css'; */
+@import '../../../../vendor/nehalpatel/filament-compact-theme/resources/css/theme.css';
 
 @source '../../../../app/Filament/**/*';
 @source '../../../../resources/views/filament/**/*';
