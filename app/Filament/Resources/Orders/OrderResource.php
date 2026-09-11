@@ -17,6 +17,10 @@ use Filament\Tables\Table;
 
 class OrderResource extends Resource
 {
+
+    protected static string|\UnitEnum|null $navigationGroup = 'Orders';
+
+
     protected static ?string $model = Order::class;
 
     public static function getNavigationBadge(): ?string
@@ -31,7 +35,7 @@ class OrderResource extends Resource
         ];
     }
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedShoppingCart;
 
     public static function form(Schema $schema): Schema
     {
