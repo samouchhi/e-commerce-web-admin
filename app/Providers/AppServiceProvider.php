@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\Order;
+use App\Models\ProductVariant;
+use App\Observers\OrderObserver;
+use App\Observers\ProductVariantObserver;
 use BezhanSalleh\FilamentShield\Facades\FilamentShield;
 use Illuminate\Support\ServiceProvider;
 
@@ -21,6 +25,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         FilamentShield::enforcePolicies();
-
+        ProductVariant::observe(ProductVariantObserver::class);
+        Order::observe(OrderObserver::class);
     }
 }

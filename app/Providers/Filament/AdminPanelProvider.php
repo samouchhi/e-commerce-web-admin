@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Pages\Auth\Login;
+use App\Models\GeneralSetting;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -19,6 +20,7 @@ use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class AdminPanelProvider extends PanelProvider
@@ -27,11 +29,20 @@ class AdminPanelProvider extends PanelProvider
     {
         return $panel
             ->default()
-            ->id('admin')
-            ->path('panel')
-            ->brandName('Admin Panel')
+            ->id('dashboard')
+            ->path('dashboard')
+            ->topbar(false)
+            ->databaseNotifications()
+            ->viteTheme('resources/css/filament/dashboard/theme.css')
+
+            ->brandLogo(fn(): ?string => ($logo = GeneralSetting::query()->value('site_logo'))
+                ? Storage::disk('public')->url($logo)
+                : null)
+            ->brandLogoHeight('3rem')
+            ->sidebarCollapsibleOnDesktop()
+            ->spa()
             ->login(Login::class)
-            ->registration()
+
             ->colors([
                 'primary' => Color::Blue,
 
@@ -39,8 +50,10 @@ class AdminPanelProvider extends PanelProvider
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->navigationGroups([
                 'Products',
+                'Orders',
                 'Purchases',
                 'Settings',
+
             ])
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\Filament\Pages')
             ->pages([
@@ -52,7 +65,8 @@ class AdminPanelProvider extends PanelProvider
                 // FilamentInfoWidget::class,
             ])
             ->plugins([
-                FilamentShieldPlugin::make(),
+                FilamentShieldPlugin::make()
+                    ->navigationGroup('Settings'),
             ])
             ->middleware([
                 EncryptCookies::class,
