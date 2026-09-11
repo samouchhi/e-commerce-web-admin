@@ -21,22 +21,22 @@ class ProductResource extends JsonResource
             'product_code' => $this->product_code,
             'description' => $this->description,
             // 'status' => $this->status,
-            // 'is_active' => $this->is_active,
+            'is_active' => $this->is_active,
             'category' => $this->whenLoaded(
                 'category',
-                fn (): array => [
+                fn(): array => [
                     'id' => $this->category->id,
                     'name' => $this->category->name,
                 ]
             ),
-            'unit' => $this->whenLoaded('unit', fn (): array => [
+            'unit' => $this->whenLoaded('unit', fn(): array => [
                 'id' => $this->unit->id,
                 'name' => $this->unit->name,
             ]),
             'variants' => $this->whenLoaded(
                 'variants',
-                fn (): array => $this->variants
-                    ->map(fn ($variant): array => [
+                fn(): array => $this->variants
+                    ->map(fn($variant): array => [
                         'id' => $variant->id,
                         'name' => $variant->name,
                         'price' => $variant->price,
@@ -46,7 +46,7 @@ class ProductResource extends JsonResource
                     ])
                     ->all()
             ),
-            'images' => $this->whenLoaded('images', fn (): array => $this->images->map(fn ($image): array => [
+            'images' => $this->whenLoaded('images', fn(): array => $this->images->map(fn($image): array => [
                 'id' => $image->id,
                 'image_path' => $image->image_path,
                 'image_url' => Storage::disk('public')->url($image->image_path),

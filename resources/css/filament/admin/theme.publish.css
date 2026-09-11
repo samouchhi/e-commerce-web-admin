@@ -1,0 +1,182 @@
+@import '../../../../../vendor/filament/filament/resources/css/theme.css';
+
+@source '../../../../../app/Filament/**/*';
+@source '../../../../../resources/views/filament/**/*';
+@source '../../../../../resources/views/components/**/*';
+@source '../../../../../resources/views/**/*.blade.php';
+
+@theme {
+    --radius-lg: 0.5rem;
+    --radius-xl: 0.625rem;
+    --radius-2xl: 0.75rem;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Base density
+|--------------------------------------------------------------------------
+*/
+html.fi {
+    font-size: 15px;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Shell — dark-first flat surfaces, light mode calm gray
+|--------------------------------------------------------------------------
+*/
+.fi-body {
+    @apply bg-gray-50 dark:bg-[#0f172a];
+}
+
+.fi-sidebar {
+    @apply border-e border-gray-200/90 bg-white dark:border-white/10 dark:bg-[#111827] lg:bg-white dark:lg:bg-[#111827];
+}
+
+.fi-sidebar-close-overlay {
+    @apply bg-gray-950/40 dark:bg-gray-950/60;
+}
+
+.fi-topbar {
+    @apply min-h-14 border-b border-gray-200/80 bg-white shadow-none ring-0 dark:border-white/10 dark:bg-[#111827] dark:ring-0;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Sidebar — compact nav + blue active rail
+|--------------------------------------------------------------------------
+*/
+.fi-sidebar-nav {
+    @apply gap-y-5 py-5;
+}
+
+.fi-sidebar-item-btn {
+    @apply gap-x-2.5 rounded-md p-1.5 text-[0.8125rem] leading-5;
+}
+
+.fi-sidebar-item.fi-active > .fi-sidebar-item-btn {
+    @apply border-s-2 border-primary-500 bg-primary-500/10 dark:bg-primary-500/15;
+}
+
+.fi-sidebar-item.fi-active > .fi-sidebar-item-btn > .fi-icon {
+    @apply text-primary-600 dark:text-primary-400;
+}
+
+.fi-sidebar-item.fi-active > .fi-sidebar-item-btn > .fi-sidebar-item-label {
+    @apply text-primary-700 dark:text-primary-300;
+}
+
+.fi-sidebar-group-label {
+    @apply text-[0.6875rem] font-semibold uppercase tracking-wide text-gray-400 dark:text-gray-500;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Page layout — tighter vertical rhythm
+|--------------------------------------------------------------------------
+*/
+.fi-page-header-main-ctn {
+    @apply gap-y-4 py-4;
+}
+
+.fi-page-content {
+    @apply gap-y-4;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Tables — compact cells, flat container, subtle hover
+|--------------------------------------------------------------------------
+*/
+.fi-ta-ctn {
+    @apply rounded-lg bg-white shadow-none ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10;
+}
+
+.fi-ta-header-cell {
+    @apply px-2 py-2 text-xs font-semibold uppercase tracking-wide text-gray-500 sm:first-of-type:ps-3 sm:last-of-type:pe-3 dark:text-gray-400;
+}
+
+.fi-ta-text:not(.fi-inline) {
+    @apply px-2 py-2 text-sm sm:px-3;
+}
+
+.fi-ta-table-stacked-on-mobile .fi-ta-text:not(.fi-inline) {
+    @apply p-0 sm:px-3 sm:py-2;
+}
+
+.fi-ta-table > tbody > tr.fi-ta-row {
+    @apply border-b border-gray-100 dark:border-white/5;
+}
+
+.fi-ta-row.fi-clickable {
+    @apply hover:bg-gray-50/80 dark:hover:bg-white/[0.04];
+}
+
+.fi-ta-header {
+    @apply gap-2 p-3 sm:px-4;
+}
+
+.fi-ta-filters {
+    @apply gap-2 p-3 sm:px-4;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Forms / sections — tight padding, flat cards
+|--------------------------------------------------------------------------
+*/
+.fi-section:not(.fi-section-not-contained):not(.fi-aside) {
+    @apply rounded-lg shadow-none ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10;
+}
+
+.fi-section:not(.fi-section-not-contained):not(.fi-aside) > .fi-section-header {
+    @apply px-4 py-3;
+}
+
+.fi-section:not(.fi-section-not-contained):not(.fi-aside):not(.fi-divided)
+    > .fi-section-content-ctn
+    > .fi-section-content {
+    @apply p-4;
+}
+
+.fi-fo-field {
+    @apply gap-y-1.5;
+}
+
+.fi-fo-field-content {
+    @apply text-sm;
+}
+
+.fi-input-wrp {
+    @apply rounded-md text-sm ring-gray-950/10 dark:ring-white/15;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Buttons
+|--------------------------------------------------------------------------
+*/
+.fi-btn {
+    @apply rounded-md text-sm duration-150;
+}
+
+.fi-btn.fi-color:not(label) {
+    @apply shadow-none;
+}
+
+/*
+|--------------------------------------------------------------------------
+| Stats widgets — compact cards
+|--------------------------------------------------------------------------
+*/
+.fi-wi-stats-overview-stat {
+    @apply rounded-lg p-4 shadow-none ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10;
+}
+
+.fi-wi-stats-overview-stat .fi-wi-stats-overview-stat-value {
+    @apply text-2xl font-semibold;
+}
+
+.fi-wi-stats-overview-stat .fi-wi-stats-overview-stat-description {
+    @apply text-xs;
+}
