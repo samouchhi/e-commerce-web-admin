@@ -31,7 +31,7 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('dashboard')
             ->path('dashboard')
-            ->topbar(false)
+            ->topbar(true)
             ->databaseNotifications()
             ->viteTheme('resources/css/filament/dashboard/theme.css')
 
