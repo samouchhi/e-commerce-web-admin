@@ -13,9 +13,6 @@ return [
     | a conventional file to locate the various service credentials.
     |
     */
-    'aba' => [
-        'payment_link' => env('ABA_PAYMENT_LINK'),
-    ],
 
     // 'bakong' => [
     //     'account_id' => env('BAKONG_ACCOUNT_ID'),
