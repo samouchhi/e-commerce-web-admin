@@ -4,7 +4,7 @@ A Laravel-based ecommerce platform for managing products, inventory-related data
 
 ## Demo
 
-https://demo.chhin.tech/panel/login (Under Development)
+https://demo.chhin.tech/
 
 
 ## Features
