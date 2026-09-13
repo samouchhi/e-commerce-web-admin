@@ -232,7 +232,9 @@ class PurchaseForm
 
                         ]),
                 ])
-                    ->submitAction($schema->getLivewire()->getWizardSubmitAction())
+                    ->submitAction(method_exists($schema->getLivewire(), 'getWizardSubmitAction')
+                        ? $schema->getLivewire()->getWizardSubmitAction()
+                        : null)
                     ->cancelAction(
                         Action::make('backToPurchases')
                             ->label('Back')
