@@ -43,37 +43,52 @@ class TelegramNotification extends Notification
     //         ->line('Thank you for using our application!');
     // }
 
-    public function toTelegram($notifiable): TelegramMessage
-{
-    $telegram = app(TelegramService::class);
-    $url = url("dashboard/orders/{$notifiable->id}");
+    public function toTelegram($notifiable): ?TelegramMessage
+    {
+        $telegram = app(TelegramService::class);
+        $url = url("dashboard/orders/{$notifiable->id}");
 
-    $items = $notifiable->items
-        ->map(function ($item) {
-            $product = $item->productVariant->product->name;
-            $variant = $item->productVariant->name;
+        $items = $notifiable->items
+            ->map(function ($item) {
+                $product = $item->productVariant->product->name;
+                $variant = $item->productVariant->name;
 
-            return "• {$product} — {$variant}\n" .
-                "   Qty: {$item->quantity} × {$item->price}$";
-        })
-        ->implode("\n");
+                return "• {$product}\n" .
+                    "   ប្រភេទ: {$variant}\n" .
+                    "   ចំនួន: {$item->quantity} × {$item->unit_price}$ = {$item->subtotal_price}$";
+            })
+            ->implode("\n");
 
-    return TelegramMessage::create()
-        ->token($telegram->token())
-        ->to($telegram->chatId())
-        ->content(
-            "🛒 *ទទួលបានការបញ្ជាទិញថ្មី!*\n\n" .
-            "📦 *លេខបញ្ជាទិញ:* `{$notifiable->order_number}`\n" .
-            "👤 *ឈ្មោះអតិថិជន:* {$notifiable->customer->name}\n" .
-            "📞 *ទូរស័ព្ទ:* {$notifiable->customer->phone}\n" .
-            "💰 *ប្រាក់សរុប:* {$notifiable->total_amount}$\n\n" .
-            "━━━━━━━━━━━━━━\n\n" .
-            "🛍️ *ទំនិញដែលបានបញ្ជាទិញ:*\n\n" .
-            $items .
-            "\n\n━━━━━━━━━━━━━━"
-        )
-        ->button('📄 View Invoice', $url);
-}
+        $token = $telegram->token();
+        $chatId = $telegram->chatId();
+
+        if (empty($token) || empty($chatId)) {
+            return null;
+        }
+
+
+        $manual_approve = $notifiable->payment->aba_last_action != 'approved'
+            ? "⚠️ *ការទូទាត់ត្រូវបានអនុម័តដោយដៃ!*"
+            : "✅ *ការទូទាត់ត្រូវបានអនុម័តដោយស្វ័យប្រវត្តិ!*";
+
+        return TelegramMessage::create()
+            ->token($token)
+            ->to($chatId)
+
+            ->content(
+                $manual_approve .
+                    "\n🛒 *ទទួលបានការបញ្ជាទិញថ្មី!*\n\n" .
+                    "📦 *លេខបញ្ជាទិញ:* `{$notifiable->order_number}`\n" .
+                    "👤 *ឈ្មោះអតិថិជន:* {$notifiable->customer->name}\n" .
+                    "📞 *ទូរស័ព្ទ:* {$notifiable->customer->phone}\n" .
+                    "💰 *ប្រាក់សរុប:* {$notifiable->total_amount}$\n\n" .
+                    "━━━━━━━━━━━━━━\n\n" .
+                    "🛍️ *ទំនិញដែលបានបញ្ជាទិញ:*\n\n" .
+                    $items .
+                    "\n\n━━━━━━━━━━━━━━"
+            )
+            ->button('📄 វិក័យប័ត្រ', $url);
+    }
 
     /**
      * Get the array representation of the notification.
