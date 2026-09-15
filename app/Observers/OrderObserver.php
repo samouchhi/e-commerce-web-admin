@@ -18,7 +18,14 @@ class OrderObserver implements ShouldHandleEventsAfterCommit
         if (! $order->wasChanged('payment_status') || $order->payment_status !== PaymentStatus::Paid) {
             return;
         }
-        $user = Auth::user();
+        /// notify to user who has permission to viewAny order
+        $user = User::whereHas('roles.permissions', function ($query) {
+            $query->where('name', 'ViewAny:Order');
+        })->first();
+
+        if (! $user) {
+            return;
+        }
 
         Notification::make()
             ->title('New paid order')
