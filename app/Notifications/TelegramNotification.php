@@ -43,7 +43,7 @@ class TelegramNotification extends Notification
     //         ->line('Thank you for using our application!');
     // }
 
-    public function toTelegram($notifiable): TelegramMessage
+    public function toTelegram($notifiable): ?TelegramMessage
     {
         $telegram = app(TelegramService::class);
         $url = url("dashboard/orders/{$notifiable->id}");
@@ -53,10 +53,18 @@ class TelegramNotification extends Notification
                 $product = $item->productVariant->product->name;
                 $variant = $item->productVariant->name;
 
-                return "• {$product} — {$variant}\n" .
-                    "   Qty: {$item->quantity} × {$item->price}$";
+                return "• {$product}\n" .
+                    "   ប្រភេទ: {$variant}\n" .
+                    "   ចំនួន: {$item->quantity} × {$item->unit_price}$ = {$item->subtotal_price}$";
             })
             ->implode("\n");
+
+        $token = $telegram->token();
+        $chatId = $telegram->chatId();
+
+        if (empty($token) || empty($chatId)) {
+            return null;
+        }
 
 
         $manual_approve = $notifiable->payment->aba_last_action != 'approved'
@@ -64,8 +72,9 @@ class TelegramNotification extends Notification
             : "✅ *ការទូទាត់ត្រូវបានអនុម័តដោយស្វ័យប្រវត្តិ!*";
 
         return TelegramMessage::create()
-            ->token($telegram->token())
-            ->to($telegram->chatId())
+            ->token($token)
+            ->to($chatId)
+
             ->content(
                 $manual_approve .
                     "\n🛒 *ទទួលបានការបញ្ជាទិញថ្មី!*\n\n" .
@@ -78,7 +87,7 @@ class TelegramNotification extends Notification
                     $items .
                     "\n\n━━━━━━━━━━━━━━"
             )
-            ->button('📄 View Invoice', $url);
+            ->button('📄 វិក័យប័ត្រ', $url);
     }
 
     /**
