@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\GeneralSetting;
+
 return [
 
     /*
@@ -13,6 +15,10 @@ return [
     | a conventional file to locate the various service credentials.
     |
     */
+    'telegram' => [
+        'token' => null,
+    ],
+
 
     // 'bakong' => [
     //     'account_id' => env('BAKONG_ACCOUNT_ID'),

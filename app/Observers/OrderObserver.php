@@ -6,6 +6,7 @@ use App\Enums\PaymentStatus;
 use App\Filament\Resources\Orders\OrderResource;
 use App\Models\Order;
 use App\Models\User;
+use App\Notifications\TelegramNotification;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Illuminate\Contracts\Events\ShouldHandleEventsAfterCommit;
@@ -37,5 +38,7 @@ class OrderObserver implements ShouldHandleEventsAfterCommit
                     ->url(OrderResource::getUrl('view', ['record' => $order], panel: 'dashboard')),
             ])
             ->sendToDatabase($user);
+
+        $order->notify(new TelegramNotification());
     }
 }

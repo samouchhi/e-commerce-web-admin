@@ -74,7 +74,7 @@ class OrdersTable
             ->recordActions([
                 ActionGroup::make([
                     ViewAction::make(),
-                    // EditAction::make(),
+                    EditAction::make(),
                     DeleteAction::make(),
                 ]),
             ])
