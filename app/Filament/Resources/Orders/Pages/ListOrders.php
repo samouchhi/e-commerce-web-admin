@@ -17,7 +17,7 @@ class ListOrders extends ListRecords
     {
         return [
 
-            CreateAction::make(),
+            // CreateAction::make(),
         ];
     }
 

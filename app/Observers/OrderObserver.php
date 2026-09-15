@@ -6,6 +6,7 @@ use App\Enums\PaymentStatus;
 use App\Filament\Resources\Orders\OrderResource;
 use App\Models\Order;
 use App\Models\User;
+use App\Notifications\TelegramNotification;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Illuminate\Contracts\Events\ShouldHandleEventsAfterCommit;
@@ -18,7 +19,14 @@ class OrderObserver implements ShouldHandleEventsAfterCommit
         if (! $order->wasChanged('payment_status') || $order->payment_status !== PaymentStatus::Paid) {
             return;
         }
-        $user = Auth::user();
+        /// notify to user who has permission to viewAny order
+        $user = User::whereHas('roles.permissions', function ($query) {
+            $query->where('name', 'ViewAny:Order');
+        })->first();
+
+        if (! $user) {
+            return;
+        }
 
         Notification::make()
             ->title('New paid order')
@@ -30,5 +38,7 @@ class OrderObserver implements ShouldHandleEventsAfterCommit
                     ->url(OrderResource::getUrl('view', ['record' => $order], panel: 'dashboard')),
             ])
             ->sendToDatabase($user);
+
+        $order->notify(new TelegramNotification());
     }
 }

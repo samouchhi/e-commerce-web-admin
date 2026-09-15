@@ -8,6 +8,7 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -63,13 +64,12 @@ class OrdersTable
                         'paid' => 'Paid',
                         'failed' => 'Failed',
                     ]),
-                SelectFilter::make('shipping_status')
-                    ->options([
-                        'pending' => 'Pending',
-                        'shipped' => 'Shipped',
-                        'delivered' => 'Delivered',
-                        'returned' => 'Returned',
-                    ]),
+                SelectFilter::make('customer_id')
+                    ->label('Customer')
+                    ->relationship('customer', 'name')
+                    ->searchable()
+                    ->preload(),
+
             ])
             ->recordActions([
                 ActionGroup::make([
