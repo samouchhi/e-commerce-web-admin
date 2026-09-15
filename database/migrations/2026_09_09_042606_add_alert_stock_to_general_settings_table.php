@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('general_settings', function (Blueprint $table) {
-            $table->integer('alert_stock')->default(5)->after('currency');
+            $table->integer('alert_stock')->default(5);
         });
     }
 
