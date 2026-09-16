@@ -37,3 +37,6 @@ Route::apiResource('orders', OrderController::class)
 
 Route::get('orders/{order}/verify', [AbaPaymentController::class, 'verifyPayment'])
     ->middleware(['auth:sanctum', 'throttle:30,1']);
+
+
+Route::get('banners', [\App\Http\Controllers\Api\BannerController::class, 'index']);
