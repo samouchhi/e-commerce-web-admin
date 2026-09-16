@@ -4,11 +4,23 @@ namespace App\Filament\Resources\Purchases\Pages;
 
 use App\Enums\ShippingStatus;
 use App\Filament\Resources\Purchases\PurchaseResource;
+use Filament\Actions\Action;
 use Filament\Resources\Pages\EditRecord;
+use Filament\Schemas\Components\Component;
 
 class EditPurchase extends EditRecord
 {
     protected static string $resource = PurchaseResource::class;
+
+    public function getWizardSubmitAction(): Action
+    {
+        return $this->getSaveFormAction();
+    }
+
+    public function getFormContentComponent(): Component
+    {
+        return parent::getFormContentComponent()->footer([]);
+    }
 
     protected ?ShippingStatus $originalShippingStatus = null;
 
@@ -44,8 +56,6 @@ class EditPurchase extends EditRecord
             $item->variant?->decrement('stock_qty', $item->quantity);
         });
     }
-
-      
 
     // in EditPurchase.php
     protected function mutateFormDataBeforeFill(array $data): array

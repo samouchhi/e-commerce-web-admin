@@ -7,9 +7,11 @@ use App\Enums\ShippingStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Notifications\Notifiable;
 
 class Order extends Model
 {
+    use Notifiable;
     protected $fillable = [
         'order_number',
         'customer_id',

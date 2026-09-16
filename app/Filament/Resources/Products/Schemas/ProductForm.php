@@ -69,7 +69,7 @@ class ProductForm
                                     ->icon('heroicon-o-eye')
                                     ->schema([
                                         Toggle::make('is_active')
-                                            ->label('Product active')
+                                            ->label('Enable')
                                             ->required(),
                                     ])
                                     ->compact(),
@@ -103,7 +103,7 @@ class ProductForm
                                     Repeater::make('variants')
                                         ->hiddenLabel()
                                         ->relationship('variants')
-                                        ->itemLabel(fn (array $state): string => filled($state['name'] ?? null) ? $state['name'] : 'New variant')
+
                                         ->collapsible()
                                         ->addActionLabel('Add variant')
                                         ->schema([
@@ -113,19 +113,21 @@ class ProductForm
                                                 ->live(onBlur: true)
                                                 ->required()
                                                 ->columnSpan(['md' => 2]),
-                                            Select::make('is_active')
-                                                ->label('Availability')
-                                                ->required()
-                                                ->options([1 => 'Active', 0 => 'Inactive']),
+                                            TextInput::make('stock_qty')
+                                                ->label('Stock quantity')
+                                                ->prefixIcon('heroicon-o-cube')
+                                                ->numeric()->required(),
                                             TextInput::make('price')
                                                 ->label('Selling price')
                                                 ->numeric()->required()->prefix('$')->minValue(0)->step('0.01'),
                                             TextInput::make('cost')
                                                 ->label('Unit cost')
                                                 ->numeric()->required()->prefix('$')->minValue(0)->step('0.01'),
-                                            TextInput::make('stock_qty')
-                                                ->label('Stock quantity')
-                                                ->numeric()->required(),
+
+                                            Toggle::make('is_active')
+                                                ->label('Enable')
+                                                ->inline(false)
+                                                ->required(),
                                         ])
                                         ->required()
                                         ->columns(['default' => 1, 'md' => 3])
@@ -142,7 +144,7 @@ class ProductForm
                                     Repeater::make('product_images_id')
                                         ->hiddenLabel()
                                         ->relationship('images')
-                                        ->itemLabel(fn (array $state): string => filled($state['image_path'] ?? null) ? 'Image' : 'New image')
+                                        ->itemLabel(fn(array $state): string => filled($state['image_path'] ?? null) ? 'Image' : 'New image')
                                         ->collapsible()
                                         ->addActionLabel('Add image')
                                         ->schema([
@@ -166,16 +168,18 @@ class ProductForm
 
                         ]),
                 ])
-                    ->submitAction($schema->getLivewire()->getWizardSubmitAction())
+                    ->submitAction(method_exists($schema->getLivewire(), 'getWizardSubmitAction')
+                        ? $schema->getLivewire()->getWizardSubmitAction()
+                        : null)
                     ->cancelAction(
                         Action::make('backToProducts')
                             ->label('Back')
                             ->color('gray')
                             ->url(ProductResource::getUrl('index'))
                     )
-                    ->previousAction(fn (Action $action): Action => $action->label('Back'))
+                    ->previousAction(fn(Action $action): Action => $action->label('Back'))
                     ->contained(false)
-                    ->skippable(fn (?Product $record): bool => $record !== null)
+                    ->skippable(fn(?Product $record): bool => $record !== null)
                     ->columnSpanFull(),
             ]);
     }

@@ -17,6 +17,7 @@ use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 
 class ProductsTable
@@ -34,7 +35,7 @@ class ProductsTable
                 ImageColumn::make('images.image_path')
                     ->label('Image')
                     ->disk('public')
-                    ->getStateUsing(fn (Product $record) => $record->images->first()?->image_path),
+                    ->getStateUsing(fn(Product $record) => $record->images->first()?->image_path),
                 TextColumn::make('name')
                     ->label('Name')
                     ->sortable()
@@ -52,18 +53,18 @@ class ProductsTable
                 TextColumn::make('variants.price')
                     ->label('Price')
                     ->money('USD')
-                    ->getStateUsing((fn (Product $record) => $record->variants->min('price'))),
+                    ->getStateUsing((fn(Product $record) => $record->variants->min('price'))),
                 TextColumn::make('variants.cost')
                     ->label('Cost')
                     ->money('USD')
-                    ->getStateUsing((fn (Product $record) => $record->variants->min('cost'))),
+                    ->getStateUsing((fn(Product $record) => $record->variants->min('cost'))),
                 // SelectColumn::make('status')->label('Status')->options(ProductStatusEnum::class)->searchableOptions(),
                 TextColumn::make('stock_count')
                     ->label('Quantity')
-                    ->state(fn (Product $record) => $record->variants->sum('stock_qty'))
+                    ->state(fn(Product $record) => $record->variants->sum('stock_qty'))
                     ->sortable()
                     ->badge()
-                    ->color(fn ($state) => $state < 10 ? 'danger' : 'success'),
+                    ->color(fn($state) => $state < 10 ? 'danger' : 'success'),
                 TextColumn::make('created_at')
                     ->label('Created At')
                     ->since()
@@ -80,27 +81,36 @@ class ProductsTable
                     SelectFilter::make('category_id')
                         ->label('Category')
                         ->relationship('category', 'name'),
-                    Filter::make('created_at')
-                        ->schema([
-                            DatePicker::make('created_from')->label('Created From'),
-                        ])
-                        ->query(function ($query, $data) {
-                            if ($data['created_from']) {
-                                $query->whereDate('created_at', '>=', $data['created_from']);
-                            }
-                        }),
-                    Filter::make('created_until')
-                        ->schema([
-                            DatePicker::make('created_until')->label('Created Until'),
-                        ])
-                        ->query(function ($query, $data) {
-                            if ($data['created_until']) {
-                                $query->whereDate('created_at', '<=', $data['created_until']);
-                            }
-                        }),
+                    SelectFilter::make('is_active')
+                        ->label('Status')
+                        ->options([
+                            1 => 'Active',
+                            0 => 'Inactive',
+                        ]),
+                    SelectFilter::make('unit_id')
+                        ->label('Unit')
+                        ->relationship('unit', 'short_name'),
+                    // Filter::make('created_at')
+                    //     ->schema([
+                    //         DatePicker::make('created_from')->label('Created From'),
+                    //     ])
+                    //     ->query(function ($query, $data) {
+                    //         if ($data['created_from']) {
+                    //             $query->whereDate('created_at', '>=', $data['created_from']);
+                    //         }
+                    //     }),
+                    // Filter::make('created_until')
+                    //     ->schema([
+                    //         DatePicker::make('created_until')->label('Created Until'),
+                    //     ])
+                    //     ->query(function ($query, $data) {
+                    //         if ($data['created_until']) {
+                    //             $query->whereDate('created_at', '<=', $data['created_until']);
+                    //         }
+                    //     }),
 
                 ],
-                layout: FiltersLayout::AboveContent
+
             )
 
             ->recordActions([

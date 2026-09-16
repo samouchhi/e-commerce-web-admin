@@ -22,10 +22,10 @@ class PurchaseResource extends Resource
 
     protected static string|UnitEnum|null $navigationGroup = 'Purchases';
 
-    public static function getNavigationBadge(): ?string
-    {
-        return static::getModel()::count();
-    }
+    // public static function getNavigationBadge(): ?string
+    // {
+    //     return static::getModel()::count();
+    // }
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-s-shopping-cart';
 

@@ -11,8 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('general_settings', function (Blueprint $table) {
-            $table->integer('alert_stock')->default(5);
+        Schema::dropIfExists('banners');
+        Schema::create('banners', function (Blueprint $table) {
+            $table->id();
+            $table->string('title')->nullable();
+            $table->string('image')->nullable();
+            $table->string('sort_order')->default(0);
+            $table->timestamps();
         });
     }
 
@@ -21,8 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('general_settings', function (Blueprint $table) {
-            //
-        });
+        Schema::dropIfExists('banners');
     }
 };

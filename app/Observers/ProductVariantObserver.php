@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Models\GeneralSetting;
 use App\Models\ProductVariant;
+use App\Models\User;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Auth;
 
@@ -22,7 +23,13 @@ class ProductVariantObserver
      */
     public function updated(ProductVariant $productVariant): void
     {
-        $user = Auth::user();
+        $user = User::whereHas('roles.permissions', function ($query) {
+            $query->where('name', 'ViewAny:Order');
+        })->first();
+
+        if (! $user) {
+            return;
+        }
         $alertStock = GeneralSetting::query()->value('alert_stock');
 
         if (

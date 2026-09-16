@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use Andreia\FilamentUiSwitcher\FilamentUiSwitcherPlugin;
 use App\Filament\Pages\Auth\Login;
 use App\Models\GeneralSetting;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
@@ -31,11 +32,11 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('dashboard')
             ->path('dashboard')
-            ->topbar(false)
+            ->topbar(true)
             ->databaseNotifications()
             ->viteTheme('resources/css/filament/dashboard/theme.css')
 
-            ->brandLogo(fn(): ?string => ($logo = GeneralSetting::query()->value('site_logo'))
+            ->brandLogo(fn (): ?string => ($logo = GeneralSetting::query()->value('site_logo'))
                 ? Storage::disk('public')->url($logo)
                 : null)
             ->brandLogoHeight('3rem')
@@ -52,6 +53,7 @@ class AdminPanelProvider extends PanelProvider
                 'Products',
                 'Orders',
                 'Purchases',
+                'Peoples',
                 'Settings',
 
             ])
@@ -65,6 +67,8 @@ class AdminPanelProvider extends PanelProvider
                 // FilamentInfoWidget::class,
             ])
             ->plugins([
+                FilamentUiSwitcherPlugin::make()
+                    ->withModeSwitcher(),
                 FilamentShieldPlugin::make()
                     ->navigationGroup('Settings'),
             ])
