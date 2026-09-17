@@ -22,7 +22,13 @@ class OrderController extends Controller
      */
     public function index()
     {
-        $orders = Order::latest()->get();
+        $auth = auth()->user();
+        $orders = Order::query()
+            ->where('customer_id', $auth->id)
+            ->where('payment_status', PaymentStatus::Paid)
+            ->with(['items', 'address', 'payment'])
+            ->orderBy('created_at', 'desc')
+            ->get();
 
         return OrderResource::collection($orders);
     }
@@ -65,7 +71,7 @@ class OrderController extends Controller
                     'note',
                 ]),
                 'customer_id' => $request->user()->id,
-                'order_number' => 'ORD-'.random_int(100000, 999999),
+                'order_number' => 'ORD-' . random_int(100000, 999999),
                 'payment_status' => PaymentStatus::Pending,
                 'shipping_status' => ShippingStatus::Pending,
 
