@@ -20,6 +20,7 @@ class Product extends Model
         'category_id',
         'unit_id',
         'is_active',
+        'is_best_seller',
         'status',
     ];
 

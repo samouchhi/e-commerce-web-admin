@@ -90,6 +90,11 @@ class ProductForm
                                             ->relationship('unit', 'name')
                                             ->searchable()
                                             ->preload(),
+                                        Toggle::make('is_best_seller')
+
+                                            ->label('Best seller')
+                                            ->inline(false)
+                                            ->required(),
                                     ])
                                     ->compact(),
                             ])->columnSpan(['lg' => 1]),

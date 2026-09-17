@@ -21,7 +21,8 @@ class ProductResource extends JsonResource
             'product_code' => $this->product_code,
             'description' => $this->description,
             // 'status' => $this->status,
-            'is_active' => $this->is_active,
+            'is_active' => (bool) $this->is_active,
+            'is_best_seller' => (bool) $this->is_best_seller,
             'category' => $this->whenLoaded(
                 'category',
                 fn(): array => [
@@ -42,7 +43,7 @@ class ProductResource extends JsonResource
                         'price' => $variant->price,
                         'cost' => $variant->cost,
                         'stock_qty' => $variant->stock_qty,
-                        'is_active' => $variant->is_active,
+                        'is_active' => (bool) $variant->is_active,
                     ])
                     ->all()
             ),
