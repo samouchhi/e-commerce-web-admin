@@ -20,6 +20,8 @@ class DiscountResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::PercentBadge;
 
+    protected static string|\UnitEnum|null $navigationGroup = 'Products';
+
     public static function form(Schema $schema): Schema
     {
         return DiscountForm::configure($schema);
