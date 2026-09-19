@@ -13,6 +13,8 @@ enum ShippingStatus: string implements HasColor, HasIcon, HasLabel
 
     case Shipped = 'shipped';
 
+    case Pending = 'pending';
+
     case Delivered = 'delivered';
 
     public function getLabel(): string
@@ -20,6 +22,7 @@ enum ShippingStatus: string implements HasColor, HasIcon, HasLabel
         return match ($this) {
             self::Processing => 'Processing',
             self::Shipped => 'Shipped',
+            self::Pending => 'Pending',
             self::Delivered => 'Delivered',
         };
     }
@@ -29,6 +32,7 @@ enum ShippingStatus: string implements HasColor, HasIcon, HasLabel
         return match ($this) {
             self::Processing => 'warning',
             self::Shipped, self::Delivered => 'success',
+            self::Pending => 'danger',
         };
     }
 
@@ -38,6 +42,7 @@ enum ShippingStatus: string implements HasColor, HasIcon, HasLabel
             self::Processing => Heroicon::ArrowPath,
             self::Shipped => Heroicon::Truck,
             self::Delivered => Heroicon::CheckBadge,
+            self::Pending => Heroicon::XCircle,
         };
     }
 }

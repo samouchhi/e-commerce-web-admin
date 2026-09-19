@@ -21,14 +21,14 @@ use UnitEnum;
 
 class SupplierResource extends Resource
 {
-    public static function getNavigationBadge(): ?string
-    {
-        return static::getModel()::count();
-    }
+    // public static function getNavigationBadge(): ?string
+    // {
+    //     return static::getModel()::count();
+    // }
 
     protected static ?string $model = Supplier::class;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Purchases';
+    protected static string|UnitEnum|null $navigationGroup = 'Peoples';
 
     protected static string|BackedEnum|null $navigationIcon = 'heroicon-s-user';
 

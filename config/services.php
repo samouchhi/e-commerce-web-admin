@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\GeneralSetting;
+
 return [
 
     /*
@@ -13,6 +15,18 @@ return [
     | a conventional file to locate the various service credentials.
     |
     */
+    'telegram' => [
+        'token' => null,
+    ],
+
+
+    // 'bakong' => [
+    //     'account_id' => env('BAKONG_ACCOUNT_ID'),
+    //     'merchant_name' => env('BAKONG_MERCHANT_NAME'),
+    //     'merchant_city' => env('BAKONG_MERCHANT_CITY'),
+    //     'api_token' => env('BAKONG_API_TOKEN'),
+    // ],
+
     'store_api' => [
         'url' => env('STORE_API_URL', 'https://e-commerce.test'),
     ],

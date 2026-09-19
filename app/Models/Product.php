@@ -20,6 +20,7 @@ class Product extends Model
         'category_id',
         'unit_id',
         'is_active',
+        'is_best_seller',
         'status',
     ];
 
@@ -51,5 +52,10 @@ class Product extends Model
     public function images(): HasMany
     {
         return $this->hasMany(ProductImage::class);
+    }
+
+    public function discounts(): BelongsToMany
+    {
+        return $this->belongsToMany(Discount::class, 'discount_product');
     }
 }

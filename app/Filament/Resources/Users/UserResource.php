@@ -20,9 +20,13 @@ use UnitEnum;
 
 class UserResource extends Resource
 {
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
     protected static ?string $model = User::class;
 
-    protected static string | UnitEnum | null $navigationGroup = 'Settings';
+    protected static string|UnitEnum|null $navigationGroup = 'Peoples';
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUserGroup;
 
