@@ -8,8 +8,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-#[Fillable(['name', 'email', 'phone', 'password'])]
-#[Hidden(['password'])]
+#[Fillable(['name', 'email', 'phone', 'password', 'otp_code', 'otp_expires_at'])]
+#[Hidden(['password', 'otp_code', 'otp_expires_at'])]
 class Customer extends Authenticatable
 {
     use HasApiTokens, Notifiable;
@@ -21,11 +21,15 @@ class Customer extends Authenticatable
         'email',
         'phone',
         'password',
+        'otp_code',
+        'otp_expires_at',
     ];
 
     protected function casts(): array
     {
         return [
+            'email_verified_at' => 'datetime',
+            'otp_expires_at' => 'datetime',
             'password' => 'hashed',
         ];
     }
