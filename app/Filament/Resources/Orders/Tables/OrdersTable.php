@@ -2,13 +2,13 @@
 
 namespace App\Filament\Resources\Orders\Tables;
 
+use App\Models\Customer;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
-use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -67,6 +67,11 @@ class OrdersTable
                 SelectFilter::make('customer_id')
                     ->label('Customer')
                     ->relationship('customer', 'name')
+                    ->getOptionLabelFromRecordUsing(
+                        fn (Customer $customer): string => $customer->name
+                            ?? $customer->email
+                            ?? "Customer #{$customer->id}",
+                    )
                     ->searchable()
                     ->preload(),
 
