@@ -28,6 +28,7 @@ class OrderResource extends JsonResource
                 return [
                     // 'id' => $item->id,
                     'name' => $item->productVariant->product->name,
+                    'variant' => $item->productVariant->name,
                     'quantity' => $item->quantity,
                     'price' => $item->unit_price,
                 ];
