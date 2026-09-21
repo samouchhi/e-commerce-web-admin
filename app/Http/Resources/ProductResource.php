@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources;
 
-use App\Models\Discount;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Storage;
@@ -75,28 +74,10 @@ class ProductResource extends JsonResource
         ];
     }
 
-    /**
-     * Resolve the currently-running discount that saves the customer the most.
-     */
-    private function activeDiscountFor(float $price): ?Discount
-    {
-        if (! $this->resource->relationLoaded('discounts')) {
-            return null;
-        }
-
-        return $this->discounts
-            ->filter(fn (Discount $discount): bool => $discount->isCurrentlyActive())
-            ->sortBy(fn (Discount $discount): float => $discount->priceAfterDiscount($price))
-            ->first();
-    }
-
-    /**
-     * Apply the best currently-running discount to the given price.
-     */
     private function discountedPriceFor(float|string $price): float
     {
-        $price = (float) $price;
-
-        return $this->activeDiscountFor($price)?->priceAfterDiscount($price) ?? $price;
+        return $this->resource->relationLoaded('discounts')
+            ? $this->resource->discountedPriceFor($price)
+            : (float) $price;
     }
 }

@@ -78,6 +78,7 @@ class OrderController extends Controller
     private function prepareOrderItems(array $items): array
     {
         $variants = ProductVariant::query()
+            ->with('product.discounts')
             ->whereIn('id', array_column($items, 'product_variant_id'))
             ->orderBy('id')
             ->lockForUpdate()
@@ -89,11 +90,11 @@ class OrderController extends Controller
         foreach ($items as $item) {
             $variant = $variants->get($item['product_variant_id']);
 
-            if ($variant === null) {
+            if ($variant === null || ! $variant->is_active || ! $variant->product->is_active) {
                 abort(422, 'A selected product variant is no longer available.');
             }
 
-            $unitPriceCents = (int) round((float) $variant->price * 100);
+            $unitPriceCents = (int) round($variant->product->discountedPriceFor($variant->price) * 100);
             $itemTotalCents = $unitPriceCents * $item['quantity'];
             $subtotalCents += $itemTotalCents;
             $orderItems[] = [

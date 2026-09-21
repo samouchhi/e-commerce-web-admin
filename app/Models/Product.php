@@ -58,4 +58,16 @@ class Product extends Model
     {
         return $this->belongsToMany(Discount::class, 'discount_product');
     }
+
+    public function discountedPriceFor(float|string $price): float
+    {
+        $price = (float) $price;
+
+        $discount = $this->discounts
+            ->filter(fn (Discount $discount): bool => $discount->isCurrentlyActive())
+            ->sortBy(fn (Discount $discount): float => $discount->priceAfterDiscount($price))
+            ->first();
+
+        return $discount?->priceAfterDiscount($price) ?? $price;
+    }
 }

@@ -105,10 +105,10 @@ class ProductController extends Controller
 
     public function destroyVariant(Product $product, ProductVariant $variant)
     {
-        $variant->delete();
+        $variant->update(['is_active' => false]);
 
         return response()->json([
-            'message' => 'Product variant deleted successfully.',
+            'message' => 'Product variant deactivated successfully.',
         ]);
     }
 }

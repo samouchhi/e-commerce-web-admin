@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\AbaPaymentController;
 use App\Http\Controllers\Api\BannerController;
+use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\LoginController;
 use App\Http\Controllers\Api\LogisticController;
@@ -31,6 +32,7 @@ Route::delete('products/{product}/variants/{variant}', [ProductController::class
 Route::apiResource('categories', CategoryController::class);
 Route::apiResource('logistics', LogisticController::class);
 Route::apiResource('settings', SettingsController::class);
+Route::post('cart/resolve', CartController::class);
 
 Route::match(['get', 'post'], 'orders/{order}/payment', [AbaPaymentController::class, 'generatePayment'])
     ->middleware(['auth:sanctum', 'throttle:20,1']);
