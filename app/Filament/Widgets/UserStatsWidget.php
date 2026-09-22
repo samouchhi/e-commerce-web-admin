@@ -14,6 +14,8 @@ class UserStatsWidget extends StatsOverviewWidget
 {
     use InteractsWithPageFilters;
 
+    protected static ?int $sort = 1;
+
     protected function getStats(): array
     {
         $startDate = $this->pageFilters['start_date'] ?? null;
@@ -23,17 +25,17 @@ class UserStatsWidget extends StatsOverviewWidget
         $customers = Customer::query()
             ->when(
                 $startDate,
-                fn(Builder $query) => $query->whereDate('created_at', '>=', $startDate),
+                fn (Builder $query) => $query->whereDate('created_at', '>=', $startDate),
             )
             ->when(
                 $endDate,
-                fn(Builder $query) => $query->whereDate('created_at', '<=', $endDate),
+                fn (Builder $query) => $query->whereDate('created_at', '<=', $endDate),
             )
             ->when(
                 $productId,
-                fn(Builder $query) => $query->whereHas(
+                fn (Builder $query) => $query->whereHas(
                     'orders.items.productVariant',
-                    fn(Builder $query) => $query->where('product_id', $productId),
+                    fn (Builder $query) => $query->where('product_id', $productId),
                 ),
             );
 
@@ -41,17 +43,17 @@ class UserStatsWidget extends StatsOverviewWidget
             ->where('payment_status', 'paid')
             ->when(
                 $startDate,
-                fn(Builder $query) => $query->whereDate('created_at', '>=', $startDate),
+                fn (Builder $query) => $query->whereDate('created_at', '>=', $startDate),
             )
             ->when(
                 $endDate,
-                fn(Builder $query) => $query->whereDate('created_at', '<=', $endDate),
+                fn (Builder $query) => $query->whereDate('created_at', '<=', $endDate),
             )
             ->when(
                 $productId,
-                fn(Builder $query) => $query->whereHas(
+                fn (Builder $query) => $query->whereHas(
                     'items.productVariant',
-                    fn(Builder $query) => $query->where('product_id', $productId),
+                    fn (Builder $query) => $query->where('product_id', $productId),
                 ),
             );
 
@@ -67,7 +69,7 @@ class UserStatsWidget extends StatsOverviewWidget
                 ->whereIn('order_id', (clone $paidOrders)->select('id'))
                 ->whereHas(
                     'productVariant',
-                    fn(Builder $query) => $query->where('product_id', $productId),
+                    fn (Builder $query) => $query->where('product_id', $productId),
                 )
                 ->sum('subtotal_price');
             $averageOrderValue = $paidOrderCount > 0 ? $totalRevenue / $paidOrderCount : 0;
@@ -86,7 +88,7 @@ class UserStatsWidget extends StatsOverviewWidget
 
             Stat::make(
                 'Total Revenue',
-                '$' . number_format($totalRevenue, 2),
+                '$'.number_format($totalRevenue, 2),
             )
                 ->descriptionIcon('heroicon-s-currency-dollar')
                 ->chart([10, 25, 15, 30, 12, 15])
@@ -94,7 +96,7 @@ class UserStatsWidget extends StatsOverviewWidget
 
             Stat::make(
                 'Average Order Value',
-                '$' . number_format($averageOrderValue, 2),
+                '$'.number_format($averageOrderValue, 2),
             )
                 ->descriptionIcon('heroicon-s-currency-dollar')
                 ->chart([10, 25, 15, 30, 12, 15])
