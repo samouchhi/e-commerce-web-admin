@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Orders\Schemas;
 
 use App\Enums\PaymentStatus;
 use App\Enums\ShippingStatus;
+use App\Models\Customer;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\ToggleButtons;
@@ -19,6 +20,11 @@ class OrderForm
                     ->required(),
                 Select::make('customer_id')
                     ->relationship('customer', 'name')
+                    ->getOptionLabelFromRecordUsing(
+                        fn (Customer $customer): string => $customer->name
+                            ?? $customer->email
+                            ?? "Customer #{$customer->id}",
+                    )
                     ->searchable()
                     ->prefixIcon('heroicon-m-user')
                     ->required(),

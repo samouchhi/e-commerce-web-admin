@@ -73,7 +73,7 @@ class ProductForm
                                             ->required(),
                                     ])
                                     ->compact(),
-                                Section::make('Organization')
+                                Section::make('Tags')
                                     ->icon('heroicon-o-tag')
                                     ->schema([
                                         Select::make('category_id')
@@ -90,22 +90,25 @@ class ProductForm
                                             ->relationship('unit', 'name')
                                             ->searchable()
                                             ->preload(),
+                                        Toggle::make('is_best_seller')
+
+                                            ->label('Best seller')
+                                            ->inline(false)
+                                            ->required(),
                                     ])
                                     ->compact(),
                             ])->columnSpan(['lg' => 1]),
                         ]),
-                    Step::make('Variants & Inventory')
+                    Step::make('Inventory')
                         ->schema([
-                            Section::make('Variants & inventory')
-                                ->description('Set the price, cost, and available stock for each option.')
+                            Section::make('Product variants')
                                 ->icon('heroicon-o-cube')
                                 ->schema([
                                     Repeater::make('variants')
                                         ->hiddenLabel()
                                         ->relationship('variants')
-
                                         ->collapsible()
-                                        ->addActionLabel('Add variant')
+                                        ->addActionLabel('Add')
                                         ->schema([
                                             TextInput::make('name')
                                                 ->label('Variant name')
@@ -119,10 +122,10 @@ class ProductForm
                                                 ->numeric()->required(),
                                             TextInput::make('price')
                                                 ->label('Selling price')
-                                                ->numeric()->required()->prefix('$')->minValue(0)->step('0.01'),
+                                                ->numeric()->required()->prefix('$')->minValue(0)->maxValue(1000000)->step('0.01'),
                                             TextInput::make('cost')
                                                 ->label('Unit cost')
-                                                ->numeric()->required()->prefix('$')->minValue(0)->step('0.01'),
+                                                ->numeric()->required()->prefix('$')->minValue(0)->maxValue(1000000)->step('0.01'),
 
                                             Toggle::make('is_active')
                                                 ->label('Enable')
@@ -137,16 +140,15 @@ class ProductForm
                         ]),
                     Step::make('Product Images')
                         ->schema([
-                            Section::make('Product images')
-                                ->description('Add images to showcase your product.')
+                            Section::make('Images')
                                 ->icon('heroicon-o-photo')
                                 ->schema([
                                     Repeater::make('product_images_id')
                                         ->hiddenLabel()
                                         ->relationship('images')
-                                        ->itemLabel(fn(array $state): string => filled($state['image_path'] ?? null) ? 'Image' : 'New image')
+                                        ->itemLabel(fn (array $state): string => filled($state['image_path'] ?? null) ? 'Image' : 'New image')
                                         ->collapsible()
-                                        ->addActionLabel('Add image')
+                                        ->addActionLabel('Add')
                                         ->schema([
                                             FileUpload::make('image_path')
                                                 ->label('Image')
@@ -177,9 +179,9 @@ class ProductForm
                             ->color('gray')
                             ->url(ProductResource::getUrl('index'))
                     )
-                    ->previousAction(fn(Action $action): Action => $action->label('Back'))
+                    ->previousAction(fn (Action $action): Action => $action->label('Back'))
                     ->contained(false)
-                    ->skippable(fn(?Product $record): bool => $record !== null)
+                    ->skippable(fn (?Product $record): bool => $record !== null)
                     ->columnSpanFull(),
             ]);
     }

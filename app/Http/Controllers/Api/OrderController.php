@@ -12,8 +12,8 @@ use App\Models\Order;
 use App\Models\ProductVariant;
 use App\Services\OrderStockService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class OrderController extends Controller
 {
@@ -22,7 +22,13 @@ class OrderController extends Controller
      */
     public function index()
     {
-        $orders = Order::latest()->get();
+        $auth = auth()->user();
+        $orders = Order::query()
+            ->where('customer_id', $auth->id)
+            ->where('payment_status', PaymentStatus::Paid)
+            ->with(['items', 'address', 'payment'])
+            ->orderBy('created_at', 'desc')
+            ->get();
 
         return OrderResource::collection($orders);
     }
@@ -30,84 +36,98 @@ class OrderController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreOrderRequest $request, OrderStockService $stockService)
+    public function store(StoreOrderRequest $request, OrderStockService $stockService): OrderResource
     {
         $data = $request->validated();
-        $items = $data['items'];
-
-        $order = DB::transaction(function () use ($data, $items, $request, $stockService): Order {
-            $variants = ProductVariant::query()
-                ->whereIn('id', array_column($items, 'product_variant_id'))
-                ->orderBy('id')->lockForUpdate()->get()->keyBy('id');
-            $subtotalCents = 0;
-
-            foreach ($items as $item) {
-                $variant = $variants->get($item['product_variant_id']);
-                abort_unless($variant !== null, 422, 'A selected product variant is no longer available.');
-                $subtotalCents += (int) round((float) $variant->price * 100) * $item['quantity'];
-            }
-
+        $order = DB::transaction(function () use ($data, $request, $stockService): Order {
+            $prepared = $this->prepareOrderItems($data['items']);
             $shippingCents = isset($data['logistic_id'])
                 ? (int) round((float) Logistic::findOrFail($data['logistic_id'])->price * 100)
                 : 0;
-            $data['subtotal_amount'] = number_format($subtotalCents / 100, 2, '.', '');
-            $data['shipping_cost'] = number_format($shippingCents / 100, 2, '.', '');
-            $data['total_amount'] = number_format(($subtotalCents + $shippingCents) / 100, 2, '.', '');
-            abort_unless($subtotalCents + $shippingCents >= 1 && $subtotalCents + $shippingCents <= 10000000, 422, 'Order total must be between 0.01 and 100000 USD.');
+            $totalCents = $prepared['subtotal_cents'] + $shippingCents;
+
+            if ($totalCents < 1 || $totalCents > 10000000) {
+                abort(422, 'Order total must be between 0.01 and 100000 USD.');
+            }
 
             $order = Order::create([
-                ...Arr::except($data, [
-                    'items',
-                    'name',
-                    'phone',
-                    'address',
-                    'city',
-                    'note',
-                ]),
                 'customer_id' => $request->user()->id,
-                'order_number' => 'ORD-'.random_int(100000, 999999),
+                'logistic_id' => $data['logistic_id'] ?? null,
+                'order_number' => 'ORD-'.Str::upper(Str::random(6)),
+                'subtotal_amount' => number_format($prepared['subtotal_cents'] / 100, 2, '.', ''),
+                'shipping_cost' => number_format($shippingCents / 100, 2, '.', ''),
+                'total_amount' => number_format($totalCents / 100, 2, '.', ''),
                 'payment_status' => PaymentStatus::Pending,
                 'shipping_status' => ShippingStatus::Pending,
-
             ]);
 
-            foreach ($items as $item) {
-                $variant = $variants->get($item['product_variant_id']);
-                $unitPrice = $variant->price;
-
-                $order->items()->create([
-                    'product_variant_id' => $variant->id,
-                    'quantity' => $item['quantity'],
-
-                    'unit_price' => $unitPrice,
-                    'subtotal_price' => $unitPrice * $item['quantity'],
-                ]);
-            }
-            $order->customer()->update([
-                'name' => $data['name'],
-                'phone' => $data['phone'],
-            ]);
-            $order->address()->create([
-                'address' => $data['address'],
-                'city' => $data['city'],
-                'phone' => $data['phone'],
-                'note' => $data['note'] ?? null,
-            ]);
-            $order->payment()->create([
-                'order_id' => $order->id,
-                'currency' => 'USD',
-                'amount' => $order->total_amount,
-                'md5_hash' => null,
-                'qr_expiration_at' => now()->addMinutes(2),
-                'qr_paid_at' => null,
-            ]);
-
+            $order->items()->createMany($prepared['items']);
+            $this->saveOrderDetails($order, $data);
             $stockService->reserve($order->load('items'));
 
             return $order;
         });
 
-        return new OrderResource($order->load('items'));
+        return new OrderResource($order->loadMissing(['customer', 'logistic', 'items.productVariant.product']));
+    }
+
+    /**
+     * @param  array<int, array{product_variant_id: int, quantity: int}>  $items
+     * @return array{subtotal_cents: int, items: array<int, array{product_variant_id: int, quantity: int, unit_price: string, subtotal_price: string}>}
+     */
+    private function prepareOrderItems(array $items): array
+    {
+        $variants = ProductVariant::query()
+            ->with('product.discounts')
+            ->whereIn('id', array_column($items, 'product_variant_id'))
+            ->orderBy('id')
+            ->lockForUpdate()
+            ->get()
+            ->keyBy('id');
+        $subtotalCents = 0;
+        $orderItems = [];
+
+        foreach ($items as $item) {
+            $variant = $variants->get($item['product_variant_id']);
+
+            if ($variant === null || ! $variant->is_active || ! $variant->product->is_active) {
+                abort(422, 'A selected product variant is no longer available.');
+            }
+
+            $unitPriceCents = (int) round($variant->product->discountedPriceFor($variant->price) * 100);
+            $itemTotalCents = $unitPriceCents * $item['quantity'];
+            $subtotalCents += $itemTotalCents;
+            $orderItems[] = [
+                'product_variant_id' => $variant->id,
+                'quantity' => $item['quantity'],
+                'unit_price' => number_format($unitPriceCents / 100, 2, '.', ''),
+                'subtotal_price' => number_format($itemTotalCents / 100, 2, '.', ''),
+            ];
+        }
+
+        return ['subtotal_cents' => $subtotalCents, 'items' => $orderItems];
+    }
+
+    /**
+     * @param  array{name: string, phone: string, address: string, city: string, note?: string|null}  $data
+     */
+    private function saveOrderDetails(Order $order, array $data): void
+    {
+        $order->customer()->update([
+            'name' => $data['name'],
+            'phone' => $data['phone'],
+        ]);
+        $order->address()->create([
+            'address' => $data['address'],
+            'city' => $data['city'],
+            'phone' => $data['phone'],
+            'note' => $data['note'] ?? null,
+        ]);
+        $order->payment()->create([
+            'currency' => 'USD',
+            'amount' => $order->total_amount,
+            'qr_expiration_at' => now()->addMinutes(2),
+        ]);
     }
 
     /**

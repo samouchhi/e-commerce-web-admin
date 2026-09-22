@@ -3,3 +3,19 @@
 @source '../../../../app/Filament/**/*';
 @source '../../../../resources/views/filament/**/*';
 @source '../../../../vendor/andreia/filament-ui-switcher';
+
+
+.fi-body {
+    @apply dark:bg-black;
+}
+
+.fi-sidebar,
+.fi-topbar {
+    @apply dark:bg-black;
+}
+
+.fi-ta-ctn,
+.fi-section:not(.fi-section-not-contained):not(.fi-aside),
+.fi-wi-stats-overview-stat {
+    @apply dark:bg-black;
+}

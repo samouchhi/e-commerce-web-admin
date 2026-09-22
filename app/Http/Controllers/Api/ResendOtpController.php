@@ -9,27 +9,28 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
-class RegisterController extends Controller
+class ResendOtpController extends Controller
 {
     public function __invoke(Request $request): JsonResponse
     {
+        $data = $request->validate(['email' => ['required', 'email']]);
+        $customer = Customer::where('email', $data['email'])->firstOrFail();
+
+        if ($customer->email_verified_at !== null) {
+            return response()->json(['message' => 'This email has already been verified.'], 422);
+        }
+
         $otp = (string) random_int(100000, 999999);
 
-        $customer = Customer::create($request->validate([
-            'name' => ['nullable', 'string', 'max:255'],
-            'email' => ['required', 'email', 'unique:customers,email'],
-            'phone' => ['nullable', 'string', 'max:30'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
-        ]) + [
+        $customer->update([
             'otp_code' => Hash::make($otp),
             'otp_expires_at' => now()->addMinutes(10),
         ]);
-
         $customer->notify(new VerifyOtpNotification($otp));
 
         return response()->json([
             'message' => 'Verification code sent.',
             'email' => $customer->email,
-        ], 201);
+        ]);
     }
 }

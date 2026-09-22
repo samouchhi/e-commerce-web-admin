@@ -18,7 +18,7 @@ class ProductController extends Controller
      */
     public function index()
     {
-        $products = Product::with(['category', 'variants', 'images', 'unit'])->orderBy('created_at', 'desc')->paginate(10);
+        $products = Product::with(['category', 'variants', 'images', 'unit', 'discounts'])->orderBy('created_at', 'desc')->paginate(10);
 
         return ProductResource::collection($products);
     }
@@ -48,7 +48,7 @@ class ProductController extends Controller
         return response()->json([
             'message' => 'Product created successfully.',
             'data' => new ProductResource(
-                $product->load(['category', 'variants', 'images', 'unit'])
+                $product->load(['category', 'variants', 'images', 'unit', 'discounts'])
             ),
         ], 201);
     }
@@ -58,7 +58,7 @@ class ProductController extends Controller
      */
     public function show(string $id)
     {
-        $product = Product::with(['category', 'variants', 'images', 'unit'])->findOrFail($id);
+        $product = Product::with(['category', 'variants', 'images', 'unit', 'discounts'])->findOrFail($id);
 
         return new ProductResource($product);
     }
@@ -90,7 +90,7 @@ class ProductController extends Controller
         return response()->json([
             'message' => 'Product updated successfully.',
             'data' => new ProductResource(
-                $product->load(['category', 'variants', 'images', 'unit'])
+                $product->load(['category', 'variants', 'images', 'unit', 'discounts'])
             ),
         ], 200);
     }
@@ -105,10 +105,10 @@ class ProductController extends Controller
 
     public function destroyVariant(Product $product, ProductVariant $variant)
     {
-        $variant->delete();
+        $variant->update(['is_active' => false]);
 
         return response()->json([
-            'message' => 'Product variant deleted successfully.',
+            'message' => 'Product variant deactivated successfully.',
         ]);
     }
 }

@@ -66,7 +66,9 @@ class RoleResource extends Resource
                                     ->label(__('filament-shield::filament-shield.field.guard_name'))
                                     ->default(Utils::getFilamentAuthGuard())
                                     ->nullable()
-                                    ->maxLength(255),
+                                    ->maxLength(255)
+                                    ->hidden()
+                                    ->dehydratedWhenHidden(),
 
                                 Select::make(config('permission.column_names.team_foreign_key'))
                                     ->label(__('filament-shield::filament-shield.field.team'))
@@ -76,12 +78,13 @@ class RoleResource extends Resource
                                     ->options(fn (): array => in_array(Utils::getTenantModel(), [null, '', '0'], true) ? [] : Utils::getTenantModel()::pluck('name', 'id')->toArray())
                                     ->visible(fn (): bool => static::shield()->isCentralApp() && Utils::isTenancyEnabled())
                                     ->dehydrated(fn (): bool => static::shield()->isCentralApp() && Utils::isTenancyEnabled()),
-                                static::getSelectAllFormComponent(),
+                                static::getSelectAllFormComponent()
+                                    ->helperText('Select all permissions'),
 
                             ])
                             ->columns([
                                 'sm' => 2,
-                                'lg' => 3,
+                                'lg' => 2,
                             ])
                             ->columnSpanFull(),
                     ])

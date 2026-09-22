@@ -38,16 +38,19 @@ class PurchaseForm
                                 ->schema([
                                     Section::make([
                                         TextInput::make('reference')
+                                            ->prefixIcon('heroicon-o-document-text')
                                             ->default('OR-'.random_int(100000, 999999))
                                             ->disabled()
                                             ->label('Reference')
                                             ->dehydrated()
                                             ->required(),
                                         DatePicker::make('purchase_date')
+                                            ->prefixIcon('heroicon-o-calendar')
                                             ->label('Purchase Date')
                                             ->required()
                                             ->default(now()),
                                         Select::make('supplier_id')
+                                            ->prefixIcon('heroicon-o-user')
                                             ->label('Supplier')
                                             ->required()
                                             ->relationship('supplier', 'name')
@@ -55,11 +58,12 @@ class PurchaseForm
                                             ->preload(),
 
                                         TextInput::make('shipping_cost')
+                                            ->prefixIcon('heroicon-o-currency-dollar')
                                             ->label('Shipping Cost')
                                             ->required()
                                             ->numeric()
                                             ->default(0)
-                                            ->prefix('$')
+                                            ->maxValue(1000000)
                                             ->live()
                                             ->afterStateUpdated(fn ($state, Set $set) => $set('shipping_cost', $state)),
 
@@ -180,11 +184,13 @@ class PurchaseForm
                                 ])
                                 ->columnSpanFull(),
                         ]),
-                    Step::make('Attachment & Summary')
+                    Step::make('Receipt')
                         ->schema([
-                            Section::make('Attachment')
+                            Section::make()
                                 ->schema([
                                     FileUpload::make('image_path')
+
+                                        ->label('Upload Receipt')
                                         ->directory('attachments/purchases')
                                         ->maxSize(1024),
                                 ])

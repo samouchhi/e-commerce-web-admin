@@ -39,7 +39,7 @@ class StoreOrderRequest extends FormRequest
             'payment_status' => ['sometimes', new Enum(PaymentStatus::class)],
             'shipping_status' => ['sometimes', new Enum(ShippingStatus::class)],
             'items' => ['required', 'array', 'min:1'],
-            'items.*.product_variant_id' => ['required', 'integer', 'exists:product_variants,id'],
+            'items.*.product_variant_id' => ['required', 'integer', 'distinct'],
             'items.*.quantity' => ['required', 'integer', 'min:1'],
         ];
     }

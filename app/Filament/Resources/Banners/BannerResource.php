@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Filament\Resources\Logistics;
+namespace App\Filament\Resources\Banners;
 
-use App\Filament\Resources\Logistics\Pages\ManageLogistics;
-use App\Models\Logistic;
+use App\Filament\Resources\Banners\Pages\ManageBanners;
+use App\Models\Banner;
 use BackedEnum;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -13,38 +13,33 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use UnitEnum;
 
-class LogisticResource extends Resource
+class BannerResource extends Resource
 {
-    protected static ?string $model = Logistic::class;
+    protected static ?string $model = Banner::class;
 
-    protected static string|UnitEnum|null $navigationGroup = 'Settings';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPhoto;
 
-    protected static string|BackedEnum|null $navigationIcon = 'heroicon-s-truck';
+    protected static string|\UnitEnum|null $navigationGroup = 'Settings';
 
     public static function form(Schema $schema): Schema
     {
         return $schema
             ->components([
-                TextInput::make('name')
-                    ->prefixIcon('heroicon-o-user')
-                    ->required(),
-                TextInput::make('description')
-                    ->prefixIcon('heroicon-o-document-text'),
-                TextInput::make('contact_number')
-                    ->prefixIcon('heroicon-o-phone'),
-                TextInput::make('price')
-                    ->numeric()
-                    ->required()
-                    ->prefixIcon('heroicon-o-currency-dollar'),
+                TextInput::make('title')
+                    ->placeholder('Optional'),
                 FileUpload::make('image')
                     ->image()
-                    ->directory('logistics-images')
-                    ->disk('public'),
+                    ->disk('public')
+                    ->directory('banners')
+                    ->required(),
+                TextInput::make('sort_order')
+                    ->required()
+                    ->default('0'),
             ]);
     }
 
@@ -52,20 +47,12 @@ class LogisticResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('title')
+                    ->searchable(),
                 ImageColumn::make('image')
-                    ->searchable()
                     ->disk('public'),
-                TextColumn::make('name')
+                TextColumn::make('sort_order')
                     ->searchable(),
-                TextColumn::make('price')
-                    ->money('usd', true)
-                    ->sortable()
-                    ->searchable(),
-                TextColumn::make('description')
-                    ->searchable(),
-                TextColumn::make('contact_number')
-                    ->searchable(),
-
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -92,7 +79,7 @@ class LogisticResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => ManageLogistics::route('/'),
+            'index' => ManageBanners::route('/'),
         ];
     }
 }

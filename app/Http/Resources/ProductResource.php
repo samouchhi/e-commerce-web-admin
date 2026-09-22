@@ -21,32 +21,50 @@ class ProductResource extends JsonResource
             'product_code' => $this->product_code,
             'description' => $this->description,
             // 'status' => $this->status,
-            'is_active' => $this->is_active,
+            'is_active' => (bool) $this->is_active,
+            'is_best_seller' => (bool) $this->is_best_seller,
             'category' => $this->whenLoaded(
                 'category',
-                fn(): array => [
+                fn (): array => [
                     'id' => $this->category->id,
                     'name' => $this->category->name,
                 ]
             ),
-            'unit' => $this->whenLoaded('unit', fn(): array => [
+            'unit' => $this->whenLoaded('unit', fn (): array => [
                 'id' => $this->unit->id,
                 'name' => $this->unit->name,
             ]),
             'variants' => $this->whenLoaded(
                 'variants',
-                fn(): array => $this->variants
-                    ->map(fn($variant): array => [
+                fn (): array => $this->variants
+                    ->map(fn ($variant): array => [
                         'id' => $variant->id,
                         'name' => $variant->name,
                         'price' => $variant->price,
-                        'cost' => $variant->cost,
+                        'discounted_price' => number_format($this->discountedPriceFor($variant->price), 2, '.', ''),
+                        // 'cost' => $variant->cost,
                         'stock_qty' => $variant->stock_qty,
-                        'is_active' => $variant->is_active,
+                        'is_active' => (bool) $variant->is_active,
                     ])
                     ->all()
             ),
-            'images' => $this->whenLoaded('images', fn(): array => $this->images->map(fn($image): array => [
+            'discounts' => $this->whenLoaded(
+                'discounts',
+                fn (): array => $this->discounts
+                    ->map(fn ($discount): array => [
+                        'name' => $discount->name,
+                        'description' => $discount->description,
+                        'value' => $discount->value,
+                        'type' => $discount->type,
+                        'start_date' => $discount->start_date,
+                        'end_date' => $discount->end_date,
+                        'is_active' => (bool) $discount->is_active,
+                        'is_current' => $discount->isCurrentlyActive(),
+                    ])
+                    ->all()
+            ),
+
+            'images' => $this->whenLoaded('images', fn (): array => $this->images->map(fn ($image): array => [
                 'id' => $image->id,
                 'image_path' => $image->image_path,
                 'image_url' => Storage::disk('public')->url($image->image_path),
@@ -54,5 +72,12 @@ class ProductResource extends JsonResource
             ])->toArray()),
 
         ];
+    }
+
+    private function discountedPriceFor(float|string $price): float
+    {
+        return $this->resource->relationLoaded('discounts')
+            ? $this->resource->discountedPriceFor($price)
+            : (float) $price;
     }
 }

@@ -20,6 +20,7 @@ class Product extends Model
         'category_id',
         'unit_id',
         'is_active',
+        'is_best_seller',
         'status',
     ];
 
@@ -51,5 +52,22 @@ class Product extends Model
     public function images(): HasMany
     {
         return $this->hasMany(ProductImage::class);
+    }
+
+    public function discounts(): BelongsToMany
+    {
+        return $this->belongsToMany(Discount::class, 'discount_product');
+    }
+
+    public function discountedPriceFor(float|string $price): float
+    {
+        $price = (float) $price;
+
+        $discount = $this->discounts
+            ->filter(fn (Discount $discount): bool => $discount->isCurrentlyActive())
+            ->sortBy(fn (Discount $discount): float => $discount->priceAfterDiscount($price))
+            ->first();
+
+        return $discount?->priceAfterDiscount($price) ?? $price;
     }
 }
