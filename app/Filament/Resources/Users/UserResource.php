@@ -24,6 +24,7 @@ class UserResource extends Resource
     {
         return static::getModel()::count();
     }
+
     protected static ?string $model = User::class;
 
     protected static string|UnitEnum|null $navigationGroup = 'Peoples';
@@ -35,16 +36,20 @@ class UserResource extends Resource
         return $schema
             ->components([
                 TextInput::make('name')
+                    ->prefixIcon('heroicon-o-user')
                     ->required(),
                 TextInput::make('email')
                     ->label('Email address')
+                    ->prefixIcon('heroicon-o-envelope')
                     ->email()
                     ->required(),
                 TextInput::make('password')
                     ->password()
-                    ->required(fn(string $operation) => $operation === 'create')
-                    ->dehydrated(fn($state) => filled($state)),
+                    ->prefixIcon('heroicon-o-lock-closed')
+                    ->required(fn (string $operation) => $operation === 'create')
+                    ->dehydrated(fn ($state) => filled($state)),
                 Select::make('roles')
+                    ->prefixIcon('heroicon-o-shield-check')
                     ->multiple()
                     ->relationship('roles', 'name')
                     ->preload(),
@@ -64,7 +69,7 @@ class UserResource extends Resource
                     ->label('Roles')
                     ->sortable()
                     ->badge()
-                    ->formatStateUsing(fn($state) => ucfirst($state)),
+                    ->formatStateUsing(fn ($state) => ucfirst($state)),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

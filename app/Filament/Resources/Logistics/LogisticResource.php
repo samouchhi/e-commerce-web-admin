@@ -5,7 +5,6 @@ namespace App\Filament\Resources\Logistics;
 use App\Filament\Resources\Logistics\Pages\ManageLogistics;
 use App\Models\Logistic;
 use BackedEnum;
-use Dom\Text;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -14,7 +13,6 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
-use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
@@ -26,20 +24,23 @@ class LogisticResource extends Resource
 
     protected static string|UnitEnum|null $navigationGroup = 'Settings';
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-s-truck';
 
     public static function form(Schema $schema): Schema
     {
         return $schema
             ->components([
                 TextInput::make('name')
+                    ->prefixIcon('heroicon-o-user')
                     ->required(),
-                TextInput::make('description'),
-                TextInput::make('contact_number'),
+                TextInput::make('description')
+                    ->prefixIcon('heroicon-o-document-text'),
+                TextInput::make('contact_number')
+                    ->prefixIcon('heroicon-o-phone'),
                 TextInput::make('price')
                     ->numeric()
                     ->required()
-                    ->prefix('$'),
+                    ->prefixIcon('heroicon-o-currency-dollar'),
                 FileUpload::make('image')
                     ->image()
                     ->directory('logistics-images')

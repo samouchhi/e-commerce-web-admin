@@ -23,18 +23,34 @@ class DiscountForm
             ->components([
 
                 TextInput::make('name')
+                    ->prefixIcon('heroicon-o-tag')
                     ->required(),
-                TextInput::make('description'),
+                TextInput::make('description')
+                    ->prefixIcon('heroicon-o-document-text')
+                    ->required(),
+
                 TextInput::make('value')
+                    ->prefixIcon(
+                        fn (Get $get): string => $get('type') === 'percentage'
+                            ? 'heroicon-o-percent-badge'
+                            : 'heroicon-o-currency-dollar'
+                    )
                     ->required()
                     ->numeric(),
+
                 Select::make('type')
-                    ->options(['percentage' => 'Percentage', 'fixed' => 'Fixed'])
+                    ->options([
+                        'percentage' => 'Percentage',
+                        'fixed' => 'Fixed',
+                    ])
+                    ->live()
                     ->searchable()
                     ->required(),
                 DatePicker::make('start_date')
+                    ->prefixIcon('heroicon-o-calendar')
                     ->required(),
                 DatePicker::make('end_date')
+                    ->prefixIcon('heroicon-o-calendar')
                     ->required(),
 
                 ModalTableSelect::make('products')
@@ -45,6 +61,7 @@ class DiscountForm
                     ->required(),
 
                 Toggle::make('is_active')
+                    ->label('Enable')
                     ->required(),
                 // Select::make('products')
                 //     ->label('Products')

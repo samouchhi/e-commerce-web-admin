@@ -37,20 +37,26 @@ class SupplierResource extends Resource
         return $schema
             ->components([
                 TextInput::make('name')
+                    ->prefixIcon('heroicon-o-user')
+                    ->label('Name')
                     ->required(),
                 TextInput::make('email')
                     ->label('Email address')
+                    ->prefixIcon('heroicon-o-envelope')
                     ->email()
                     ->required(),
                 TextInput::make('phone')
+                    ->prefixIcon('heroicon-o-phone')
                     ->tel()
                     ->required(),
                 TextInput::make('address')
+                    ->prefixIcon('heroicon-o-map')
                     ->required(),
                 TextInput::make('city')
+                    ->prefixIcon('heroicon-o-building-office')
                     ->required(),
-                Toggle::make('is_active')
-                    ->label('Is active'),
+                // Toggle::make('is_active')
+                //     ->label('Enable'),
             ]);
     }
 
@@ -58,12 +64,12 @@ class SupplierResource extends Resource
     {
         return $table
             ->columns([
-                ToggleColumn::make('is_active')
-                    ->label('Status')
-                    ->onIcon(Heroicon::OutlinedCheckBadge)
-                    ->offIcon(Heroicon::OutlinedXMark)
-                    ->onColor('success')
-                    ->offColor('danger'),
+                // ToggleColumn::make('is_active')
+                //     ->label('Status')
+                //     ->onIcon(Heroicon::OutlinedCheckBadge)
+                //     ->offIcon(Heroicon::OutlinedXMark)
+                //     ->onColor('success')
+                //     ->offColor('danger'),
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('email')

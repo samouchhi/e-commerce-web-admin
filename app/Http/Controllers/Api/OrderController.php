@@ -53,7 +53,7 @@ class OrderController extends Controller
             $order = Order::create([
                 'customer_id' => $request->user()->id,
                 'logistic_id' => $data['logistic_id'] ?? null,
-                'order_number' => 'ORD-'.Str::ulid(),
+                'order_number' => 'ORD-'.Str::upper(Str::random(6)),
                 'subtotal_amount' => number_format($prepared['subtotal_cents'] / 100, 2, '.', ''),
                 'shipping_cost' => number_format($shippingCents / 100, 2, '.', ''),
                 'total_amount' => number_format($totalCents / 100, 2, '.', ''),
