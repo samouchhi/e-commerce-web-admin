@@ -16,6 +16,8 @@ class RevenueChart extends ChartWidget
 
     protected static ?int $sort = 2;
 
+    protected int|string|array $columnSpan = ['md' => 1, 'xl' => 3];
+
     protected string $color = 'success';
 
     protected ?string $heading = 'Revenue';

@@ -2,35 +2,33 @@
 
 namespace App\Filament\Widgets;
 
-use App\Models\GeneralSetting;
-use App\Models\ProductVariant;
+use App\Models\Order;
 use Filament\Actions\BulkActionGroup;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\ViewColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget;
 use Illuminate\Database\Eloquent\Builder;
 
-class LowStockTable extends TableWidget
+class RecentOrders extends TableWidget
 {
-
-    protected static ?int $sort = 5;
+    protected static ?int $sort = 6;
 
     protected int|string|array $columnSpan = ['md' => 1, 'xl' => 2];
 
-    protected static ?string $heading = 'Low Stock Products';
+    protected static ?string $heading = 'Recent Orders';
+
     public function table(Table $table): Table
     {
-        $alertStock = GeneralSetting::query()->value('alert_stock');
+
         return $table
-            ->query(fn(): Builder => ProductVariant::query()->with('product.images')->where('stock_qty', '<=', $alertStock))
+            ->query(fn(): Builder => Order::query()->where('payment_status', 'paid')->with('customer')->withCount('items'))
             ->columns([
                 TextColumn::make('#')->label('#')->getStateUsing(fn($rowLoop) => $rowLoop->iteration)->alignCenter(),
-
-                ViewColumn::make('product.name')
-                    ->label('Product')
-                    ->view('filament.tables.columns.product-with-image'),
-                TextColumn::make('stock_qty')->label('Stock')->sortable()->badge(),
+                TextColumn::make('customer.name')->label('Customer'),
+                TextColumn::make('items_count')->label('Items')->alignCenter()->badge(),
+                TextColumn::make('total_amount')->label('Total')->money('usd', true),
+                TextColumn::make('payment_status')->label('Status')->badge(),
+                TextColumn::make('created_at')->label('Date')->dateTime('M d, Y'),
             ])
             ->filters([
                 //

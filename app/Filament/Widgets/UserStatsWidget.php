@@ -60,6 +60,18 @@ class UserStatsWidget extends StatsOverviewWidget
         $paidOrders = (clone $orders)
             ->where('payment_status', 'paid');
 
+        $productSold = OrderItems::query()
+            ->whereIn('order_id', (clone $paidOrders)->select('orders.id'))
+            ->when(
+                $productId,
+                fn (Builder $query) => $query->whereHas(
+                    'productVariant',
+                    fn (Builder $query) => $query->where('product_id', $productId),
+                ),
+            )
+            ->whereHas('order', fn (Builder $query) => $query->where('payment_status', 'paid'))
+            ->sum('quantity');
+
         $paidOrderCount = (clone $paidOrders)->count();
         $totalRevenue = (clone $paidOrders)->sum('total_amount');
         $averageOrderValue = (clone $paidOrders)->avg('total_amount') ?? 0;
@@ -77,12 +89,12 @@ class UserStatsWidget extends StatsOverviewWidget
 
         return [
             Stat::make('Customers', $customers->count())
-                ->descriptionIcon('heroicon-s-users')
+                ->icon('heroicon-s-users')
                 ->chart([10, 25, 15, 30, 12, 15])
                 ->color('success'),
 
-            Stat::make('Orders', $orders->count())
-                ->descriptionIcon('heroicon-s-shopping-cart')
+            Stat::make('Total Orders', $orders->count())
+                ->icon('heroicon-s-shopping-cart')
                 ->chart([10, 25, 15, 30, 12, 15])
                 ->color('warning'),
 
@@ -90,17 +102,18 @@ class UserStatsWidget extends StatsOverviewWidget
                 'Total Revenue',
                 '$'.number_format($totalRevenue, 2),
             )
-                ->descriptionIcon('heroicon-s-currency-dollar')
+                ->icon('heroicon-s-currency-dollar')
                 ->chart([10, 25, 15, 30, 12, 15])
                 ->color('success'),
 
             Stat::make(
-                'Average Order Value',
-                '$'.number_format($averageOrderValue, 2),
+                'Products Sold',
+                $productSold
             )
-                ->descriptionIcon('heroicon-s-currency-dollar')
+                ->icon('heroicon-s-shopping-bag')
                 ->chart([10, 25, 15, 30, 12, 15])
-                ->color('primary'),
+                ->color('danger'),
+
         ];
     }
 }
