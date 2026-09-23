@@ -14,6 +14,15 @@
     @apply dark:bg-black;
 }
 
+.fi-sidebar-nav {
+    scrollbar-width: none;
+    scrollbar-gutter: auto;
+}
+
+.fi-sidebar-nav::-webkit-scrollbar {
+    display: none;
+}
+
 .fi-ta-ctn,
 .fi-section:not(.fi-section-not-contained):not(.fi-aside),
 .fi-wi-stats-overview-stat {

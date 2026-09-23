@@ -13,19 +13,23 @@ use Illuminate\Database\Eloquent\Builder;
 
 class LowStockTable extends TableWidget
 {
-
     protected static ?int $sort = 5;
 
     protected int|string|array $columnSpan = ['md' => 1, 'xl' => 2];
 
     protected static ?string $heading = 'Low Stock Products';
+
     public function table(Table $table): Table
     {
         $alertStock = GeneralSetting::query()->value('alert_stock');
+
         return $table
-            ->query(fn(): Builder => ProductVariant::query()->with('product.images')->where('stock_qty', '<=', $alertStock))
+            ->query(fn (): Builder => ProductVariant::query()
+                ->limit(5)
+                ->with('product.images')->where('stock_qty', '<=', $alertStock))
+            ->paginated(false)
             ->columns([
-                TextColumn::make('#')->label('#')->getStateUsing(fn($rowLoop) => $rowLoop->iteration)->alignCenter(),
+                TextColumn::make('#')->label('#')->getStateUsing(fn ($rowLoop) => $rowLoop->iteration)->alignCenter(),
 
                 ViewColumn::make('product.name')
                     ->label('Product')

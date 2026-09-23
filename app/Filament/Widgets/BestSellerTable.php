@@ -28,9 +28,11 @@ class BestSellerTable extends TableWidget
                     ->join('orders', 'order_items.order_id', '=', 'orders.id')
                     ->where('orders.payment_status', 'paid')
                     ->groupBy('product_variants.id')
+                    ->limit(5)
                     ->orderByDesc('total_quantity')
                     ->with('product.images')
             )
+            ->paginated(false)
             ->columns([
                 TextColumn::make('#')->label('#')->getStateUsing(fn ($rowLoop) => $rowLoop->iteration)->alignCenter(),
                 ViewColumn::make('product.name')
