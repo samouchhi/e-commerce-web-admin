@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Models\PaymentMethod as PaymentMethodModel;
+use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Filament\Actions\Action;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
@@ -13,6 +14,8 @@ use UnitEnum;
 
 class PaymentMethod extends Page
 {
+    use HasPageShield;
+
     public ?array $data = [];
 
     protected string $view = 'filament.pages.payment-method';

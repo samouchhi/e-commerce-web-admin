@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Models\GeneralSetting;
+use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Filament\Actions\Action;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Textarea;
@@ -16,6 +17,8 @@ use UnitEnum;
 
 class Settings extends Page
 {
+    use HasPageShield;
+
     public ?array $data = [];
 
     protected static string|UnitEnum|null $navigationGroup = 'Settings';

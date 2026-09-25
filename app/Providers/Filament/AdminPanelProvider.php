@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use Andreia\FilamentUiSwitcher\FilamentUiSwitcherPlugin;
+use App\Filament\Livewire\DatabaseNotifications;
 use App\Filament\Pages\Auth\Login;
 use App\Models\GeneralSetting;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
@@ -34,7 +35,7 @@ class AdminPanelProvider extends PanelProvider
             ->path('dashboard')
             ->maxContentWidth(Width::Full)
             ->topbar(true)
-            ->databaseNotifications()
+            ->databaseNotifications(livewireComponent: DatabaseNotifications::class)
             ->viteTheme('resources/css/filament/dashboard/theme.css')
 
             ->brandLogo(fn (): ?string => ($logo = GeneralSetting::query()->value('site_logo'))

@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Models\Product;
+use BezhanSalleh\FilamentShield\Traits\HasPageShield;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Select;
 use Filament\Pages\Dashboard as BaseDashboard;
@@ -13,7 +14,7 @@ use Filament\Schemas\Schema;
 
 class Dashboard extends BaseDashboard
 {
-    use HasFiltersForm;
+    use HasFiltersForm, HasPageShield;
 
     public function filtersForm(Schema $schema): Schema
     {

@@ -2,11 +2,12 @@
 
 namespace App\Observers;
 
+use App\Filament\Resources\Purchases\PurchaseResource;
 use App\Models\GeneralSetting;
 use App\Models\ProductVariant;
 use App\Models\User;
+use Filament\Actions\Action;
 use Filament\Notifications\Notification;
-use Illuminate\Support\Facades\Auth;
 
 class ProductVariantObserver
 {
@@ -44,6 +45,11 @@ class ProductVariantObserver
             ->title('Low Stock Alert!')
             ->body("{$productVariant->product->name} | ({$productVariant->name}) has only {$productVariant->stock_qty} items left.")
             ->warning()
+            ->actions([
+                Action::make('buyMore')
+                    ->label('Buy More')
+                    ->url(PurchaseResource::getUrl('create', panel: 'dashboard')),
+            ])
             ->sendToDatabase($user);
     }
 
