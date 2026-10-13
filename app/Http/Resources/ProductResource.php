@@ -56,6 +56,7 @@ class ProductResource extends JsonResource
                 'discounts',
                 fn (): array => $this->discounts
                     ->map(fn ($discount): array => [
+                        'id' => $discount->id,
                         'name' => $discount->name,
                         'description' => $discount->description,
                         'image_path' => $discount->image_path,
