@@ -23,6 +23,8 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Prodstarter\FilamentNotificationCenter\FilamentNotificationCenterPlugin;
+use Prodstarter\FilamentNotificationCenter\NotificationCenterCategory;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -69,9 +71,14 @@ class AdminPanelProvider extends PanelProvider
                 // FilamentInfoWidget::class,
             ])
             ->plugins([
+                FilamentNotificationCenterPlugin::make()->categories([
+                    NotificationCenterCategory::make('low-stock')->label('Low stock')->order(1),
+                    NotificationCenterCategory::make('orders')->label('New orders')->order(2),
+                ]),
                 FilamentShieldPlugin::make()
                     ->navigationGroup('Settings'),
             ])
+            ->databaseNotificationsLivewireComponent(DatabaseNotifications::class)
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

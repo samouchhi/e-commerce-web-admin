@@ -10,7 +10,6 @@ use App\Notifications\TelegramNotification;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Illuminate\Contracts\Events\ShouldHandleEventsAfterCommit;
-use Illuminate\Support\Facades\Auth;
 
 class OrderObserver implements ShouldHandleEventsAfterCommit
 {
@@ -19,7 +18,7 @@ class OrderObserver implements ShouldHandleEventsAfterCommit
         if (! $order->wasChanged('payment_status') || $order->payment_status !== PaymentStatus::Paid) {
             return;
         }
-        /// notify to user who has permission to viewAny order
+        // / notify to user who has permission to viewAny order
         $user = User::whereHas('roles.permissions', function ($query) {
             $query->where('name', 'ViewAny:Order');
         })->first();
@@ -30,6 +29,7 @@ class OrderObserver implements ShouldHandleEventsAfterCommit
 
         Notification::make()
             ->title('New paid order')
+            ->category('orders')
             ->body("Order {$order->order_number} has been paid.")
             ->success()
             ->actions([
@@ -39,6 +39,6 @@ class OrderObserver implements ShouldHandleEventsAfterCommit
             ])
             ->sendToDatabase($user);
 
-        $order->notify(new TelegramNotification());
+        $order->notify(new TelegramNotification);
     }
 }
