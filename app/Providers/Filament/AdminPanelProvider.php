@@ -47,10 +47,16 @@ class AdminPanelProvider extends PanelProvider
             ->databaseNotifications(livewireComponent: DatabaseNotifications::class)
             ->viteTheme('resources/css/filament/dashboard/theme.css')
 
-            ->brandLogo(fn (): ?string => ($logo = GeneralSetting::query()->value('site_logo')) && Storage::disk('public')->exists($logo)
+            ->brandLogo(fn(): ?string => ($logo = GeneralSetting::query()->value('site_logo')) && Storage::disk('public')->exists($logo)
                 ? Storage::disk('public')->url($logo)
                 : null)
             ->brandLogoHeight('3rem')
+            ->favicon(
+                fn(): ?string => ($icon = GeneralSetting::query()->value('site_favicon'))
+                    && Storage::disk('public')->exists($icon)
+                    ? Storage::disk('public')->url($icon)
+                    : null
+            )
             ->sidebarCollapsibleOnDesktop()
             ->spa()
             ->login(Login::class)
@@ -85,8 +91,8 @@ class AdminPanelProvider extends PanelProvider
                 ]),
                 ActivityLogPlusPlugin::make()
                     ->navigationGroup('Settings')
-                    ->authorizeResource(fn (): bool => Filament::auth()->user()?->can('ViewAny:Activity') ?? false)
-                    ->authorizeHistory(fn (): bool => Filament::auth()->user()?->can('ViewAny:Activity') ?? false),
+                    ->authorizeResource(fn(): bool => Filament::auth()->user()?->can('ViewAny:Activity') ?? false)
+                    ->authorizeHistory(fn(): bool => Filament::auth()->user()?->can('ViewAny:Activity') ?? false),
                 FilamentShieldPlugin::make()
                     ->navigationGroup('Settings'),
             ])
