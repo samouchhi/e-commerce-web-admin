@@ -3,7 +3,7 @@
     $imagePath = $product?->images->first()?->image_path;
 @endphp
 
-<div class="flex items-center gap-3 py-3">
+<div class="dashboard-product-cell flex items-center gap-3 py-3">
     <div class="relative flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-gray-100 dark:bg-gray-800">
         <x-filament::icon icon="heroicon-o-cube" class="size-5 text-gray-400" />
         @if ($imagePath)
