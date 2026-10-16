@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Asignua\FilamentActivityLogPlus\Concerns\LogsActivityPlus;
 use Illuminate\Database\Eloquent\Model;
 
 class OrderItems extends Model
 {
+    use LogsActivityPlus;
+
     protected $fillable = [
         'order_id',
         'product_variant_id',

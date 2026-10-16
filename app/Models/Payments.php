@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use Asignua\FilamentActivityLogPlus\Concerns\LogsActivityPlus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Payments extends Model
 {
+    use LogsActivityPlus;
+
     protected $casts = [
         'amount' => 'decimal:2',
         'qr_expiration_at' => 'datetime',

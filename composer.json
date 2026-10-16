@@ -8,6 +8,7 @@
     "require": {
         "php": "^8.3",
         "andreia/filament-ui-switcher": "^1.1",
+        "asignua/filament-activity-log-plus": "^1.1",
         "bezhansalleh/filament-shield": "^4.3",
         "chillerlan/php-qrcode": "^5.0",
         "fidele007/bakong-khqr-php": "^1.2",

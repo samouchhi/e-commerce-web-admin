@@ -4,12 +4,15 @@ namespace App\Models;
 
 use App\Enums\PaymentStatus;
 use App\Enums\ShippingStatus;
+use Asignua\FilamentActivityLogPlus\Concerns\LogsActivityPlus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Purchase extends Model
 {
+    use LogsActivityPlus;
+
     protected $fillable = [
         'reference',
         'total_price',

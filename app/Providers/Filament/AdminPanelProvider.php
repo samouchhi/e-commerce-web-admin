@@ -6,7 +6,9 @@ use App\Filament\Livewire\DatabaseNotifications;
 use App\Filament\Pages\Auth\Login;
 use App\Http\Controllers\OrderPrintController;
 use App\Models\GeneralSetting;
+use Asignua\FilamentActivityLogPlus\ActivityLogPlusPlugin;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
+use Filament\Facades\Filament;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -81,6 +83,10 @@ class AdminPanelProvider extends PanelProvider
                     NotificationCenterCategory::make('low-stock')->label('Low stock')->order(1),
                     NotificationCenterCategory::make('orders')->label('New orders')->order(2),
                 ]),
+                ActivityLogPlusPlugin::make()
+                    ->navigationGroup('Settings')
+                    ->authorizeResource(fn (): bool => Filament::auth()->user()?->can('ViewAny:Activity') ?? false)
+                    ->authorizeHistory(fn (): bool => Filament::auth()->user()?->can('ViewAny:Activity') ?? false),
                 FilamentShieldPlugin::make()
                     ->navigationGroup('Settings'),
             ])
