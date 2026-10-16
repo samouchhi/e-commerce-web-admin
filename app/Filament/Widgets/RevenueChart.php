@@ -16,13 +16,27 @@ class RevenueChart extends ChartWidget
 
     protected static ?int $sort = 2;
 
-    protected int|string|array $columnSpan = ['md' => 1, 'xl' => 3];
+    protected int|string|array $columnSpan = ['md' => 1, 'xl' => 4];
 
-    protected string $color = 'success';
+    protected string $color = 'primary';
 
-    protected ?string $heading = 'Revenue';
+    protected ?string $heading = 'Revenue over time';
 
-    protected ?string $maxHeight = '240px';
+
+    protected ?string $maxHeight = '340px';
+
+    protected function getOptions(): array
+    {
+        return [
+            'plugins' => ['legend' => ['display' => false]],
+            'scales' => ['y' => [
+                'beginAtZero' => true,
+                'title' => ['display' => true, 'text' => 'USD'],
+                'ticks' => ['precision' => 2, 'maxTicksLimit' => 5],
+            ]],
+            'elements' => ['line' => ['tension' => 0.25, 'borderWidth' => 2], 'point' => ['radius' => 3, 'hoverRadius' => 6]],
+        ];
+    }
 
     protected function getData(): array
     {
@@ -41,13 +55,14 @@ class RevenueChart extends ChartWidget
 
         $revenue = $productId
             ? OrderItems::query()
-            ->whereIn('order_id', $orders->select('id'))
+            ->join('orders', 'orders.id', '=', 'order_items.order_id')
+            ->whereIn('order_items.order_id', $orders->select('id'))
             ->whereHas(
                 'productVariant',
                 fn(Builder $query) => $query->where('product_id', $productId),
             )
-            ->selectRaw('DATE(created_at) as date, SUM(subtotal_price) as total')
-            ->groupByRaw('DATE(created_at)')
+            ->selectRaw('DATE(orders.created_at) as date, SUM(order_items.subtotal_price) as total')
+            ->groupByRaw('DATE(orders.created_at)')
             ->orderBy('date')
             ->get()
             : $orders
@@ -61,7 +76,10 @@ class RevenueChart extends ChartWidget
         return [
             'datasets' => [
                 [
-                    'label' => 'Revenue',
+                    'label' => 'Paid revenue (USD)',
+                    'borderColor' => '#89a780',
+                    'backgroundColor' => 'rgba(137, 167, 128, 0.12)',
+                    'fill' => true,
                     'data' => $dates->map(fn(string $date): float => (float) ($revenueByDate[$date] ?? 0))->all(),
                 ],
             ],

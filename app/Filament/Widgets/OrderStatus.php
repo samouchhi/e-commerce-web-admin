@@ -15,7 +15,7 @@ class OrderStatus extends Widget
 
     protected static ?int $sort = 3;
 
-    protected int|string|array $columnSpan = ['md' => 1, 'xl' => 3];
+    protected int|string|array $columnSpan = ['md' => 1, 'xl' => 2];
 
     protected string $view = 'filament.widgets.order-status';
 
@@ -43,10 +43,10 @@ class OrderStatus extends Widget
             ->pluck('total', 'payment_status');
 
         $statuses = [
-            ['label' => 'Completed', 'count' => (int) ($counts['paid'] ?? 0), 'color' => '#2eaf83', 'dot' => 'bg-[#2eaf83]'],
-            ['label' => 'Pending', 'count' => (int) ($counts['pending'] ?? 0), 'color' => '#ffa62b', 'dot' => 'bg-[#ffa62b]'],
-            ['label' => 'Cancelled', 'count' => (int) ($counts['expired'] ?? 0), 'color' => '#ef4444', 'dot' => 'bg-[#ef4444]'],
-            ['label' => 'Processing', 'count' => (int) ($counts['partial'] ?? 0), 'color' => '#8993a7', 'dot' => 'bg-[#8993a7]'],
+            ['label' => 'Paid', 'count' => (int) ($counts['paid'] ?? 0), 'color' => '#71886a', 'dot' => 'bg-[#71886a]'],
+            ['label' => 'Pending', 'count' => (int) ($counts['pending'] ?? 0), 'color' => '#c09a58', 'dot' => 'bg-[#c09a58]'],
+            ['label' => 'Expired', 'count' => (int) ($counts['expired'] ?? 0), 'color' => '#b87970', 'dot' => 'bg-[#b87970]'],
+            ['label' => 'Partial', 'count' => (int) ($counts['partial'] ?? 0), 'color' => '#8993a7', 'dot' => 'bg-[#8993a7]'],
         ];
 
         $total = array_sum(array_column($statuses, 'count'));

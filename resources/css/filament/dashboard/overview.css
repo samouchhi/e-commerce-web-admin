@@ -1,0 +1,203 @@
+/* Dashboard layout refinements inherit the shared soft theme. */
+.store-dashboard .dashboard-range { position: relative; }
+.store-dashboard .dashboard-range-trigger {
+    display: flex; align-items: center; gap: 0.625rem; width: 100%; min-height: 2.25rem;
+    padding: 0.5rem 0.75rem; border-radius: 0.875rem; background: var(--panel-fill);
+    color: var(--gray-950); font-size: 0.875rem; text-align: left; cursor: pointer;
+}
+.dark .store-dashboard .dashboard-range-trigger { color: var(--gray-100); }
+.store-dashboard .dashboard-range-trigger:focus-visible,
+.store-dashboard .dashboard-range-dialog button:focus-visible { outline: 2px solid var(--primary-500); outline-offset: 2px; }
+.store-dashboard .dashboard-range-dialog {
+    position: absolute; top: calc(100% + 0.5rem); z-index: 40; overflow-y: auto; overscroll-behavior: contain;
+    border: 1px solid var(--panel-border); border-radius: 1.25rem; padding: 0;
+    background: var(--panel-surface); color: var(--gray-950); box-shadow: 0 12px 36px rgb(28 25 22 / 16%);
+}
+.dark .store-dashboard .dashboard-range-dialog { color: var(--gray-100); }
+.dashboard-range-header { display: flex; justify-content: space-between; gap: 1rem; padding: 0.875rem 1rem; border-bottom: 1px solid var(--panel-border); }
+.dashboard-range-header h2 { font-family: var(--panel-heading-font); font-size: 1.125rem; }
+.dashboard-range-header p { font-size: 0.8125rem; color: var(--gray-500); margin-top: 0.25rem; }
+.dashboard-range-body { display: flex; }
+.dashboard-range-presets { display: flex; flex-direction: column; gap: 0.25rem; padding: 1rem; border-right: 1px solid var(--panel-border); min-width: 9.5rem; }
+.dashboard-range-presets button { padding: 0.625rem 0.75rem; text-align: left; border-radius: 0.75rem; font-size: 0.8125rem; cursor: pointer; }
+.dashboard-range-presets button:hover, .dashboard-range-nav:hover { background: var(--panel-fill); }
+.dashboard-range-presets button[aria-pressed=true] { background: var(--primary-100); color: var(--primary-800); font-weight: 600; }
+.dark .dashboard-range-presets button[aria-pressed=true] { background: var(--primary-900); color: var(--primary-100); }
+.dashboard-range-calendars { padding: 1rem; flex: 1; min-width: 0; }
+.dashboard-range-navigation { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; }
+.dashboard-range-navigation input { background: var(--panel-fill); color: inherit; border: 0; padding: 0.25rem 0.5rem; border-radius: 0.5rem; font-size: 0.8125rem; }
+.dark .dashboard-range-navigation input { color-scheme: dark; }
+.dashboard-range-nav { display: flex; align-items: center; justify-content: center; border-radius: 0.625rem; width: 2rem; height: 2rem; cursor: pointer; }
+.dashboard-range-months { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.25rem; }
+.dashboard-range-month h3 { text-align: center; font-size: 0.875rem; font-weight: 600; margin-bottom: 0.75rem; }
+.dashboard-range-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); row-gap: 0.25rem; }
+.dashboard-range-weekday { text-align: center; font-size: 0.6875rem; color: var(--gray-500); padding-block: 0.25rem; }
+.dashboard-range-day { width: 100%; aspect-ratio: 1; min-height: 2rem; font-size: 0.8125rem; border-radius: 0.5rem; cursor: pointer; }
+.dashboard-range-day:hover { background: var(--panel-hover); }
+.dashboard-range-day.is-between { background: var(--primary-100); color: var(--primary-900); border-radius: 0; }
+.dark .dashboard-range-day.is-between { background: var(--primary-900); color: var(--primary-100); }
+.dashboard-range-day.is-endpoint { background: var(--primary-600); color: white; font-weight: 600; }
+.dashboard-range-footer { position: sticky; bottom: 0; background: var(--panel-surface); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; padding: 0.875rem 1rem; border-top: 1px solid var(--panel-border); }
+.dashboard-range-footer > p { font-size: 0.8125rem; }
+@media (max-width: 40rem) {
+    .dashboard-range-body { flex-direction: column; }
+    .dashboard-range-presets { display: grid; grid-template-columns: repeat(3, 1fr); border-right: 0; border-bottom: 1px solid var(--panel-border); padding: 0.75rem; }
+    .dashboard-range-presets button { text-align: center; padding: 0.5rem 0.25rem; font-size: 0.75rem; }
+    .dashboard-range-months { grid-template-columns: 1fr; }
+    .dashboard-range-month:nth-of-type(2) { display: none; }
+    .dashboard-range-day { min-height: 2.25rem; aspect-ratio: auto; }
+    .dashboard-range-footer { justify-content: center; }
+}
+.fi-page.store-dashboard {
+    gap: 1.5rem;
+}
+
+.store-dashboard .fi-header-heading {
+    font-size: 2.25rem;
+    font-weight: 500;
+    letter-spacing: -0.035em;
+}
+
+.store-dashboard .fi-header-subheading {
+    font-size: 0.875rem;
+}
+
+.store-dashboard .fi-section-header-heading,
+.store-dashboard .fi-ta-header-heading {
+    font-size: 1.25rem;
+    font-weight: 500;
+    letter-spacing: -0.015em;
+}
+
+.store-dashboard .fi-section-header-description,
+.store-dashboard .fi-ta-header-description {
+    font-size: 0.75rem;
+    line-height: 1.6;
+}
+
+.store-dashboard .fi-ta-ctn,
+.store-dashboard .fi-section:not(.fi-section-not-contained):not(.fi-aside),
+.store-dashboard .fi-wi-stats-overview-stat {
+    border-radius: 1.5rem;
+    background: var(--panel-surface);
+    box-shadow: var(--panel-shadow), 0 0 0 1px var(--panel-border);
+}
+
+.store-dashboard .dashboard-revenue-stat { background: var(--primary-100); }
+.dark .store-dashboard .dashboard-revenue-stat { background: color-mix(in srgb, var(--primary-800) 45%, var(--panel-surface)); }
+
+.store-dashboard .dashboard-filters {
+    border: 0;
+    border-radius: 1rem;
+}
+
+.store-dashboard .dashboard-filters .fi-section-content {
+    padding: 1rem 1.25rem;
+}
+
+.store-dashboard .fi-fo-field-label-content {
+    font-size: 0.75rem;
+}
+
+.store-dashboard .fi-input-wrp {
+    border-radius: 0.875rem;
+    background: var(--panel-fill);
+}
+
+.store-dashboard .fi-btn {
+    border-radius: 0.875rem;
+    font-size: 0.8125rem;
+}
+
+.store-dashboard .fi-btn.fi-color-primary {
+    background: var(--primary-600);
+    color: #fff;
+}
+
+.store-dashboard .fi-btn.fi-color-primary:hover {
+    background: var(--primary-700);
+}
+
+.store-dashboard .fi-wi-chart > .fi-section {
+    height: 100%;
+}
+
+.store-dashboard .fi-wi-stats-overview-stat {
+    padding: 1.25rem;
+}
+
+.store-dashboard .fi-wi-stats-overview-stat-label-ctn {
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+}
+
+.store-dashboard .fi-wi-stats-overview-stat-label-ctn > .fi-icon {
+    color: var(--primary-600);
+    width: 1.875rem;
+    height: 1.875rem;
+    padding: 0.375rem;
+    background: var(--primary-50);
+    border-radius: 0.5rem;
+}
+
+.dark .store-dashboard .fi-wi-stats-overview-stat-label-ctn > .fi-icon {
+    color: var(--primary-300);
+    background: var(--primary-950);
+}
+
+.store-dashboard .fi-wi-stats-overview-stat-label {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--gray-700);
+}
+
+.dark .store-dashboard .fi-wi-stats-overview-stat-label {
+    color: var(--gray-200);
+}
+
+.store-dashboard .fi-wi-stats-overview-stat-value {
+    font-size: 1.875rem;
+    line-height: 1.25;
+    letter-spacing: -0.04em;
+}
+
+.store-dashboard .fi-wi-stats-overview-stat-description {
+    font-size: 0.6875rem;
+    line-height: 1.5;
+}
+
+.store-dashboard .fi-section-header,
+.store-dashboard .fi-ta-header {
+    padding: 1.25rem;
+}
+
+.store-dashboard .dashboard-payment-overview .fi-section-content {
+    min-height: 0;
+    padding: 1rem 1.25rem;
+}
+
+.store-dashboard .fi-ta-table > thead {
+    background: var(--panel-fill);
+}
+
+.store-dashboard .fi-ta-header-cell {
+    padding-block: 0.75rem;
+    font-size: 0.6875rem;
+    letter-spacing: 0.035em;
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+.store-dashboard .fi-badge {
+    border-radius: 0.375rem;
+}
+
+@media (max-width: 39.99rem) {
+    .store-dashboard .fi-header-heading { font-size: 1.875rem; }
+    .store-dashboard .fi-wi-stats-overview-stat { padding: 0.875rem; }
+    .store-dashboard .fi-wi-stats-overview-stat-value { font-size: 1.5rem; }
+    .store-dashboard .fi-wi-stats-overview-stat-label-ctn > .fi-icon { width: 1.5rem; height: 1.5rem; padding: 0.25rem; }
+    .store-dashboard .fi-wi-stats-overview-stat-label { font-size: 0.75rem; }
+    .store-dashboard .dashboard-filters .fi-section-content { padding: 0.875rem; }
+}

@@ -2,53 +2,53 @@
 
 namespace App\Filament\Widgets;
 
+use App\Filament\Resources\Purchases\PurchaseResource;
 use App\Models\GeneralSetting;
 use App\Models\ProductVariant;
-use Filament\Actions\BulkActionGroup;
+use Filament\Actions\Action;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ViewColumn;
 use Filament\Tables\Table;
+use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Filament\Widgets\TableWidget;
 use Illuminate\Database\Eloquent\Builder;
 
 class LowStockTable extends TableWidget
 {
+    protected static bool $isLazy = false;
+
+    use InteractsWithPageFilters;
+
     protected static ?int $sort = 5;
 
-    protected int|string|array $columnSpan = ['md' => 1, 'xl' => 2];
+    protected int|string|array $columnSpan = ['md' => 1, 'xl' => 3];
 
-    protected static ?string $heading = 'Low Stock Products';
+    protected static ?string $heading = 'Stock to watch';
 
     public function table(Table $table): Table
     {
-        $alertStock = GeneralSetting::query()->value('alert_stock');
+        $alertStock = GeneralSetting::query()->value('alert_stock') ?? 5;
 
         return $table
-            ->query(fn (): Builder => ProductVariant::query()
+            ->query(fn(): Builder => ProductVariant::query()
                 ->limit(5)
-                ->with('product.images')->where('stock_qty', '<=', $alertStock))
+                ->with('product.images')
+                ->where('stock_qty', '<=', $alertStock)
+                ->when($this->pageFilters['product_id'] ?? null, fn(Builder $query, int|string $productId) => $query->where('product_id', $productId))
+                ->orderBy('stock_qty'))
             ->paginated(false)
             ->columns([
-                TextColumn::make('#')->label('#')->getStateUsing(fn ($rowLoop) => $rowLoop->iteration)->alignCenter(),
-
                 ViewColumn::make('product.name')
                     ->label('Product')
                     ->view('filament.tables.columns.product-with-image'),
-                TextColumn::make('stock_qty')->label('Stock')->sortable()->badge(),
+                TextColumn::make('stock_qty')->label('Left')->badge()
+                    ->color(fn(int $state): string => $state <= 0 ? 'danger' : 'warning'),
             ])
-            ->filters([
-                //
-            ])
+            ->emptyStateHeading('Stock levels look good')
+            ->emptyStateDescription('No variants are below the stock alert threshold.')
             ->headerActions([
-                //
-            ])
-            ->recordActions([
-                //
-            ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    //
-                ]),
+                Action::make('restock')->label('New purchase')->color('gray')->url(PurchaseResource::getUrl('create'))
+                    ->visible(fn(): bool => PurchaseResource::canCreate()),
             ]);
     }
 }
