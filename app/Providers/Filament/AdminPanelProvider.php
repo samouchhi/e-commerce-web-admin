@@ -4,6 +4,7 @@ namespace App\Providers\Filament;
 
 use App\Filament\Livewire\DatabaseNotifications;
 use App\Filament\Pages\Auth\Login;
+use App\Http\Controllers\OrderPrintController;
 use App\Models\GeneralSetting;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Http\Middleware\Authenticate;
@@ -21,6 +22,7 @@ use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Prodstarter\FilamentNotificationCenter\FilamentNotificationCenterPlugin;
@@ -34,6 +36,10 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('dashboard')
             ->path('dashboard')
+            ->authenticatedRoutes(function (): void {
+                Route::get('orders/{order}/print', OrderPrintController::class)
+                    ->name('orders.print');
+            })
             ->maxContentWidth(Width::Full)
             ->topbar(true)
             ->databaseNotifications(livewireComponent: DatabaseNotifications::class)

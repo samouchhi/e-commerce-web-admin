@@ -2,7 +2,10 @@
 
 namespace App\Filament\Resources\Orders\Tables;
 
+use App\Enums\PaymentStatus;
 use App\Models\Customer;
+use App\Models\Order;
+use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
@@ -79,6 +82,13 @@ class OrdersTable
             ->recordActions([
                 ActionGroup::make([
                     ViewAction::make(),
+                    Action::make('print')
+                        ->label(fn (Order $record): string => $record->payment_status === PaymentStatus::Paid ? 'Print Receipt' : 'Print Invoice')
+                        ->icon('heroicon-o-printer')
+                        ->authorize('view')
+                        ->visible(fn (Order $record): bool => in_array($record->payment_status, [PaymentStatus::Paid, PaymentStatus::Pending, PaymentStatus::Expired], true))
+                        ->url(fn (Order $record): string => route('filament.dashboard.orders.print', $record))
+                        ->openUrlInNewTab(),
                     EditAction::make(),
                     DeleteAction::make(),
                 ]),
