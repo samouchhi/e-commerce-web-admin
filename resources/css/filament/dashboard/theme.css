@@ -12,55 +12,42 @@
     --radius-2xl: 1.5rem;
 }
 
-/* Shared warm neutrals and sage accents also reach Filament's nested components. */
+/* Shared white surfaces and neutral grays reach Filament's nested components. */
 .fi-body {
     --sidebar-width: 15rem;
     --panel-topbar-height: 3.5rem;
-    --gray-50: #faf8f5;
-    --gray-100: #f2eee8;
-    --gray-200: #e5dfd6;
-    --gray-300: #d1c8bc;
-    --gray-400: #a89d90;
-    --gray-500: #807469;
-    --gray-600: #675d53;
-    --gray-700: #51483f;
-    --gray-800: #38322d;
-    --gray-900: #27231f;
-    --gray-950: #1c1916;
-    --primary-50: #f2f6f1;
-    --primary-100: #e3ecdf;
-    --primary-200: #cadbc3;
-    --primary-300: #acc3a4;
-    --primary-400: #89a780;
-    --primary-500: #6b8a61;
-    --primary-600: #536f4b;
-    --primary-700: #42583c;
-    --primary-800: #364731;
-    --primary-900: #2d3b29;
-    --primary-950: #182115;
-    --panel-ground: #f5f1eb;
-    --panel-surface: #fffdfa;
-    --panel-fill: #f0ebe4;
-    --panel-border: #e8e1d7;
-    --panel-hover: #eee8df;
-    --panel-shadow: 0 2px 4px rgb(75 54 32 / 2%), 0 12px 32px -16px rgb(75 54 32 / 16%);
-    --panel-heading-font: Georgia, 'Times New Roman', serif;
+    --gray-50: #f9fafb;
+    --gray-100: #f3f4f6;
+    --gray-200: #e5e7eb;
+    --gray-300: #d1d5db;
+    --gray-400: #9ca3af;
+    --gray-500: #6b7280;
+    --gray-600: #4b5563;
+    --gray-700: #374151;
+    --gray-800: #1f2937;
+    --gray-900: #111827;
+    --gray-950: #030712;
+    --panel-ground: #ffffff;
+    --panel-surface: #ffffff;
+    --panel-fill: #f9fafb;
+    --panel-border: #e5e7eb;
+    --panel-hover: #f3f4f6;
+    --panel-shadow: 0 1px 3px rgb(17 24 39 / 6%), 0 1px 2px rgb(17 24 39 / 4%);
+    --panel-heading-font: var(--font-sans);
 
     background-color: var(--panel-ground);
     color: var(--gray-950);
 }
 
 .dark .fi-body {
-    --panel-ground: #1c1916;
-    --panel-surface: #27231f;
-    --panel-fill: #332d27;
-    --panel-border: #40382f;
-    --panel-hover: #393229;
+    --panel-ground: #030712;
+    --panel-surface: #111827;
+    --panel-fill: #1f2937;
+    --panel-border: #374151;
+    --panel-hover: #1f2937;
     --panel-shadow: 0 2px 4px rgb(0 0 0 / 6%), 0 16px 32px -20px rgb(0 0 0 / 35%);
 
     color: var(--gray-100);
-    background-image: radial-gradient(ellipse at 70% 0%, rgb(165 119 69 / 9%), transparent 55%);
-    background-attachment: fixed;
 }
 
 .fi-sidebar,
@@ -221,7 +208,7 @@
 }
 
 .dashboard-revenue-stat {
-    background-color: var(--primary-100);
+    background-color: var(--panel-surface);
 }
 
 .dark .dashboard-revenue-stat {
@@ -511,7 +498,7 @@
 }
 
 .fi-simple-layout {
-    background-image: radial-gradient(ellipse at 15% 20%, color-mix(in srgb, var(--primary-300) 16%, transparent), transparent 55%);
+    background-color: var(--panel-ground);
 }
 
 .fi-topbar-database-notifications-btn {
