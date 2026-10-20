@@ -3,12 +3,11 @@
 namespace App\Filament\Widgets;
 
 use App\Models\Order;
-use App\Models\OrderItems;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
+use Filament\Support\RawJs;
 use Filament\Widgets\ChartWidget;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
-use Illuminate\Database\Eloquent\Builder;
 
 class RevenueChart extends ChartWidget
 {
@@ -16,26 +15,74 @@ class RevenueChart extends ChartWidget
 
     protected static ?int $sort = 2;
 
-    protected int|string|array $columnSpan = ['md' => 1, 'xl' => 4];
-
-    protected string $color = 'primary';
+    protected int|string|array $columnSpan = ['md' => 1, 'xl' => 6];
 
     protected ?string $heading = 'Revenue over time';
 
+    protected string $view = 'filament.widgets.revenue-chart';
 
-    protected ?string $maxHeight = '340px';
-
-    protected function getOptions(): array
+    public function getPeriodLabel(): string
     {
-        return [
-            'plugins' => ['legend' => ['display' => false]],
-            'scales' => ['y' => [
-                'beginAtZero' => true,
-                'title' => ['display' => true, 'text' => 'USD'],
-                'ticks' => ['precision' => 2, 'maxTicksLimit' => 5],
-            ]],
-            'elements' => ['line' => ['tension' => 0.25, 'borderWidth' => 2], 'point' => ['radius' => 3, 'hoverRadius' => 6]],
-        ];
+        if (($this->pageFilters['date_range'] ?? null) === 'all_time') {
+            return 'All Time';
+        }
+
+        $end = Carbon::parse($this->pageFilters['end_date'] ?? now());
+        $start = Carbon::parse($this->pageFilters['start_date'] ?? $end->copy()->subDays(6));
+
+        return $start->format('M j, Y').' – '.$end->format('M j, Y');
+    }
+
+    public function getTotalRevenue(): string
+    {
+        return '$'.number_format(array_sum($this->getCachedData()['datasets'][0]['data']), 2);
+    }
+
+    protected function getOptions(): RawJs
+    {
+        return RawJs::make(<<<'JS'
+            {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { intersect: false, mode: 'index' },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#18181b',
+                        titleColor: '#d4d4d8',
+                        bodyColor: '#ffffff',
+                        padding: 12,
+                        cornerRadius: 8,
+                        displayColors: false,
+                        callbacks: {
+                            label: (context) => new Intl.NumberFormat('en-US', {
+                                style: 'currency', currency: 'USD'
+                            }).format(context.parsed.y)
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        border: { display: false },
+                        grid: { display: false },
+                        ticks: { maxRotation: 0, maxTicksLimit: 7, padding: 10, font: { size: 11 } }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        border: { display: false, dash: [4, 5] },
+                        grid: { drawTicks: false },
+                        ticks: {
+                            maxTicksLimit: 5,
+                            padding: 12,
+                            font: { size: 11 },
+                            callback: (value) => '$' + new Intl.NumberFormat('en-US', {
+                                notation: 'compact', maximumFractionDigits: 2
+                            }).format(value)
+                        }
+                    }
+                }
+            }
+            JS);
     }
 
     protected function getData(): array
@@ -44,51 +91,48 @@ class RevenueChart extends ChartWidget
         $startDate = Carbon::parse(
             $this->pageFilters['start_date'] ?? Carbon::parse($endDate)->subDays(6),
         )->toDateString();
-        $productId = $this->pageFilters['product_id'] ?? null;
-        $dates = collect(CarbonPeriod::create($startDate, $endDate))
-            ->map(fn(Carbon $date): string => $date->toDateString());
+        $allTime = ($this->pageFilters['date_range'] ?? null) === 'all_time';
+        $orders = Order::query()->where('payment_status', 'paid');
 
-        $orders = Order::query()
-            ->where('payment_status', 'paid')
-            ->whereDate('created_at', '>=', $startDate)
-            ->whereDate('created_at', '<=', $endDate);
+        if (! $allTime) {
+            $orders->whereDate('created_at', '>=', $startDate)
+                ->whereDate('created_at', '<=', $endDate);
+        }
 
-        $revenue = $productId
-            ? OrderItems::query()
-            ->join('orders', 'orders.id', '=', 'order_items.order_id')
-            ->whereIn('order_items.order_id', $orders->select('id'))
-            ->whereHas(
-                'productVariant',
-                fn(Builder $query) => $query->where('product_id', $productId),
-            )
-            ->selectRaw('DATE(orders.created_at) as date, SUM(order_items.subtotal_price) as total')
-            ->groupByRaw('DATE(orders.created_at)')
-            ->orderBy('date')
-            ->get()
-            : $orders
+        $revenueByDate = $orders
             ->selectRaw('DATE(created_at) as date, SUM(total_amount) as total')
             ->groupByRaw('DATE(created_at)')
             ->orderBy('date')
-            ->get();
+            ->pluck('total', 'date');
 
-        $revenueByDate = $revenue->pluck('total', 'date');
+        if ($allTime) {
+            $startDate = $revenueByDate->keys()->first() ?? now()->toDateString();
+            $endDate = max($revenueByDate->keys()->last() ?? now()->toDateString(), now()->toDateString());
+        }
+
+        $dates = collect(CarbonPeriod::create($startDate, $endDate))
+            ->map(fn (Carbon $date): string => $date->toDateString());
 
         return [
-            'datasets' => [
-                [
-                    'label' => 'Paid revenue (USD)',
-                    'borderColor' => '#89a780',
-                    'backgroundColor' => 'rgba(137, 167, 128, 0.12)',
-                    'fill' => true,
-                    'data' => $dates->map(fn(string $date): float => (float) ($revenueByDate[$date] ?? 0))->all(),
-                ],
-            ],
-            'labels' => $dates->map(fn(string $date): string => Carbon::parse($date)->format('M j'))->all(),
+            'datasets' => [[
+                'label' => 'Paid revenue (USD)',
+                'backgroundColor' => '#7460f5',
+                'hoverBackgroundColor' => '#5b43e8',
+                'borderColor' => '#5b43e8',
+                'borderWidth' => 1,
+                'borderRadius' => 6,
+                'borderSkipped' => false,
+                'maxBarThickness' => 48,
+                'categoryPercentage' => 0.72,
+                'barPercentage' => 0.8,
+                'data' => $dates->map(fn (string $date): float => (float) ($revenueByDate[$date] ?? 0))->all(),
+            ]],
+            'labels' => $dates->map(fn (string $date): string => Carbon::parse($date)->format('M j'))->all(),
         ];
     }
 
     protected function getType(): string
     {
-        return 'line';
+        return 'bar';
     }
 }

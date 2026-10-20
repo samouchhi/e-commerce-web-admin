@@ -1,12 +1,13 @@
 <x-dynamic-component :component="$getFieldWrapperView()" :field="$field">
     <div
         x-data="{
-            ranges: @js($ranges), start: '', end: '', month: '', busy: false, error: '', expanded: false, panelLeft: 0, panelWidth: 704, panelHeight: 620,
+            ranges: @js($ranges), start: '', end: '', month: '', allTime: false, busy: false, error: '', expanded: false, panelLeft: 0, panelWidth: 704, panelHeight: 620,
             iso(date) { return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}` },
             date(value) { return new Date(value + 'T12:00:00') },
             format(value) { return value ? this.date(value).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Select end date' },
             open() {
                 this.start = $wire.filters.start_date; this.end = $wire.filters.end_date;
+                this.allTime = $wire.filters.date_range === 'all_time';
                 this.month = this.start.slice(0, 7); this.error = ''; this.position(); this.expanded = true;
             },
             position() {
@@ -25,10 +26,11 @@
                 return Array.from({ length: first.getDay() + count }, (_, i) => i < first.getDay() ? null : this.iso(new Date(first.getFullYear(), first.getMonth(), i - first.getDay() + 1)));
             },
             pick(day) {
+                this.allTime = false;
                 if (!this.start || this.end) { this.start = day; this.end = ''; }
                 else { [this.start, this.end] = [this.start, day].sort(); }
             },
-            preset(key) { [this.start, this.end] = this.ranges[key]; this.month = this.start.slice(0, 7) },
+            preset(key) { this.allTime = key === 'all_time'; [this.start, this.end] = this.ranges[key]; this.month = this.start.slice(0, 7) },
             moveFocus(event, day) {
                 const amount = { ArrowLeft: -1, ArrowRight: 1, ArrowUp: -7, ArrowDown: 7 }[event.key];
                 if (!amount) return;
@@ -38,7 +40,7 @@
             },
             async apply() {
                 this.busy = true; this.error = '';
-                try { await $wire.applyDateRange(this.start, this.end); this.close() }
+                try { await $wire.applyDateRange(this.start, this.end, this.allTime); this.close() }
                 catch (e) { this.error = 'Could not apply this range. Please try again.' }
                 finally { this.busy = false }
             }
@@ -50,7 +52,7 @@
     >
         <button type="button" id="{{ $getId() }}" x-ref="trigger" class="dashboard-range-trigger" aria-haspopup="dialog" :aria-expanded="expanded" aria-controls="dashboard-range-panel" @click="expanded ? close() : open()">
             <x-filament::icon icon="heroicon-o-calendar-days" class="size-5 shrink-0" />
-            <span x-text="format($wire.filters.start_date) + ' – ' + format($wire.filters.end_date)"></span>
+            <span x-text="$wire.filters.date_range === 'all_time' ? 'All Time' : format($wire.filters.start_date) + ' – ' + format($wire.filters.end_date)"></span>
             <x-filament::icon icon="heroicon-o-chevron-down" class="ms-auto size-4 shrink-0" />
         </button>
 
@@ -66,8 +68,9 @@
             </div>
             <div class="dashboard-range-body">
                 <div class="dashboard-range-presets" aria-label="Date presets">
+                    <button type="button" @click="preset('all_time')" :aria-pressed="allTime">All Time</button>
                     @foreach (['today' => 'Today', 'yesterday' => 'Yesterday', 'last_7_days' => 'Last 7 days', 'last_30_days' => 'Last 30 days', 'this_month' => 'This month', 'last_month' => 'Last month'] as $key => $label)
-                        <button type="button" @click="preset(@js($key))" :aria-pressed="start === ranges[@js($key)][0] && end === ranges[@js($key)][1]">{{ $label }}</button>
+                        <button type="button" @click="preset(@js($key))" :aria-pressed="!allTime && start === ranges[@js($key)][0] && end === ranges[@js($key)][1]">{{ $label }}</button>
                     @endforeach
                 </div>
                 <div class="dashboard-range-calendars">
@@ -98,7 +101,7 @@
                 </div>
             </div>
             <div class="dashboard-range-footer">
-                <p aria-live="polite" x-text="format(start) + ' – ' + format(end)"></p>
+                <p aria-live="polite" x-text="allTime ? 'All Time' : format(start) + ' – ' + format(end)"></p>
                 <div class="flex gap-2">
                     <x-filament::button color="gray" @click="close()">Cancel</x-filament::button>
                     <x-filament::button @click="apply()" x-bind:disabled="!start || !end || busy"><span x-text="busy ? 'Applying…' : 'Apply range'"></span></x-filament::button>

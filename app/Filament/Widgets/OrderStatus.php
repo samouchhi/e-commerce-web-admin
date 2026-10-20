@@ -4,7 +4,6 @@ namespace App\Filament\Widgets;
 
 use App\Models\Order;
 use App\Models\OrderItems;
-use Carbon\Carbon;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
 use Filament\Widgets\Widget;
 use Illuminate\Database\Eloquent\Builder;
@@ -15,21 +14,15 @@ class OrderStatus extends Widget
 
     protected static ?int $sort = 3;
 
-    protected int|string|array $columnSpan = ['md' => 1, 'xl' => 2];
+    protected int|string|array $columnSpan = ['md' => 1, 'xl' => 3];
 
     protected string $view = 'filament.widgets.order-status';
 
     protected function getViewData(): array
     {
-        $endDate = Carbon::parse($this->pageFilters['end_date'] ?? now())->toDateString();
-        $startDate = Carbon::parse(
-            $this->pageFilters['start_date'] ?? Carbon::parse($endDate)->subDays(6),
-        )->toDateString();
         $productId = $this->pageFilters['product_id'] ?? null;
 
-        $orders = Order::query()
-            ->whereDate('created_at', '>=', $startDate)
-            ->whereDate('created_at', '<=', $endDate);
+        $orders = Order::query();
 
         if ($productId) {
             $orders->whereIn('id', OrderItems::query()

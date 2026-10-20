@@ -83,9 +83,6 @@
     box-shadow: var(--panel-shadow), 0 0 0 1px var(--panel-border);
 }
 
-.store-dashboard .dashboard-revenue-stat { background: var(--primary-100); }
-.dark .store-dashboard .dashboard-revenue-stat { background: color-mix(in srgb, var(--primary-800) 45%, var(--panel-surface)); }
-
 .store-dashboard .dashboard-filters {
     border: 0;
     border-radius: 1rem;
