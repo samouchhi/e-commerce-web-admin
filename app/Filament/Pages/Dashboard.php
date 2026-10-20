@@ -23,6 +23,9 @@ class Dashboard extends BaseDashboard
     }
     use HasPageShield;
 
+    /** @var array<string, mixed> | null */
+    public ?array $filters = null;
+
     public function mountHasFilters(): void
     {
         $this->initializeFilters();

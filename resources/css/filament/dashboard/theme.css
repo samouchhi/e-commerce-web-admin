@@ -30,7 +30,7 @@
     --panel-ground: #ffffff;
     --panel-surface: #ffffff;
     --panel-fill: #f9fafb;
-    --panel-border: #e5e7eb;
+    --panel-border: #d1d5db;
     --panel-hover: #f3f4f6;
     --panel-shadow: 0 1px 3px rgb(17 24 39 / 6%), 0 1px 2px rgb(17 24 39 / 4%);
     --panel-heading-font: var(--font-sans);
@@ -43,7 +43,7 @@
     --panel-ground: #030712;
     --panel-surface: #111827;
     --panel-fill: #1f2937;
-    --panel-border: #374151;
+    --panel-border: #4b5563;
     --panel-hover: #1f2937;
     --panel-shadow: 0 2px 4px rgb(0 0 0 / 6%), 0 16px 32px -20px rgb(0 0 0 / 35%);
 
@@ -182,7 +182,7 @@
 .fi-sc-tabs.fi-contained {
     border-radius: 1.5rem;
     background-color: var(--panel-surface);
-    box-shadow: var(--panel-shadow);
+    box-shadow: var(--panel-shadow), 0 0 0 1px var(--panel-border);
 }
 
 .fi-section.fi-secondary:not(.fi-section-not-contained):not(.fi-aside) {
@@ -267,7 +267,7 @@
 }
 
 .fi-input-wrp:not(.fi-invalid):not(:focus-within) {
-    box-shadow: none;
+    box-shadow: 0 0 0 1px var(--panel-border);
 }
 
 .fi-input-wrp:not(.fi-disabled):focus-within {
@@ -333,7 +333,11 @@
 .fi-fo-repeater-item {
     border-radius: 1.25rem;
     background-color: var(--panel-surface);
-    box-shadow: var(--panel-shadow);
+    box-shadow: var(--panel-shadow), 0 0 0 1px var(--panel-border);
+}
+
+.fi-sc-wizard-header-step-separator {
+    color: var(--panel-border);
 }
 
 .fi-sc-wizard-header-step.fi-active .fi-sc-wizard-header-step-icon-ctn {
