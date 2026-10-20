@@ -2,6 +2,7 @@
 
 namespace App\Filament\Widgets;
 
+use App\Enums\PaymentStatus;
 use App\Models\Order;
 use App\Models\OrderItems;
 use Filament\Widgets\Concerns\InteractsWithPageFilters;
@@ -36,10 +37,9 @@ class OrderStatus extends Widget
             ->pluck('total', 'payment_status');
 
         $statuses = [
-            ['label' => 'Paid', 'count' => (int) ($counts['paid'] ?? 0), 'color' => '#71886a', 'dot' => 'bg-[#71886a]'],
-            ['label' => 'Pending', 'count' => (int) ($counts['pending'] ?? 0), 'color' => '#c09a58', 'dot' => 'bg-[#c09a58]'],
-            ['label' => 'Expired', 'count' => (int) ($counts['expired'] ?? 0), 'color' => '#b87970', 'dot' => 'bg-[#b87970]'],
-            ['label' => 'Partial', 'count' => (int) ($counts['partial'] ?? 0), 'color' => '#8993a7', 'dot' => 'bg-[#8993a7]'],
+            ['label' => PaymentStatus::Paid->getLabel(), 'count' => (int) ($counts[PaymentStatus::Paid->value] ?? 0), 'color' => '#71886a', 'dot' => 'bg-[#71886a]'],
+            ['label' => PaymentStatus::Pending->getLabel(), 'count' => (int) ($counts[PaymentStatus::Pending->value] ?? 0), 'color' => '#c09a58', 'dot' => 'bg-[#c09a58]'],
+            ['label' => PaymentStatus::Expired->getLabel(), 'count' => (int) ($counts[PaymentStatus::Expired->value] ?? 0), 'color' => '#b87970', 'dot' => 'bg-[#b87970]'],
         ];
 
         $total = array_sum(array_column($statuses, 'count'));
