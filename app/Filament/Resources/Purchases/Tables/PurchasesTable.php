@@ -7,11 +7,9 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Forms\Components\Select;
+use Filament\Actions\ViewAction;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Filters\TrashedFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -22,22 +20,22 @@ class PurchasesTable
         return $table
             ->columns([
                 TextColumn::make('reference')->label('Reference')->searchable(),
-                TextColumn::make('items')
+                // TextColumn::make('items')
 
-                    ->label('Items')
-                    ->badge()
-                    ->wrap()
-                    ->getStateUsing(
-                        fn($record) => $record->items
-                            ->map(fn($item) => ($item->variant?->name ?? '?') . ' | ' . ($item->variant?->product?->name ?? '?'))
-                            ->toArray()
-                    )
-                    ->searchable(query: function (Builder $query, string $search): Builder {
-                        return $query->whereHas('items', function ($q) use ($search) {
-                            $q->whereHas('variant', fn($q) => $q->where('name', 'like', "%{$search}%"))
-                                ->orWhereHas('variant.product', fn($q) => $q->where('name', 'like', "%{$search}%"));
-                        });
-                    }),
+                //     ->label('Items')
+                //     ->badge()
+                //     ->wrap()
+                //     ->getStateUsing(
+                //         fn ($record) => $record->items
+                //             ->map(fn ($item) => ($item->variant?->name ?? '?').' | '.($item->variant?->product?->name ?? '?'))
+                //             ->toArray()
+                //     )
+                //     ->searchable(query: function (Builder $query, string $search): Builder {
+                //         return $query->whereHas('items', function ($q) use ($search) {
+                //             $q->whereHas('variant', fn ($q) => $q->where('name', 'like', "%{$search}%"))
+                //                 ->orWhereHas('variant.product', fn ($q) => $q->where('name', 'like', "%{$search}%"));
+                //         });
+                //     }),
                 TextColumn::make('supplier.name')->label('Supplier')->searchable(),
                 TextColumn::make('purchase_date')->label('Purchase Date')->date()->sortable(),
                 TextColumn::make('grand_total')->label('Grand Total')->money('USD')->sortable(),
@@ -45,7 +43,7 @@ class PurchasesTable
                 TextColumn::make('shipping_status')->label('Shipping Status')->sortable()
                     ->badge(),
                 TextColumn::make('Items Qty')
-                    ->getStateUsing(fn($record) => $record->items->sum('quantity'))
+                    ->getStateUsing(fn ($record) => $record->items->sum('quantity'))
                     ->label('Items Qty')->sortable()->badge(),
             ])
 
@@ -65,6 +63,7 @@ class PurchasesTable
 
             ->recordActions([
                 ActionGroup::make([
+                    ViewAction::make(),
                     EditAction::make(),
                     DeleteAction::make(),
                 ]),

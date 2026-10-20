@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\OrderShippingStatus;
 use App\Enums\PaymentStatus;
-use App\Enums\ShippingStatus;
 use Asignua\FilamentActivityLogPlus\Concerns\LogsActivityPlus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -12,7 +12,7 @@ use Illuminate\Notifications\Notifiable;
 
 class Order extends Model
 {
-    use LogsActivityPlus;
+    // use LogsActivityPlus;
     use Notifiable;
 
     protected $fillable = [
@@ -53,7 +53,7 @@ class Order extends Model
 
     protected $casts = [
         'payment_status' => PaymentStatus::class,
-        'shipping_status' => ShippingStatus::class,
+        'shipping_status' => OrderShippingStatus::class,
 
     ];
 }

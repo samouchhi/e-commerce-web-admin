@@ -34,8 +34,11 @@ class PaymentMethod extends Page
 
         return $schema
             ->statePath('data')
+            ->columns(['default' => 1, 'lg' => 3])
             ->components([
                 Section::make('Payment Method')
+                    ->columns(1)
+                    ->columnSpan(1)
                     ->schema([
                         TextInput::make('aba_payway_link')
                             ->label('ABA Payway Link')
@@ -44,6 +47,7 @@ class PaymentMethod extends Page
                         TextInput::make('bot_token')
                             ->prefixIcon('heroicon-o-key')
                             ->label('Bot Token')
+                            ->password()
                             ->maxLength(255),
                         TextInput::make('bot_chat_id')
                             ->prefixIcon('heroicon-o-chat-bubble-left-right')

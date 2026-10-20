@@ -12,14 +12,12 @@ enum PaymentStatus: string implements HasColor, HasIcon, HasLabel
     case Pending = 'pending';
     case Paid = 'paid';
     case Expired = 'expired';
-    case Partial = 'partial';
 
     public function getLabel(): string
     {
         return match ($this) {
             self::Pending => 'Pending',
             self::Paid => 'Paid',
-            self::Partial => 'Partial',
             self::Expired => 'Expired',
         };
     }
@@ -27,9 +25,8 @@ enum PaymentStatus: string implements HasColor, HasIcon, HasLabel
     public function getColor(): string
     {
         return match ($this) {
-            self::Pending => 'info',
+            self::Pending => 'warning',
             self::Paid => 'success',
-            self::Partial => 'danger',
             self::Expired => 'danger',
         };
     }
@@ -39,7 +36,6 @@ enum PaymentStatus: string implements HasColor, HasIcon, HasLabel
         return match ($this) {
             self::Pending => Heroicon::Clock,
             self::Paid => Heroicon::CheckCircle,
-            self::Partial => Heroicon::ExclamationTriangle,
             self::Expired => Heroicon::XCircle,
         };
     }

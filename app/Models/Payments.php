@@ -8,7 +8,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Payments extends Model
 {
-    use LogsActivityPlus;
+    // use LogsActivityPlus;
+
+    // protected static $doNotRecordEvents = ['created'];
 
     protected $casts = [
         'amount' => 'decimal:2',

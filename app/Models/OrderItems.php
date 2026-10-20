@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class OrderItems extends Model
 {
-    use LogsActivityPlus;
+    // use LogsActivityPlus;
 
     protected $fillable = [
         'order_id',

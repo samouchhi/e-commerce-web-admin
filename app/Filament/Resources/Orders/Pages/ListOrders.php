@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\Orders\Pages;
 
-use App\Enums\ShippingStatus;
+use App\Enums\OrderShippingStatus;
 use App\Filament\Resources\Orders\OrderResource;
 use App\Models\Order;
 use Filament\Actions\CreateAction;
@@ -30,28 +30,18 @@ class ListOrders extends ListRecords
     {
         return [
             null => Tab::make('All')
-                ->badge(static fn(): int => Order::query()->count())
+                ->badge(static fn (): int => Order::query()->count())
                 ->deferBadge(),
             'pending' => Tab::make()
-                ->badge(static fn(): int => Order::query()->where('shipping_status', ShippingStatus::Pending)->count())
-                ->badgeColor(ShippingStatus::Pending->getColor())
+                ->badge(static fn (): int => Order::query()->where('shipping_status', OrderShippingStatus::Pending)->count())
+                ->badgeColor(OrderShippingStatus::Pending->getColor())
                 ->deferBadge()
-                ->query(fn($query) => $query->where('shipping_status', ShippingStatus::Pending)),
-            'processing' => Tab::make()
-                ->badge(static fn(): int => Order::query()->where('shipping_status', ShippingStatus::Processing)->count())
-                ->badgeColor(ShippingStatus::Processing->getColor())
-                ->deferBadge()
-                ->query(fn($query) => $query->where('shipping_status', ShippingStatus::Processing)),
+                ->query(fn ($query) => $query->where('shipping_status', OrderShippingStatus::Pending)),
             'shipped' => Tab::make()
-                ->badge(static fn(): int => Order::query()->where('shipping_status', ShippingStatus::Shipped)->count())
-                ->badgeColor(ShippingStatus::Shipped->getColor())
+                ->badge(static fn (): int => Order::query()->where('shipping_status', OrderShippingStatus::Shipped)->count())
+                ->badgeColor(OrderShippingStatus::Shipped->getColor())
                 ->deferBadge()
-                ->query(fn($query) => $query->where('shipping_status', ShippingStatus::Shipped)),
-            'delivered' => Tab::make()
-                ->badge(static fn(): int => Order::query()->where('shipping_status', ShippingStatus::Delivered)->count())
-                ->badgeColor(ShippingStatus::Delivered->getColor())
-                ->deferBadge()
-                ->query(fn($query) => $query->where('shipping_status', ShippingStatus::Delivered)),
+                ->query(fn ($query) => $query->where('shipping_status', OrderShippingStatus::Shipped)),
         ];
     }
 }

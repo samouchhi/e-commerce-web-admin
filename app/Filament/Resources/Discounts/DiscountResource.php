@@ -6,6 +6,7 @@ use App\Filament\Resources\Discounts\Pages\CreateDiscount;
 use App\Filament\Resources\Discounts\Pages\EditDiscount;
 use App\Filament\Resources\Discounts\Pages\ListDiscounts;
 use App\Filament\Resources\Discounts\Schemas\DiscountForm;
+use App\Filament\Resources\Discounts\Schemas\DiscountInfolist;
 use App\Filament\Resources\Discounts\Tables\DiscountsTable;
 use App\Models\Discount;
 use BackedEnum;
@@ -25,6 +26,11 @@ class DiscountResource extends Resource
     public static function form(Schema $schema): Schema
     {
         return DiscountForm::configure($schema);
+    }
+
+    public static function infolist(Schema $schema): Schema
+    {
+        return DiscountInfolist::configure($schema);
     }
 
     public static function table(Table $table): Table

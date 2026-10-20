@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Orders\Tables;
 
+use App\Enums\OrderShippingStatus;
 use App\Enums\PaymentStatus;
 use App\Models\Customer;
 use App\Models\Order;
@@ -12,6 +13,7 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -65,7 +67,7 @@ class OrdersTable
                     ->options([
                         'pending' => 'Pending',
                         'paid' => 'Paid',
-                        'failed' => 'Failed',
+                        'expired' => 'Expired',
                     ]),
                 SelectFilter::make('customer_id')
                     ->label('Customer')
@@ -75,12 +77,25 @@ class OrdersTable
                             ?? $customer->email
                             ?? "Customer #{$customer->id}",
                     )
-                    ->searchable()
-                    ->preload(),
+                    ->searchable(),
 
             ])
             ->recordActions([
                 ActionGroup::make([
+                    Action::make('Shipped')
+                        ->icon('heroicon-o-truck')
+                        ->label('Shipped')
+                        ->color('success')
+                        ->visible(fn (Order $record): bool => $record->payment_status?->value === 'paid')
+                        ->action(function (Order $record): void {
+                            $record->shipping_status = OrderShippingStatus::Shipped;
+                            $record->save();
+
+                            Notification::make()
+                                ->title($record->order_number.' has been shipped.')
+                                ->success()
+                                ->send();
+                        }),
                     ViewAction::make(),
                     Action::make('print')
                         ->label(fn (Order $record): string => $record->payment_status === PaymentStatus::Paid ? 'Print Receipt' : 'Print Invoice')

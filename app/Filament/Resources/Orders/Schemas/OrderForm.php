@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources\Orders\Schemas;
 
+use App\Enums\OrderShippingStatus;
 use App\Enums\PaymentStatus;
-use App\Enums\ShippingStatus;
 use App\Models\Customer;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -52,9 +52,9 @@ class OrderForm
                     ->required()
                     ->default(PaymentStatus::Pending),
                 ToggleButtons::make('shipping_status')
-                    ->options(ShippingStatus::class)
+                    ->options(OrderShippingStatus::class)
                     ->required()
-                    ->default(ShippingStatus::Pending),
+                    ->default(OrderShippingStatus::Pending),
             ]);
     }
 }

@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Logistics;
 use App\Filament\Resources\Logistics\Pages\ManageLogistics;
 use App\Models\Logistic;
 use BackedEnum;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -79,8 +80,10 @@ class LogisticResource extends Resource
                 //
             ])
             ->recordActions([
-                EditAction::make(),
-                DeleteAction::make(),
+                ActionGroup::make([
+                    EditAction::make(),
+                    DeleteAction::make(),
+                ]),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
