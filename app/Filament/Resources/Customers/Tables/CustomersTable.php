@@ -44,8 +44,8 @@ class CustomersTable
             ])
             ->recordActions([
                 ActionGroup::make([
-                    EditAction::make(),
                     ViewAction::make(),
+                    EditAction::make(),
                     DeleteAction::make(),
                 ]),
             ])

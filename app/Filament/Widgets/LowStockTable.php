@@ -30,11 +30,11 @@ class LowStockTable extends TableWidget
         $alertStock = GeneralSetting::query()->value('alert_stock') ?? 5;
 
         return $table
-            ->query(fn (): Builder => ProductVariant::query()
+            ->query(fn(): Builder => ProductVariant::query()
                 ->limit(5)
                 ->with('product.images')
                 ->where('stock_qty', '<=', $alertStock)
-                ->when($this->pageFilters['product_id'] ?? null, fn (Builder $query, int|string $productId) => $query->where('product_id', $productId))
+                ->when($this->pageFilters['product_id'] ?? null, fn(Builder $query, int|string $productId) => $query->where('product_id', $productId))
                 ->orderBy('stock_qty'))
             ->paginated(false)
             ->columns([
@@ -42,13 +42,13 @@ class LowStockTable extends TableWidget
                     ->label('Product')
                     ->view('filament.tables.columns.product-with-image'),
                 TextColumn::make('stock_qty')->label('Left')->badge()
-                    ->color(fn (int $state): string => $state <= 0 ? 'danger' : 'warning'),
+                    ->color(fn(int $state): string => $state <= 0 ? 'danger' : 'warning'),
             ])
             ->emptyStateHeading('Stock levels look good')
             ->emptyStateDescription('No variants are below the stock alert threshold.')
             ->headerActions([
-                Action::make('restock')->label('New purchase')->color('gray')->url(PurchaseResource::getUrl('create'))
-                    ->visible(fn (): bool => PurchaseResource::canCreate()),
+                Action::make('restock')->label('View Purchases')->color('gray')->url(PurchaseResource::getUrl('create'))
+                    ->visible(fn(): bool => PurchaseResource::canCreate()),
             ]);
     }
 }

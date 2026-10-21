@@ -34,7 +34,7 @@ class BestSellerTable extends TableWidget
                     ->join('order_items', 'product_variants.id', '=', 'order_items.product_variant_id')
                     ->join('orders', 'order_items.order_id', '=', 'orders.id')
                     ->where('orders.payment_status', 'paid')
-                    ->when($this->pageFilters['product_id'] ?? null, fn (Builder $query, int|string $productId) => $query->where('product_variants.product_id', $productId))
+                    ->when($this->pageFilters['product_id'] ?? null, fn(Builder $query, int|string $productId) => $query->where('product_variants.product_id', $productId))
                     ->groupBy('product_variants.id')
                     ->limit(5)
                     ->orderByDesc('total_quantity')
@@ -44,7 +44,7 @@ class BestSellerTable extends TableWidget
             ->emptyStateHeading('No sales yet')
             ->emptyStateDescription('Paid product sales will appear here.')
             ->columns([
-                TextColumn::make('#')->label('#')->getStateUsing(fn ($rowLoop) => $rowLoop->iteration)->alignCenter(),
+                TextColumn::make('#')->label('#')->getStateUsing(fn($rowLoop) => $rowLoop->iteration)->alignCenter(),
                 ViewColumn::make('product.name')
                     ->label('Product')
                     ->view('filament.tables.columns.product-with-image'),
@@ -52,8 +52,8 @@ class BestSellerTable extends TableWidget
 
             ])
             ->headerActions([
-                Action::make('products')->label('Products')->color('gray')->url(ProductResource::getUrl())
-                    ->visible(fn (): bool => ProductResource::canViewAny()),
+                Action::make('products')->label('View Products')->color('gray')->url(ProductResource::getUrl())
+                    ->visible(fn(): bool => ProductResource::canViewAny()),
             ]);
     }
 }

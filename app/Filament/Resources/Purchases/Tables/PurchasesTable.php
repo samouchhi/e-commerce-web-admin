@@ -2,12 +2,16 @@
 
 namespace App\Filament\Resources\Purchases\Tables;
 
+use App\Enums\ShippingStatus;
+use App\Models\Purchase;
+use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
@@ -43,7 +47,7 @@ class PurchasesTable
                 TextColumn::make('shipping_status')->label('Shipping Status')->sortable()
                     ->badge(),
                 TextColumn::make('Items Qty')
-                    ->getStateUsing(fn ($record) => $record->items->sum('quantity'))
+                    ->getStateUsing(fn($record) => $record->items->sum('quantity'))
                     ->label('Items Qty')->sortable()->badge(),
             ])
 
@@ -63,6 +67,31 @@ class PurchasesTable
 
             ->recordActions([
                 ActionGroup::make([
+                    Action::make('Shipped')
+                        ->icon('heroicon-o-truck')
+                        ->color('success')
+                        ->visible(fn(Purchase $record): bool => $record->shipping_status === ShippingStatus::Pending)
+                        ->action(function (Purchase $record): void {
+                            $record->update(['shipping_status' => ShippingStatus::Shipped]);
+
+                            Notification::make()
+                                ->title($record->reference . ' has been shipped.')
+                                ->success()
+                                ->send();
+                        }),
+
+                    Action::make('Delivered')
+                        ->icon('heroicon-o-check-circle')
+                        ->color('success')
+                        ->visible(fn(Purchase $record): bool => $record->shipping_status === ShippingStatus::Shipped)
+                        ->action(function (Purchase $record): void {
+                            $record->update(['shipping_status' => ShippingStatus::Delivered]);
+
+                            Notification::make()
+                                ->title($record->reference . ' has been delivered.')
+                                ->success()
+                                ->send();
+                        }),
                     ViewAction::make(),
                     EditAction::make(),
                     DeleteAction::make(),

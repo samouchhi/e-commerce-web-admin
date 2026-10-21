@@ -28,8 +28,8 @@ class ProductsTable
             ->columns([
                 ToggleColumn::make('is_active')
                     ->label('Status')
-                    ->onIcon(Heroicon::OutlinedCheckBadge)
-                    ->offIcon(Heroicon::OutlinedXMark)
+                    ->onIcon(Heroicon::Check)
+                    ->offIcon(Heroicon::XMark)
                     ->onColor('success')
                     ->offColor('danger'),
                 ImageColumn::make('images.image_path')

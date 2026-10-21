@@ -27,11 +27,11 @@ class RecentOrders extends TableWidget
     {
 
         return $table
-            ->query(fn (): Builder => Order::query()
+            ->query(fn(): Builder => Order::query()
                 ->orderByDesc('created_at')
                 ->limit(5)
                 ->where('payment_status', 'paid')
-                ->when($this->pageFilters['product_id'] ?? null, fn (Builder $query, int|string $productId) => $query->whereHas('items.productVariant', fn (Builder $query) => $query->where('product_id', $productId)))
+                ->when($this->pageFilters['product_id'] ?? null, fn(Builder $query, int|string $productId) => $query->whereHas('items.productVariant', fn(Builder $query) => $query->where('product_id', $productId)))
                 ->with('customer')->withCount('items'))
 
             ->paginated(false)
@@ -43,12 +43,12 @@ class RecentOrders extends TableWidget
                 TextColumn::make('payment_status')->label('Status')->badge(),
                 TextColumn::make('created_at')->label('Date')->dateTime('M d, Y'),
             ])
-            ->recordUrl(fn (Order $record): ?string => OrderResource::canView($record) ? OrderResource::getUrl('view', ['record' => $record]) : null)
+            ->recordUrl(fn(Order $record): ?string => OrderResource::canView($record) ? OrderResource::getUrl('view', ['record' => $record]) : null)
             ->emptyStateHeading('No paid orders')
             ->emptyStateDescription('Paid orders matching the selected product will appear here.')
             ->headerActions([
-                Action::make('orders')->label('All orders')->color('gray')->url(OrderResource::getUrl())
-                    ->visible(fn (): bool => OrderResource::canViewAny()),
+                Action::make('orders')->label('View Orders')->color('gray')->url(OrderResource::getUrl())
+                    ->visible(fn(): bool => OrderResource::canViewAny()),
             ]);
     }
 }

@@ -8,9 +8,11 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
 
 class DiscountsTable
@@ -19,13 +21,19 @@ class DiscountsTable
     {
         return $table
             ->columns([
+                ToggleColumn::make('is_active')
+                    ->label('Status')
+                    ->onIcon(Heroicon::Check)
+                    ->offIcon(Heroicon::XMark)
+                    ->onColor('success')
+                    ->offColor('danger'),
                 ImageColumn::make('image_path')
                     ->label('Image')
                     ->disk('public'),
-                TextColumn::make('products.name')
-                    ->label('Products')
-                    ->badge()
-                    ->listWithLineBreaks(),
+                // TextColumn::make('products.name')
+                //     ->label('Products')
+                //     ->badge()
+                //     ->listWithLineBreaks(),
                 TextColumn::make('name')
                     ->searchable(),
                 TextColumn::make('description')
@@ -42,9 +50,9 @@ class DiscountsTable
                 TextColumn::make('end_date')
                     ->date()
                     ->sortable(),
-                IconColumn::make('is_active')
-                    ->label('Status')
-                    ->boolean(),
+                // IconColumn::make('is_active')
+                //     ->label('Status')
+                //     ->boolean(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
