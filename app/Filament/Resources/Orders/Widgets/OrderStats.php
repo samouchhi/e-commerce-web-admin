@@ -13,8 +13,8 @@ class OrderStats extends StatsOverviewWidget
     {
         return [
             Stat::make('Total Orders', OrderResource::getModel()::count()),
-            Stat::make('Pending Orders', OrderResource::getModel()::where('shipping_status', OrderShippingStatus::Pending)->count()),
-            Stat::make('Total Revenue', '$'.number_format(OrderResource::getModel()::where('payment_status', 'paid')->sum('total_amount'), 2)),
+            Stat::make('Paid Orders', OrderResource::getModel()::where('payment_status', 'paid')->count()),
+            Stat::make('Total Revenue', '$' . number_format(OrderResource::getModel()::where('payment_status', 'paid')->sum('total_amount'), 2)),
         ];
     }
 }
