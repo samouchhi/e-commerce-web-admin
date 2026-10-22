@@ -12,11 +12,12 @@ use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class AbaPaymentService
 {
-    private const GENERATE_ENDPOINT = 'https://pwapp.ababank.com/api/pw-app/v1/payment/gateway/list-payment-options';
+    private const GENERATE_ENDPOINT = 'https://link.payway.com.kh/api/pw-app/v1/payment/gateway/list-payment-options';
 
     private const STATUS_ENDPOINT = 'https://pwapp.ababank.com/api/pw-app/v1/payment-link/check-payment-status';
 
@@ -245,11 +246,15 @@ class AbaPaymentService
 
         $result = $response->json();
 
-        abort_unless(
-            $response->successful() && is_array($result) && (string) data_get($result, 'status.code') === '00',
-            502,
-            'ABA could not generate a payment QR.',
-        );
+        if (! $response->successful() || ! is_array($result) || (string) data_get($result, 'status.code') !== '00') {
+            Log::warning('ABA payment QR generation failed.', [
+                'http_status' => $response->status(),
+                'content_type' => $response->header('Content-Type'),
+                'aba_status_code' => is_scalar(data_get($result, 'status.code')) ? (string) data_get($result, 'status.code') : null,
+            ]);
+
+            abort(502, 'ABA could not generate a payment QR.');
+        }
 
         foreach (['qr_string', 'client_id', 'token'] as $field) {
             abort_unless(is_string($result[$field] ?? null) && $result[$field] !== '', 502, 'ABA returned incomplete payment details.');
