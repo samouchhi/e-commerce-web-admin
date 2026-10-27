@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\RegisterController;
 use App\Http\Controllers\Api\ResendOtpController;
 use App\Http\Controllers\Api\SettingsController;
 use App\Http\Controllers\Api\VerifyOtpController;
+use App\Http\Controllers\Api\WishlistController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -56,3 +57,7 @@ Route::post('/verify-otp', VerifyOtpController::class)
     ->middleware('throttle:5,1');
 Route::post('/resend-otp', ResendOtpController::class)
     ->middleware('throttle:5,1');
+
+Route::get('wishlist', [WishlistController::class, 'index'])->middleware(['auth:sanctum', 'throttle:60,1']);
+Route::post('wishlist/operations', [WishlistController::class, 'sync'])->middleware(['auth:sanctum', 'throttle:60,1']);
+Route::post('wishlist/resolve', [WishlistController::class, 'resolve'])->middleware('throttle:60,1');
