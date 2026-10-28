@@ -14,10 +14,8 @@ use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
-use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 
 class ProductsTable
@@ -27,51 +25,51 @@ class ProductsTable
         return $table
             ->columns([
                 ToggleColumn::make('is_active')
-                    ->label('Status')
+                    ->label(__('Status'))
                     ->onIcon(Heroicon::Check)
                     ->offIcon(Heroicon::XMark)
                     ->onColor('success')
                     ->offColor('danger'),
                 ImageColumn::make('images.image_path')
-                    ->label('Image')
+                    ->label(__('Image'))
                     ->disk('public')
-                    ->getStateUsing(fn(Product $record) => $record->images->first()?->image_path),
+                    ->getStateUsing(fn (Product $record) => $record->images->first()?->image_path),
                 TextColumn::make('name')
-                    ->label('Name')
+                    ->label(__('Name'))
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('category.name')
-                    ->label('Category')
+                    ->label(__('Category'))
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('unit.short_name')
-                    ->label('Unit')
+                    ->label(__('Unit'))
                     ->sortable()
                     ->searchable()
                     ->badge(),
 
                 TextColumn::make('variants.price')
-                    ->label('Price')
+                    ->label(__('Price'))
                     ->money('USD')
-                    ->getStateUsing((fn(Product $record) => $record->variants->min('price'))),
+                    ->getStateUsing((fn (Product $record) => $record->variants->min('price'))),
                 TextColumn::make('variants.cost')
-                    ->label('Cost')
+                    ->label(__('Cost'))
                     ->money('USD')
-                    ->getStateUsing((fn(Product $record) => $record->variants->min('cost'))),
-                // SelectColumn::make('status')->label('Status')->options(ProductStatusEnum::class)->searchableOptions(),
+                    ->getStateUsing((fn (Product $record) => $record->variants->min('cost'))),
+                // SelectColumn::make('status')->label(__('Status'))->options(ProductStatusEnum::class)->searchableOptions(),
                 TextColumn::make('stock_count')
-                    ->label('Quantity')
-                    ->state(fn(Product $record) => $record->variants->sum('stock_qty'))
+                    ->label(__('Quantity'))
+                    ->state(fn (Product $record) => $record->variants->sum('stock_qty'))
                     ->sortable()
                     ->badge()
-                    ->color(fn($state) => $state < 10 ? 'danger' : 'success'),
+                    ->color(fn ($state) => $state < 10 ? 'danger' : 'success'),
                 TextColumn::make('created_at')
-                    ->label('Created At')
+                    ->label(__('Created At'))
                     ->since()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
-                    ->label('Updated At')
+                    ->label(__('Updated At'))
                     ->since()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -79,20 +77,20 @@ class ProductsTable
             ->filters(
                 [
                     SelectFilter::make('category_id')
-                        ->label('Category')
+                        ->label(__('Category'))
                         ->relationship('category', 'name'),
                     SelectFilter::make('is_active')
-                        ->label('Status')
+                        ->label(__('Status'))
                         ->options([
-                            1 => 'Active',
-                            0 => 'Inactive',
+                            1 => __('Active'),
+                            0 => __('Inactive'),
                         ]),
                     SelectFilter::make('unit_id')
-                        ->label('Unit')
+                        ->label(__('Unit'))
                         ->relationship('unit', 'short_name'),
                     // Filter::make('created_at')
                     //     ->schema([
-                    //         DatePicker::make('created_from')->label('Created From'),
+                    //         DatePicker::make('created_from')->label(__('Created From')),
                     //     ])
                     //     ->query(function ($query, $data) {
                     //         if ($data['created_from']) {
@@ -101,7 +99,7 @@ class ProductsTable
                     //     }),
                     // Filter::make('created_until')
                     //     ->schema([
-                    //         DatePicker::make('created_until')->label('Created Until'),
+                    //         DatePicker::make('created_until')->label(__('Created Until')),
                     //     ])
                     //     ->query(function ($query, $data) {
                     //         if ($data['created_until']) {

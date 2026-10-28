@@ -16,44 +16,44 @@ class CustomerInfolist
         return $schema
             ->columns(1)
             ->components([
-                Section::make('Customer details')
+                Section::make(__('Customer details'))
                     ->icon('heroicon-o-user')
                     ->schema([
                         TextEntry::make('name')
-                            ->label('Customer name')
+                            ->label(__('Customer name'))
                             ->weight(FontWeight::SemiBold)
-                            ->placeholder('Not provided'),
+                            ->placeholder(__('Not provided')),
                         TextEntry::make('email')
-                            ->label('Email address')
+                            ->label(__('Email address'))
                             ->icon('heroicon-o-envelope')
                             ->copyable()
-                            ->placeholder('Not provided'),
-                        TextEntry::make('phone')
+                            ->placeholder(__('Not provided')),
+                        TextEntry::make('phone')->label(__('Phone'))
                             ->icon('heroicon-o-phone')
                             ->copyable()
-                            ->placeholder('Not provided'),
+                            ->placeholder(__('Not provided')),
                         TextEntry::make('created_at')
-                            ->label('Customer since')
+                            ->label(__('Customer since'))
                             ->dateTime('M j, Y')
-                            ->placeholder('Not available'),
+                            ->placeholder(__('Not available')),
                     ])
                     ->columns(['default' => 1, 'sm' => 2])
                     ->compact(),
-                Section::make('Delivery locations')
+                Section::make(__('Delivery locations'))
                     ->icon('heroicon-o-map-pin')
                     ->schema([
-                        TextEntry::make('orders.address.city')
+                        TextEntry::make('orders.address.city')->label(__('City'))
                             ->distinctList()
                             ->listWithLineBreaks()
-                            ->placeholder('No delivery address saved'),
+                            ->placeholder(__('No delivery address saved')),
                     ])
                     ->compact(),
-                Section::make('Order history')
+                Section::make(__('Order history'))
                     ->icon('heroicon-o-shopping-bag')
                     ->schema([
                         RepeatableEntry::make('orders')
                             ->hiddenLabel()
-                            ->placeholder('No orders placed yet')
+                            ->placeholder(__('No orders placed yet'))
                             ->table([
                                 TableColumn::make('Order'),
                                 TableColumn::make('Placed on'),
@@ -62,13 +62,13 @@ class CustomerInfolist
                                 TableColumn::make('Shipping'),
                             ])
                             ->schema([
-                                TextEntry::make('order_number')
+                                TextEntry::make('order_number')->label(__('Order number'))
                                     ->weight(FontWeight::SemiBold)
                                     ->copyable(),
-                                TextEntry::make('created_at')->dateTime('M j, Y'),
+                                TextEntry::make('created_at')->label(__('Created at'))->dateTime('M j, Y'),
                                 TextEntry::make('total_amount')->money('USD')->alignEnd(),
-                                TextEntry::make('payment_status')->badge(),
-                                TextEntry::make('shipping_status')->badge(),
+                                TextEntry::make('payment_status')->label(__('Payment status'))->badge(),
+                                TextEntry::make('shipping_status')->label(__('Shipping status'))->badge(),
                             ]),
                     ])
                     ->compact(),

@@ -21,7 +21,7 @@ class ListPurchases extends ListRecords
     public function getTabs(): array
     {
         return [
-            null => Tab::make('All')
+            null => Tab::make(__('All'))
                 ->badge(static fn (): int => Purchase::query()->count())
                 ->deferBadge(),
             'pending' => Tab::make()

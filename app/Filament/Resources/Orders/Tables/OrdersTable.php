@@ -25,15 +25,15 @@ class OrdersTable
         return $table
             ->defaultSort('id', 'desc')
             ->columns([
-                TextColumn::make('order_number')
+                TextColumn::make('order_number')->label(__('Order number'))
                     ->searchable(),
-                TextColumn::make('customer.name')
+                TextColumn::make('customer.name')->label(__('Name'))
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('logistic.name')
+                TextColumn::make('logistic.name')->label(__('Name'))
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('total_amount')
+                TextColumn::make('total_amount')->label(__('Total'))
                     ->numeric()
                     ->money()
                     ->sortable(),
@@ -42,35 +42,35 @@ class OrdersTable
                     ->money()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('shipping_cost')
+                TextColumn::make('shipping_cost')->label(__('Shipping Cost'))
                     ->money()
                     ->sortable(),
-                TextColumn::make('payment_status')
+                TextColumn::make('payment_status')->label(__('Payment status'))
                     ->badge()
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('shipping_status')
+                TextColumn::make('shipping_status')->label(__('Shipping status'))
                     ->badge()
                     ->searchable()
                     ->sortable(),
-                TextColumn::make('created_at')
+                TextColumn::make('created_at')->label(__('Created at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
+                TextColumn::make('updated_at')->label(__('Updated at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                SelectFilter::make('payment_status')
+                SelectFilter::make('payment_status')->label(__('Payment status'))
                     ->options([
-                        'pending' => 'Pending',
+                        'pending' => __('Pending'),
                         'paid' => 'Paid',
                         'expired' => 'Expired',
                     ]),
                 SelectFilter::make('customer_id')
-                    ->label('Customer')
+                    ->label(__('Customer'))
                     ->relationship('customer', 'name')
                     ->getOptionLabelFromRecordUsing(
                         fn (Customer $customer): string => $customer->name
@@ -84,7 +84,7 @@ class OrdersTable
                 ActionGroup::make([
                     Action::make('Shipped')
                         ->icon('heroicon-o-truck')
-                        ->label('Shipped')
+                        ->label(__('Shipped'))
                         ->color('success')
                         ->visible(fn (Order $record): bool => $record->payment_status?->value === 'paid')
                         ->action(function (Order $record): void {
@@ -98,7 +98,7 @@ class OrdersTable
                         }),
                     ViewAction::make(),
                     Action::make('print')
-                        ->label(fn (Order $record): string => $record->payment_status === PaymentStatus::Paid ? 'Print Receipt' : 'Print Invoice')
+                        ->label(fn (Order $record): string => $record->payment_status === PaymentStatus::Paid ? __('Print Receipt') : __('Print Invoice'))
                         ->icon('heroicon-o-printer')
                         ->authorize('view')
                         ->visible(fn (Order $record): bool => in_array($record->payment_status, [PaymentStatus::Paid, PaymentStatus::Pending, PaymentStatus::Expired], true))

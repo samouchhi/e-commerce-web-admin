@@ -19,6 +19,21 @@ use UnitEnum;
 
 class ProductResource extends Resource
 {
+    public static function getModelLabel(): string
+    {
+        return __('Product');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return static::getNavigationLabel();
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Products');
+    }
+
     protected static ?string $model = Product::class;
 
     protected static string|UnitEnum|null $navigationGroup = 'Products';

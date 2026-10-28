@@ -17,6 +17,11 @@ use UnitEnum;
 
 class Settings extends Page
 {
+    public static function getNavigationLabel(): string
+    {
+        return __('General Settings');
+    }
+
     use HasPageShield;
 
     public ?array $data = [];

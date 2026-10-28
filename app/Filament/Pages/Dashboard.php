@@ -52,7 +52,7 @@ class Dashboard extends BaseDashboard
 
     public function getHeading(): string
     {
-        return 'Dashboard';
+        return __('Dashboard');
     }
 
     public function getPageClasses(): array
@@ -69,13 +69,13 @@ class Dashboard extends BaseDashboard
     {
         return [
             Action::make('orders')
-                ->label('View orders')
+                ->label(__('View orders'))
                 ->color('gray')
                 ->icon('heroicon-o-shopping-bag')
                 ->url(OrderResource::getUrl())
                 ->visible(fn (): bool => OrderResource::canViewAny()),
             Action::make('product')
-                ->label('Add product')
+                ->label(__('Add product'))
 
                 ->url(ProductResource::getUrl('create'))
                 ->visible(fn (): bool => ProductResource::canCreate()),
@@ -93,7 +93,7 @@ class Dashboard extends BaseDashboard
                         Hidden::make('start_date'),
                         Hidden::make('end_date'),
                         ViewField::make('date_range')
-                            ->label('Date range')
+                            ->label(__('Date range'))
                             ->hiddenLabel()
                             ->view('filament.forms.date-range', fn (): array => ['ranges' => $this->getDateRanges()]),
                     ])

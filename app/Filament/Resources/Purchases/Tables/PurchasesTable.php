@@ -23,10 +23,10 @@ class PurchasesTable
     {
         return $table
             ->columns([
-                TextColumn::make('reference')->label('Reference')->searchable(),
+                TextColumn::make('reference')->label(__('Reference'))->searchable(),
                 // TextColumn::make('items')
 
-                //     ->label('Items')
+                //     ->label(__('Items'))
                 //     ->badge()
                 //     ->wrap()
                 //     ->getStateUsing(
@@ -40,15 +40,15 @@ class PurchasesTable
                 //                 ->orWhereHas('variant.product', fn ($q) => $q->where('name', 'like', "%{$search}%"));
                 //         });
                 //     }),
-                TextColumn::make('supplier.name')->label('Supplier')->searchable(),
-                TextColumn::make('purchase_date')->label('Purchase Date')->date()->sortable(),
-                TextColumn::make('grand_total')->label('Grand Total')->money('USD')->sortable(),
-                TextColumn::make('payment_status')->label('Payment Status')->sortable()->badge(),
-                TextColumn::make('shipping_status')->label('Shipping Status')->sortable()
+                TextColumn::make('supplier.name')->label(__('Supplier'))->searchable(),
+                TextColumn::make('purchase_date')->label(__('Purchase Date'))->date()->sortable(),
+                TextColumn::make('grand_total')->label(__('Grand Total'))->money('USD')->sortable(),
+                TextColumn::make('payment_status')->label(__('Payment Status'))->sortable()->badge(),
+                TextColumn::make('shipping_status')->label(__('Shipping Status'))->sortable()
                     ->badge(),
                 TextColumn::make('Items Qty')
-                    ->getStateUsing(fn($record) => $record->items->sum('quantity'))
-                    ->label('Items Qty')->sortable()->badge(),
+                    ->getStateUsing(fn ($record) => $record->items->sum('quantity'))
+                    ->label(__('Items Qty'))->sortable()->badge(),
             ])
 
             //
@@ -56,11 +56,11 @@ class PurchasesTable
             ->filters(
                 [
                     SelectFilter::make('supplier_id')
-                        ->label('Supplier')
+                        ->label(__('Supplier'))
                         ->relationship('supplier', 'name')
                         ->searchable()
                         ->preload()
-                        ->placeholder('Select Supplier'),
+                        ->placeholder(__('Select Supplier')),
                 ],
 
             )
@@ -70,12 +70,12 @@ class PurchasesTable
                     Action::make('Shipped')
                         ->icon('heroicon-o-truck')
                         ->color('success')
-                        ->visible(fn(Purchase $record): bool => $record->shipping_status === ShippingStatus::Pending)
+                        ->visible(fn (Purchase $record): bool => $record->shipping_status === ShippingStatus::Pending)
                         ->action(function (Purchase $record): void {
                             $record->update(['shipping_status' => ShippingStatus::Shipped]);
 
                             Notification::make()
-                                ->title($record->reference . ' has been shipped.')
+                                ->title($record->reference.' has been shipped.')
                                 ->success()
                                 ->send();
                         }),
@@ -83,12 +83,12 @@ class PurchasesTable
                     Action::make('Delivered')
                         ->icon('heroicon-o-check-circle')
                         ->color('success')
-                        ->visible(fn(Purchase $record): bool => $record->shipping_status === ShippingStatus::Shipped)
+                        ->visible(fn (Purchase $record): bool => $record->shipping_status === ShippingStatus::Shipped)
                         ->action(function (Purchase $record): void {
                             $record->update(['shipping_status' => ShippingStatus::Delivered]);
 
                             Notification::make()
-                                ->title($record->reference . ' has been delivered.')
+                                ->title($record->reference.' has been delivered.')
                                 ->success()
                                 ->send();
                         }),

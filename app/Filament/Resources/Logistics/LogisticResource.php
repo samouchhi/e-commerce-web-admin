@@ -21,6 +21,21 @@ use UnitEnum;
 
 class LogisticResource extends Resource
 {
+    public static function getModelLabel(): string
+    {
+        return __('Logistic');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return static::getNavigationLabel();
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Logistics');
+    }
+
     protected static ?string $model = Logistic::class;
 
     protected static string|UnitEnum|null $navigationGroup = 'Settings';
@@ -31,14 +46,14 @@ class LogisticResource extends Resource
     {
         return $schema
             ->components([
-                TextInput::make('name')
+                TextInput::make('name')->label(__('Name'))
                     ->prefixIcon('heroicon-o-user')
                     ->required(),
-                TextInput::make('description')
+                TextInput::make('description')->label(__('Description'))
                     ->prefixIcon('heroicon-o-document-text'),
                 TextInput::make('contact_number')
                     ->prefixIcon('heroicon-o-phone'),
-                TextInput::make('price')
+                TextInput::make('price')->label(__('Price'))
                     ->numeric()
                     ->required()
                     ->prefixIcon('heroicon-o-currency-dollar'),
@@ -56,22 +71,22 @@ class LogisticResource extends Resource
                 ImageColumn::make('image')
                     ->searchable()
                     ->disk('public'),
-                TextColumn::make('name')
+                TextColumn::make('name')->label(__('Name'))
                     ->searchable(),
-                TextColumn::make('price')
+                TextColumn::make('price')->label(__('Price'))
                     ->money('usd', true)
                     ->sortable()
                     ->searchable(),
-                TextColumn::make('description')
+                TextColumn::make('description')->label(__('Description'))
                     ->searchable(),
                 TextColumn::make('contact_number')
                     ->searchable(),
 
-                TextColumn::make('created_at')
+                TextColumn::make('created_at')->label(__('Created at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
+                TextColumn::make('updated_at')->label(__('Updated at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

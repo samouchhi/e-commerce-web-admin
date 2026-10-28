@@ -23,15 +23,15 @@ class DiscountForm
         return $schema
             ->components([
 
-                TextInput::make('name')
+                TextInput::make('name')->label(__('Name'))
                     ->prefixIcon('heroicon-o-tag')
                     ->required(),
-                TextInput::make('description')
+                TextInput::make('description')->label(__('Description'))
                     ->prefixIcon('heroicon-o-document-text')
                     ->required(),
 
                 FileUpload::make('image_path')
-                    ->label('Promotion image')
+                    ->label(__('Promotion image'))
                     ->image()
                     ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                     ->maxSize(5120)
@@ -42,7 +42,7 @@ class DiscountForm
 
                 TextInput::make('value')
                     ->prefixIcon(
-                        fn(Get $get): string => $get('type') === 'percentage'
+                        fn (Get $get): string => $get('type') === 'percentage'
                             ? 'heroicon-o-percent-badge'
                             : 'heroicon-o-currency-dollar'
                     )
@@ -51,8 +51,8 @@ class DiscountForm
 
                 Select::make('type')
                     ->options([
-                        'percentage' => 'Percentage',
-                        'fixed' => 'Fixed',
+                        'percentage' => __('Percentage'),
+                        'fixed' => __('Fixed'),
                     ])
                     ->live()
                     ->searchable()
@@ -65,17 +65,17 @@ class DiscountForm
                     ->required(),
 
                 ModalTableSelect::make('products')
-                    ->label('Choose Products')
+                    ->label(__('Choose Products'))
                     ->relationship('products', 'name')
                     ->multiple()
                     ->tableConfiguration(ProductsTable::class)
                     ->required(),
 
                 Toggle::make('is_active')
-                    ->label('Enable')
+                    ->label(__('Enable'))
                     ->required(),
                 // Select::make('products')
-                //     ->label('Products')
+                //     ->label(__('Products'))
                 //     ->relationship('products', 'name')
                 //     ->multiple()
                 //     ->searchable()
@@ -85,7 +85,7 @@ class DiscountForm
 
                 RepeatableEntry::make('selectedProducts')
                     ->hiddenLabel()
-                    ->state(fn(Get $get) => Product::query()
+                    ->state(fn (Get $get) => Product::query()
                         ->whereIn('id', $get('products') ?? [])
                         ->get())
                     ->table([
@@ -93,12 +93,12 @@ class DiscountForm
                         TableColumn::make('Product code'),
                     ])
                     ->schema([
-                        TextEntry::make('name'),
-                        TextEntry::make('product_code'),
+                        TextEntry::make('name')->label(__('Name')),
+                        TextEntry::make('product_code')->label(__('Product code')),
 
                     ])
                     ->contained(false)
-                    ->visible(fn(Get $get): bool => filled($get('products')))
+                    ->visible(fn (Get $get): bool => filled($get('products')))
                     ->columnSpanFull(),
 
             ]);

@@ -17,9 +17,9 @@ enum ShippingStatus: string implements HasColor, HasIcon, HasLabel
     public function getLabel(): string
     {
         return match ($this) {
-            self::Pending => 'Pending',
-            self::Shipped => 'Shipped',
-            self::Delivered => 'Delivered',
+            self::Pending => __('Pending'),
+            self::Shipped => __('Shipped'),
+            self::Delivered => __('Delivered'),
         };
     }
 

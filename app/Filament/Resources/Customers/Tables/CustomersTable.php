@@ -17,24 +17,24 @@ class CustomersTable
     {
         return $table
             ->columns([
-                TextColumn::make('name')
+                TextColumn::make('name')->label(__('Name'))
                     ->searchable(),
                 TextColumn::make('email')
-                    ->label('Email address')
+                    ->label(__('Email address'))
                     ->searchable(),
-                TextColumn::make('phone')
+                TextColumn::make('phone')->label(__('Phone'))
                     ->searchable(),
                 TextColumn::make('orders_count')
                     ->counts('orders')
-                    ->label('Orders')
+                    ->label(__('Orders'))
                     ->badge()
                     ->sortable(),
-                TextColumn::make('created_at')
+                TextColumn::make('created_at')->label(__('Created at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
-                TextColumn::make('updated_at')
+                TextColumn::make('updated_at')->label(__('Updated at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

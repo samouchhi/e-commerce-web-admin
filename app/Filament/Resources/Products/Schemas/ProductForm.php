@@ -35,23 +35,23 @@ class ProductForm
             ->columns(1)
             ->components([
                 Wizard::make([
-                    Step::make('Product Details')
+                    Step::make(__('Product Details'))
                         ->columns(['default' => 1, 'lg' => 3])
                         ->schema([
                             Group::make([
-                                Section::make('Product details')
+                                Section::make(__('Product details'))
                                     ->icon('heroicon-o-shopping-bag')
                                     ->schema([
                                         TextInput::make('name')
-                                            ->label('Product name')
+                                            ->label(__('Product name'))
                                             ->required()
                                             ->columnSpanFull(),
                                         TextInput::make('product_code')
-                                            ->label('Product code')
+                                            ->label(__('Product code'))
                                             ->required()
                                             ->suffixAction(
                                                 Action::make('generateCode')
-                                                    ->label('Generate product code')
+                                                    ->label(__('Generate product code'))
                                                     ->icon('heroicon-m-arrow-path')
                                                     ->tooltip('Generate product code')
                                                     ->action(function (Set $set): void {
@@ -59,76 +59,76 @@ class ProductForm
                                                     })
                                             ),
                                         RichEditor::make('description')
-                                            ->label('Description')
+                                            ->label(__('Description'))
                                             ->columnSpanFull(),
                                     ]),
 
                             ])->columnSpan(['lg' => 2]),
                             Group::make([
-                                Section::make('Status')
+                                Section::make(__('Status'))
                                     ->icon('heroicon-o-eye')
                                     ->schema([
                                         Toggle::make('is_active')
-                                            ->label('Enable')
+                                            ->label(__('Enable'))
                                             ->required(),
                                     ])
                                     ->compact(),
-                                Section::make('Tags')
+                                Section::make(__('Tags'))
                                     ->icon('heroicon-o-tag')
                                     ->schema([
                                         Select::make('category_id')
-                                            ->label('Category')
-                                            ->placeholder('Choose a category')
+                                            ->label(__('Category'))
+                                            ->placeholder(__('Choose a category'))
                                             ->required()
                                             ->relationship('category', 'name')
                                             ->searchable()
                                             ->preload(),
                                         Select::make('unit_id')
-                                            ->label('Unit of sale')
-                                            ->placeholder('Choose a unit')
+                                            ->label(__('Unit of sale'))
+                                            ->placeholder(__('Choose a unit'))
                                             ->required()
                                             ->relationship('unit', 'name')
                                             ->searchable()
                                             ->preload(),
                                         Toggle::make('is_best_seller')
 
-                                            ->label('Best seller')
+                                            ->label(__('Best seller'))
                                             ->inline(false)
                                             ->required(),
                                     ])
                                     ->compact(),
                             ])->columnSpan(['lg' => 1]),
                         ]),
-                    Step::make('Inventory')
+                    Step::make(__('Inventory'))
                         ->schema([
-                            Section::make('Product variants')
+                            Section::make(__('Product variants'))
                                 ->icon('heroicon-o-cube')
                                 ->schema([
                                     Repeater::make('variants')
                                         ->hiddenLabel()
                                         ->relationship('variants')
                                         ->collapsible()
-                                        ->addActionLabel('Add')
+                                        ->addActionLabel(__('Add'))
                                         ->schema([
                                             TextInput::make('name')
-                                                ->label('Variant name')
-                                                ->placeholder('e.g. Black / Medium')
+                                                ->label(__('Variant name'))
+                                                ->placeholder(__('e.g. Black / Medium'))
                                                 ->live(onBlur: true)
                                                 ->required()
                                                 ->columnSpan(['md' => 2]),
                                             TextInput::make('stock_qty')
-                                                ->label('Stock quantity')
+                                                ->label(__('Stock quantity'))
                                                 ->prefixIcon('heroicon-o-cube')
                                                 ->numeric()->required(),
                                             TextInput::make('price')
-                                                ->label('Selling price')
+                                                ->label(__('Selling price'))
                                                 ->numeric()->required()->prefix('$')->minValue(0)->maxValue(1000000)->step('0.01'),
                                             TextInput::make('cost')
-                                                ->label('Unit cost')
+                                                ->label(__('Unit cost'))
                                                 ->numeric()->required()->prefix('$')->minValue(0)->maxValue(1000000)->step('0.01'),
 
                                             Toggle::make('is_active')
-                                                ->label('Enable')
+                                                ->label(__('Enable'))
                                                 ->inline(false)
                                                 ->required(),
                                         ])
@@ -138,26 +138,26 @@ class ProductForm
                                 ])
                                 ->columnSpanFull(),
                         ]),
-                    Step::make('Product Images')
+                    Step::make(__('Product Images'))
                         ->schema([
-                            Section::make('Images')
+                            Section::make(__('Images'))
                                 ->icon('heroicon-o-photo')
                                 ->schema([
                                     Repeater::make('product_images_id')
                                         ->hiddenLabel()
                                         ->relationship('images')
-                                        ->itemLabel(fn (array $state): string => filled($state['image_path'] ?? null) ? 'Image' : 'New image')
+                                        ->itemLabel(fn (array $state): string => filled($state['image_path'] ?? null) ? 'Image' : __('New image'))
                                         ->collapsible()
-                                        ->addActionLabel('Add')
+                                        ->addActionLabel(__('Add'))
                                         ->schema([
                                             FileUpload::make('image_path')
-                                                ->label('Image')
+                                                ->label(__('Image'))
                                                 ->image()
                                                 ->disk('public')
                                                 ->directory('product-images')
                                                 ->required(),
                                             TextInput::make('sort_order')
-                                                ->label('Sort order')
+                                                ->label(__('Sort order'))
                                                 ->numeric()
                                                 ->default(0)
                                                 ->minValue(0),
@@ -175,11 +175,11 @@ class ProductForm
                         : null)
                     ->cancelAction(
                         Action::make('backToProducts')
-                            ->label('Back')
+                            ->label(__('Back'))
                             ->color('gray')
                             ->url(ProductResource::getUrl('index'))
                     )
-                    ->previousAction(fn (Action $action): Action => $action->label('Back'))
+                    ->previousAction(fn (Action $action): Action => $action->label(__('Back')))
                     ->contained(false)
                     ->skippable(fn (?Product $record): bool => $record !== null)
                     ->columnSpanFull(),

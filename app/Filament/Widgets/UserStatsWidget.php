@@ -33,18 +33,18 @@ class UserStatsWidget extends StatsOverviewWidget
         $totalRevenue = (clone $orders)->where('payment_status', 'paid')->sum('total_amount');
 
         return [
-            Stat::make('Total Revenue', '$'.number_format($totalRevenue, 2))
+            Stat::make(__('Total Revenue'), '$'.number_format($totalRevenue, 2))
                 ->icon('heroicon-o-banknotes')
-                ->description($allTime ? 'Paid orders · All Time' : 'Paid orders in selected period'),
-            Stat::make('Total Product', number_format(Product::query()->count()))
+                ->description($allTime ? __('Paid orders · All Time') : __('Paid orders in selected period')),
+            Stat::make(__('Total Product'), number_format(Product::query()->count()))
                 ->icon('heroicon-o-cube')
-                ->description('All products'),
-            Stat::make('Total Orders', number_format($orders->count()))
+                ->description(__('All products')),
+            Stat::make(__('Total Orders'), number_format($orders->count()))
                 ->icon('heroicon-o-shopping-bag')
-                ->description($allTime ? 'All statuses · All Time' : 'All statuses in selected period'),
-            Stat::make('Total Customers', number_format(Customer::query()->count()))
+                ->description($allTime ? __('All statuses · All Time') : __('All statuses in selected period')),
+            Stat::make(__('Total Customers'), number_format(Customer::query()->count()))
                 ->icon('heroicon-o-users')
-                ->description('All customers'),
+                ->description(__('All customers')),
         ];
     }
 }

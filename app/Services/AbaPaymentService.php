@@ -19,7 +19,7 @@ class AbaPaymentService
 {
     private const GENERATE_ENDPOINT = 'https://link.payway.com.kh/api/pw-app/v1/payment/gateway/list-payment-options';
 
-    private const STATUS_ENDPOINT = 'https://pwapp.ababank.com/api/pw-app/v1/payment-link/check-payment-status';
+    private const STATUS_ENDPOINT = 'https://link.payway.com.kh/api/pw-app/v1/payment-link/check-payment-status';
 
     private const PAYMENT_METHOD_ID = 1;
 

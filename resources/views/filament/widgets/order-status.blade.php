@@ -1,5 +1,5 @@
 <x-filament-widgets::widget>
-    <x-filament::section heading="Payment overview" class="dashboard-payment-overview">
+    <x-filament::section :heading="__('Payment overview')" class="dashboard-payment-overview">
         <div class="@container">
             <div class="dashboard-payment-layout flex flex-col items-center gap-4">
                 <div class="relative size-28 shrink-0" role="img"
@@ -19,16 +19,16 @@
                     <div class="absolute inset-0 flex flex-col items-center justify-center">
                         <span
                             class="text-2xl font-bold tracking-tight text-gray-950 tabular-nums dark:text-white">{{ number_format($total) }}</span>
-                        <span class="text-xs text-gray-500 dark:text-gray-400">Orders</span>
+                        <span class="text-xs text-gray-500 dark:text-gray-400">{{ __('Orders') }}</span>
                     </div>
                 </div>
 
-                <div class="w-full min-w-0" aria-label="Order status breakdown">
+                <div class="w-full min-w-0" aria-label="{{ __('Order status breakdown') }}">
                     <div
                         class="grid grid-cols-[minmax(0,1fr)_auto_auto] gap-x-4 border-b border-gray-100 pb-1 text-xs font-medium text-gray-500 dark:border-white/10 dark:text-gray-400">
-                        <span>Status</span>
-                        <span class="text-right">Orders</span>
-                        <span class="text-right">Share</span>
+                        <span>{{ __('Status') }}</span>
+                        <span class="text-right">{{ __('Orders') }}</span>
+                        <span class="text-right">{{ __('Share') }}</span>
                     </div>
                     @foreach ($statuses as $status)
                         <div
@@ -46,7 +46,7 @@
                 </div>
             </div>
             @if ($total === 0)
-                <p class="mt-3 text-sm text-gray-500 dark:text-gray-400">No orders match the selected product.</p>
+                <p class="mt-3 text-sm text-gray-500 dark:text-gray-400">{{ __('No orders match the selected product.') }}</p>
             @endif
         </div>
     </x-filament::section>

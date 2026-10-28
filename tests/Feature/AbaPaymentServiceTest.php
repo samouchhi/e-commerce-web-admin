@@ -66,9 +66,9 @@ test('logs only safe diagnostics when ABA rejects QR generation', function (mixe
     'invalid response' => ['<html>secret-upstream-body</html>', 502, null, 'text/html'],
 ]);
 
-test('keeps unpaid QR verification on the working ABA status gateway', function () {
+test('verifies unpaid QR payments through the current ABA payment link gateway', function () {
     Http::fake([
-        'https://pwapp.ababank.com/api/pw-app/v1/payment-link/check-payment-status' => Http::response([
+        'https://link.payway.com.kh/api/pw-app/v1/payment-link/check-payment-status' => Http::response([
             'status' => ['code' => '00'],
             'data' => ['action' => 'request_qr'],
         ]),
@@ -83,6 +83,6 @@ test('keeps unpaid QR verification on the working ABA status gateway', function 
     ]);
 
     expect($action)->toBe('request_qr');
-    Http::assertSent(fn (Request $request): bool => $request->url() === 'https://pwapp.ababank.com/api/pw-app/v1/payment-link/check-payment-status'
+    Http::assertSent(fn (Request $request): bool => $request->url() === 'https://link.payway.com.kh/api/pw-app/v1/payment-link/check-payment-status'
         && $request->hasHeader('token', 'secret-token'));
 });

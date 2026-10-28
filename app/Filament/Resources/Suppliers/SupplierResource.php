@@ -22,6 +22,21 @@ use UnitEnum;
 
 class SupplierResource extends Resource
 {
+    public static function getModelLabel(): string
+    {
+        return __('Supplier');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return static::getNavigationLabel();
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Suppliers');
+    }
+
     // public static function getNavigationBadge(): ?string
     // {
     //     return static::getModel()::count();
@@ -37,27 +52,27 @@ class SupplierResource extends Resource
     {
         return $schema
             ->components([
-                TextInput::make('name')
+                TextInput::make('name')->label(__('Name'))
                     ->prefixIcon('heroicon-o-user')
-                    ->label('Name')
+                    ->label(__('Name'))
                     ->required(),
                 TextInput::make('email')
-                    ->label('Email address')
+                    ->label(__('Email address'))
                     ->prefixIcon('heroicon-o-envelope')
                     ->email()
                     ->required(),
-                TextInput::make('phone')
+                TextInput::make('phone')->label(__('Phone'))
                     ->prefixIcon('heroicon-o-phone')
                     ->tel()
                     ->required(),
-                TextInput::make('address')
+                TextInput::make('address')->label(__('Address'))
                     ->prefixIcon('heroicon-o-map')
                     ->required(),
-                TextInput::make('city')
+                TextInput::make('city')->label(__('City'))
                     ->prefixIcon('heroicon-o-building-office')
                     ->required(),
                 // Toggle::make('is_active')
-                //     ->label('Enable'),
+                //     ->label(__('Enable')),
             ]);
     }
 
@@ -66,28 +81,28 @@ class SupplierResource extends Resource
         return $table
             ->columns([
                 // ToggleColumn::make('is_active')
-                //     ->label('Status')
+                //     ->label(__('Status'))
                 //     ->onIcon(Heroicon::OutlinedCheckBadge)
                 //     ->offIcon(Heroicon::OutlinedXMark)
                 //     ->onColor('success')
                 //     ->offColor('danger'),
-                TextColumn::make('name')
+                TextColumn::make('name')->label(__('Name'))
                     ->searchable(),
                 TextColumn::make('email')
-                    ->label('Email address')
+                    ->label(__('Email address'))
                     ->searchable(),
-                TextColumn::make('phone')
+                TextColumn::make('phone')->label(__('Phone'))
                     ->searchable(),
-                TextColumn::make('address')
+                TextColumn::make('address')->label(__('Address'))
                     ->searchable(),
-                TextColumn::make('city')
+                TextColumn::make('city')->label(__('City'))
                     ->searchable(),
 
-                TextColumn::make('created_at')
+                TextColumn::make('created_at')->label(__('Created at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
+                TextColumn::make('updated_at')->label(__('Updated at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

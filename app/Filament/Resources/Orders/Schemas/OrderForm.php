@@ -16,7 +16,7 @@ class OrderForm
     {
         return $schema
             ->components([
-                TextInput::make('order_number')
+                TextInput::make('order_number')->label(__('Order number'))
                     ->required(),
                 Select::make('customer_id')
                     ->relationship('customer', 'name')
@@ -47,11 +47,11 @@ class OrderForm
                     ->numeric()
                     ->default(0)
                     ->prefixIcon('heroicon-m-currency-dollar'),
-                ToggleButtons::make('payment_status')
+                ToggleButtons::make('payment_status')->label(__('Payment status'))
                     ->options(PaymentStatus::class)
                     ->required()
                     ->default(PaymentStatus::Pending),
-                ToggleButtons::make('shipping_status')
+                ToggleButtons::make('shipping_status')->label(__('Shipping status'))
                     ->options(OrderShippingStatus::class)
                     ->required()
                     ->default(OrderShippingStatus::Pending),

@@ -8,6 +8,7 @@ use App\Observers\OrderObserver;
 use App\Observers\ProductVariantObserver;
 use Asignua\FilamentActivityLogPlus\ActivityBatch;
 use BezhanSalleh\FilamentShield\Facades\FilamentShield;
+use BezhanSalleh\LanguageSwitch\LanguageSwitch;
 use Filament\Actions\ActionGroup;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
@@ -27,6 +28,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        LanguageSwitch::configureUsing(fn (LanguageSwitch $switch): LanguageSwitch => $switch
+            ->locales(['en', 'km'])
+            ->labels([
+                'en' => 'English',
+                'km' => 'ខ្មែរ',
+            ])
+            ->visible(outsidePanels: true));
+
         FilamentShield::enforcePolicies();
         ActionGroup::configureUsing(function (ActionGroup $group): void {
             foreach ($group->getFlatActions() as $action) {

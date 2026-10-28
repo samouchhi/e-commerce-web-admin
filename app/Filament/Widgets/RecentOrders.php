@@ -21,34 +21,37 @@ class RecentOrders extends TableWidget
 
     protected int|string|array $columnSpan = ['md' => 1, 'xl' => 9];
 
-    protected static ?string $heading = 'Recent paid orders';
+    protected function getTableHeading(): string
+    {
+        return __('Recent paid orders');
+    }
 
     public function table(Table $table): Table
     {
 
         return $table
-            ->query(fn(): Builder => Order::query()
+            ->query(fn (): Builder => Order::query()
                 ->orderByDesc('created_at')
                 ->limit(5)
                 ->where('payment_status', 'paid')
-                ->when($this->pageFilters['product_id'] ?? null, fn(Builder $query, int|string $productId) => $query->whereHas('items.productVariant', fn(Builder $query) => $query->where('product_id', $productId)))
+                ->when($this->pageFilters['product_id'] ?? null, fn (Builder $query, int|string $productId) => $query->whereHas('items.productVariant', fn (Builder $query) => $query->where('product_id', $productId)))
                 ->with('customer')->withCount('items'))
 
             ->paginated(false)
             ->columns([
-                TextColumn::make('order_number')->label('Order')->weight('medium'),
-                TextColumn::make('customer.name')->label('Customer')->placeholder('Guest'),
-                TextColumn::make('items_count')->label('Items')->alignCenter()->badge(),
-                TextColumn::make('total_amount')->label('Total')->money('usd', true),
-                TextColumn::make('payment_status')->label('Status')->badge(),
-                TextColumn::make('created_at')->label('Date')->dateTime('M d, Y'),
+                TextColumn::make('order_number')->label(__('Order'))->weight('medium'),
+                TextColumn::make('customer.name')->label(__('Customer'))->placeholder(__('Guest')),
+                TextColumn::make('items_count')->label(__('Items'))->alignCenter()->badge(),
+                TextColumn::make('total_amount')->label(__('Total'))->money('usd', true),
+                TextColumn::make('payment_status')->label(__('Status'))->badge(),
+                TextColumn::make('created_at')->label(__('Date'))->dateTime('M d, Y'),
             ])
-            ->recordUrl(fn(Order $record): ?string => OrderResource::canView($record) ? OrderResource::getUrl('view', ['record' => $record]) : null)
-            ->emptyStateHeading('No paid orders')
-            ->emptyStateDescription('Paid orders matching the selected product will appear here.')
+            ->recordUrl(fn (Order $record): ?string => OrderResource::canView($record) ? OrderResource::getUrl('view', ['record' => $record]) : null)
+            ->emptyStateHeading(__('No paid orders'))
+            ->emptyStateDescription(__('Paid orders matching the selected product will appear here.'))
             ->headerActions([
-                Action::make('orders')->label('View Orders')->color('gray')->url(OrderResource::getUrl())
-                    ->visible(fn(): bool => OrderResource::canViewAny()),
+                Action::make('orders')->label(__('View Orders'))->color('gray')->url(OrderResource::getUrl())
+                    ->visible(fn (): bool => OrderResource::canViewAny()),
             ]);
     }
 }

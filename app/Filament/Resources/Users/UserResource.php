@@ -21,6 +21,21 @@ use UnitEnum;
 
 class UserResource extends Resource
 {
+    public static function getModelLabel(): string
+    {
+        return __('User');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return static::getNavigationLabel();
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Users');
+    }
+
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();
@@ -36,15 +51,15 @@ class UserResource extends Resource
     {
         return $schema
             ->components([
-                TextInput::make('name')
+                TextInput::make('name')->label(__('Name'))
                     ->prefixIcon('heroicon-o-user')
                     ->required(),
                 TextInput::make('email')
-                    ->label('Email address')
+                    ->label(__('Email address'))
                     ->prefixIcon('heroicon-o-envelope')
                     ->email()
                     ->required(),
-                TextInput::make('password')
+                TextInput::make('password')->label(__('Password'))
                     ->password()
                     ->prefixIcon('heroicon-o-lock-closed')
                     ->required(fn (string $operation) => $operation === 'create')
@@ -61,21 +76,21 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name')
+                TextColumn::make('name')->label(__('Name'))
                     ->searchable(),
                 TextColumn::make('email')
-                    ->label('Email address')
+                    ->label(__('Email address'))
                     ->searchable(),
                 TextColumn::make('roles.name')
-                    ->label('Roles')
+                    ->label(__('Roles'))
                     ->sortable()
                     ->badge()
                     ->formatStateUsing(fn ($state) => ucfirst($state)),
-                TextColumn::make('created_at')
+                TextColumn::make('created_at')->label(__('Created at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
+                TextColumn::make('updated_at')->label(__('Updated at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

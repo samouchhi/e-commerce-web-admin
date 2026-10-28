@@ -11,14 +11,14 @@ class CustomerForm
     {
         return $schema
             ->components([
-                TextInput::make('name'),
+                TextInput::make('name')->label(__('Name')),
                 TextInput::make('email')
-                    ->label('Email address')
+                    ->label(__('Email address'))
                     ->email()
                     ->required(),
-                TextInput::make('phone')
+                TextInput::make('phone')->label(__('Phone'))
                     ->tel(),
-                TextInput::make('password')
+                TextInput::make('password')->label(__('Password'))
                     ->password()
                     ->required(),
             ]);

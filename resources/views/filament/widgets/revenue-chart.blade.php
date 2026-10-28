@@ -5,7 +5,7 @@
                 <p class="dashboard-revenue-total">{{ $this->getTotalRevenue() }}</p>
             </div>
             <div class="dashboard-revenue-period">
-                <span class="dashboard-revenue-legend">Paid revenue</span>
+                <span class="dashboard-revenue-legend">{{ __('Paid revenue') }}</span>
                 <span>{{ $this->getPeriodLabel() }}</span>
             </div>
         </div>

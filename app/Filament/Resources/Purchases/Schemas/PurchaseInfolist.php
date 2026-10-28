@@ -15,17 +15,17 @@ class PurchaseInfolist
     public static function configure(Schema $schema): Schema
     {
         return $schema->components([
-            Section::make('Purchase details')
+            Section::make(__('Purchase details'))
                 ->schema([
-                    TextEntry::make('reference')->copyable(),
-                    TextEntry::make('supplier.name')->placeholder('Supplier unavailable'),
+                    TextEntry::make('reference')->label(__('Reference'))->copyable(),
+                    TextEntry::make('supplier.name')->label(__('Name'))->placeholder(__('Supplier unavailable')),
                     TextEntry::make('purchase_date')->date(),
-                    TextEntry::make('payment_status')->badge(),
-                    TextEntry::make('shipping_status')->badge(),
+                    TextEntry::make('payment_status')->label(__('Payment status'))->badge(),
+                    TextEntry::make('shipping_status')->label(__('Shipping status'))->badge(),
                 ])
                 ->columns(2)
                 ->columnSpanFull(),
-            Section::make('Purchase items')
+            Section::make(__('Purchase items'))
                 ->schema([
                     RepeatableEntry::make('items')
                         ->hiddenLabel()
@@ -39,21 +39,21 @@ class PurchaseInfolist
                             TableColumn::make('Subtotal'),
                         ])
                         ->schema([
-                            TextEntry::make('variant.product.name')->placeholder('Product unavailable'),
-                            TextEntry::make('variant.name')->placeholder('Variant unavailable'),
-                            TextEntry::make('quantity')->numeric(),
-                            TextEntry::make('unit.short_name')->placeholder('Unit unavailable'),
+                            TextEntry::make('variant.product.name')->label(__('Name'))->placeholder(__('Product unavailable')),
+                            TextEntry::make('variant.name')->label(__('Name'))->placeholder(__('Variant unavailable')),
+                            TextEntry::make('quantity')->label(__('Quantity'))->numeric(),
+                            TextEntry::make('unit.short_name')->label(__('Short name'))->placeholder(__('Unit unavailable')),
                             TextEntry::make('unit_price')->money('USD'),
                             TextEntry::make('sub_total')->money('USD'),
                         ]),
                 ])
                 ->columnSpanFull(),
-            Section::make('Summary')
+            Section::make(__('Summary'))
                 ->schema([
-                    TextEntry::make('total_price')->label('Subtotal')->money('USD'),
+                    TextEntry::make('total_price')->label(__('Subtotal'))->money('USD'),
                     TextEntry::make('shipping_cost')->money('USD'),
                     TextEntry::make('grand_total')->money('USD'),
-                    ImageEntry::make('image_path')->label('Receipt')->placeholder('No receipt'),
+                    ImageEntry::make('image_path')->label(__('Receipt'))->placeholder(__('No receipt')),
                 ])
                 ->columns(2)
                 ->columnSpanFull(),

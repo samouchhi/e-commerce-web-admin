@@ -29,19 +29,19 @@ class ListOrders extends ListRecords
     public function getTabs(): array
     {
         return [
-            null => Tab::make('All')
-                ->badge(static fn(): int => Order::query()->count())
+            null => Tab::make(__('All'))
+                ->badge(static fn (): int => Order::query()->count())
                 ->deferBadge(),
             'pending' => Tab::make()
-                ->badge(static fn(): int => Order::query()->where('payment_status', 'paid')->where('shipping_status', OrderShippingStatus::Pending)->count())
+                ->badge(static fn (): int => Order::query()->where('payment_status', 'paid')->where('shipping_status', OrderShippingStatus::Pending)->count())
                 ->badgeColor(OrderShippingStatus::Pending->getColor())
                 ->deferBadge()
-                ->query(fn($query) => $query->where('payment_status', 'paid')->where('shipping_status', OrderShippingStatus::Pending)),
+                ->query(fn ($query) => $query->where('payment_status', 'paid')->where('shipping_status', OrderShippingStatus::Pending)),
             'shipped' => Tab::make()
-                ->badge(static fn(): int => Order::query()->where('shipping_status', OrderShippingStatus::Shipped)->count())
+                ->badge(static fn (): int => Order::query()->where('shipping_status', OrderShippingStatus::Shipped)->count())
                 ->badgeColor(OrderShippingStatus::Shipped->getColor())
                 ->deferBadge()
-                ->query(fn($query) => $query->where('shipping_status', OrderShippingStatus::Shipped)),
+                ->query(fn ($query) => $query->where('shipping_status', OrderShippingStatus::Shipped)),
         ];
     }
 }

@@ -17,21 +17,21 @@ class ProductInfolist
         return $schema
             ->columns(1)
             ->components([
-                Section::make('Product details')
+                Section::make(__('Product details'))
                     ->schema([
-                        TextEntry::make('name')->label('Product name'),
-                        TextEntry::make('product_code')->label('Product code'),
-                        TextEntry::make('category.name')->placeholder('No category'),
-                        TextEntry::make('unit.name')->label('Unit')->placeholder('No unit'),
-                        IconEntry::make('is_active')->label('Active')->boolean(),
-                        IconEntry::make('is_best_seller')->label('Best seller')->boolean(),
-                        TextEntry::make('description')
+                        TextEntry::make('name')->label(__('Product name')),
+                        TextEntry::make('product_code')->label(__('Product code')),
+                        TextEntry::make('category.name')->label(__('Name'))->placeholder(__('No category')),
+                        TextEntry::make('unit.name')->label(__('Unit'))->placeholder(__('No unit')),
+                        IconEntry::make('is_active')->label(__('Active'))->boolean(),
+                        IconEntry::make('is_best_seller')->label(__('Best seller'))->boolean(),
+                        TextEntry::make('description')->label(__('Description'))
                             ->html()
-                            ->placeholder('No description')
+                            ->placeholder(__('No description'))
                             ->columnSpanFull(),
                     ])
                     ->columns(['default' => 1, 'sm' => 2]),
-                Section::make('Product variants')
+                Section::make(__('Product variants'))
                     ->schema([
                         RepeatableEntry::make('variants')
                             ->hiddenLabel()
@@ -43,14 +43,14 @@ class ProductInfolist
                                 TableColumn::make('Active'),
                             ])
                             ->schema([
-                                TextEntry::make('name'),
+                                TextEntry::make('name')->label(__('Name')),
                                 TextEntry::make('stock_qty')->numeric(),
-                                TextEntry::make('price')->money('USD'),
-                                TextEntry::make('cost')->money('USD'),
+                                TextEntry::make('price')->label(__('Price'))->money('USD'),
+                                TextEntry::make('cost')->label(__('Cost'))->money('USD'),
                                 IconEntry::make('is_active')->boolean(),
                             ]),
                     ]),
-                Section::make('Images')
+                Section::make(__('Images'))
                     ->schema([
                         ImageEntry::make('images.image_path')
                             ->hiddenLabel()

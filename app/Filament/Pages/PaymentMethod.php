@@ -14,6 +14,11 @@ use UnitEnum;
 
 class PaymentMethod extends Page
 {
+    public static function getNavigationLabel(): string
+    {
+        return __('Payment Method');
+    }
+
     use HasPageShield;
 
     public ?array $data = [];

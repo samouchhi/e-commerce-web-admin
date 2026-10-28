@@ -17,6 +17,21 @@ use Filament\Tables\Table;
 
 class DiscountResource extends Resource
 {
+    public static function getModelLabel(): string
+    {
+        return __('Discount');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return static::getNavigationLabel();
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Discounts');
+    }
+
     protected static ?string $model = Discount::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::PercentBadge;

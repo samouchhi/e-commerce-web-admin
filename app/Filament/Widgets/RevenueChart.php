@@ -17,20 +17,23 @@ class RevenueChart extends ChartWidget
 
     protected int|string|array $columnSpan = ['md' => 1, 'xl' => 6];
 
-    protected ?string $heading = 'Revenue over time';
+    public function getHeading(): string
+    {
+        return __('Revenue over time');
+    }
 
     protected string $view = 'filament.widgets.revenue-chart';
 
     public function getPeriodLabel(): string
     {
         if (($this->pageFilters['date_range'] ?? null) === 'all_time') {
-            return 'All Time';
+            return __('All Time');
         }
 
         $end = Carbon::parse($this->pageFilters['end_date'] ?? now());
         $start = Carbon::parse($this->pageFilters['start_date'] ?? $end->copy()->subDays(6));
 
-        return $start->format('M j, Y').' – '.$end->format('M j, Y');
+        return $start->translatedFormat('M j, Y').' – '.$end->translatedFormat('M j, Y');
     }
 
     public function getTotalRevenue(): string
@@ -115,7 +118,7 @@ class RevenueChart extends ChartWidget
 
         return [
             'datasets' => [[
-                'label' => 'Paid revenue (USD)',
+                'label' => __('Paid revenue (USD)'),
                 'backgroundColor' => '#7460f5',
                 'hoverBackgroundColor' => '#5b43e8',
                 'borderColor' => '#5b43e8',
@@ -127,7 +130,7 @@ class RevenueChart extends ChartWidget
                 'barPercentage' => 0.8,
                 'data' => $dates->map(fn (string $date): float => (float) ($revenueByDate[$date] ?? 0))->all(),
             ]],
-            'labels' => $dates->map(fn (string $date): string => Carbon::parse($date)->format('M j'))->all(),
+            'labels' => $dates->map(fn (string $date): string => Carbon::parse($date)->translatedFormat('M j'))->all(),
         ];
     }
 

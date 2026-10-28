@@ -13,6 +13,7 @@ use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\NavigationGroup;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
@@ -47,12 +48,12 @@ class AdminPanelProvider extends PanelProvider
             ->databaseNotifications(livewireComponent: DatabaseNotifications::class)
             ->viteTheme('resources/css/filament/dashboard/theme.css')
 
-            ->brandLogo(fn(): ?string => ($logo = GeneralSetting::query()->value('site_logo')) && Storage::disk('public')->exists($logo)
+            ->brandLogo(fn (): ?string => ($logo = GeneralSetting::query()->value('site_logo')) && Storage::disk('public')->exists($logo)
                 ? Storage::disk('public')->url($logo)
                 : null)
             ->brandLogoHeight('3rem')
             ->favicon(
-                fn(): ?string => ($icon = GeneralSetting::query()->value('site_favicon'))
+                fn (): ?string => ($icon = GeneralSetting::query()->value('site_favicon'))
                     && Storage::disk('public')->exists($icon)
                     ? Storage::disk('public')->url($icon)
                     : null
@@ -67,11 +68,11 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->navigationGroups([
-                'Products',
-                'Orders',
-                'Purchases',
-                'Peoples',
-                'Settings',
+                'Products' => NavigationGroup::make()->label(fn (): string => __('Products')),
+                'Orders' => NavigationGroup::make()->label(fn (): string => __('Orders')),
+                'Purchases' => NavigationGroup::make()->label(fn (): string => __('Purchases')),
+                'Peoples' => NavigationGroup::make()->label(fn (): string => __('Peoples')),
+                'Settings' => NavigationGroup::make()->label(fn (): string => __('Settings')),
 
             ])
             ->discoverPages(
@@ -91,8 +92,8 @@ class AdminPanelProvider extends PanelProvider
                 ]),
                 ActivityLogPlusPlugin::make()
                     ->navigationGroup('Settings')
-                    ->authorizeResource(fn(): bool => Filament::auth()->user()?->can('ViewAny:Activity') ?? false)
-                    ->authorizeHistory(fn(): bool => Filament::auth()->user()?->can('ViewAny:Activity') ?? false),
+                    ->authorizeResource(fn (): bool => Filament::auth()->user()?->can('ViewAny:Activity') ?? false)
+                    ->authorizeHistory(fn (): bool => Filament::auth()->user()?->can('ViewAny:Activity') ?? false),
                 FilamentShieldPlugin::make()
                     ->navigationGroup('Settings'),
             ])

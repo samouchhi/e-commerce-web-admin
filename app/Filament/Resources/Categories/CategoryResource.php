@@ -22,6 +22,21 @@ use UnitEnum;
 
 class CategoryResource extends Resource
 {
+    public static function getModelLabel(): string
+    {
+        return __('Category');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return static::getNavigationLabel();
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Categories');
+    }
+
     protected static string|UnitEnum|null $navigationGroup = 'Products';
 
     protected static ?string $model = Category::class;
@@ -37,10 +52,10 @@ class CategoryResource extends Resource
     {
         return $schema
             ->components([
-                TextInput::make('name')
+                TextInput::make('name')->label(__('Name'))
                     ->required(),
                 FileUpload::make('image_path')
-                    ->label('Category image')
+                    ->label(__('Category image'))
                     ->image()
                     ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
                     ->maxSize(5120)
@@ -55,34 +70,34 @@ class CategoryResource extends Resource
         return $table
             ->columns([
                 ImageColumn::make('image_path')
-                    ->label('Image')
+                    ->label(__('Image'))
                     ->disk('public'),
-                TextColumn::make('name')
+                TextColumn::make('name')->label(__('Name'))
                     ->searchable(),
                 TextColumn::make('products_count')
                     ->counts('products')
                     ->badge()
-                    ->label('Number of Products')
+                    ->label(__('Number of Products'))
                     ->sortable(),
 
                 TextColumn::make('variants_count')
                     ->counts('variants')
                     ->badge()
-                    ->label('Stock Quantity')
+                    ->label(__('Stock Quantity'))
                     ->sortable(),
                 TextColumn::make('stock_value')
                     ->getStateUsing(function (Category $record) {
                         return $record->variants()->sum('cost');
                     })
-                    ->label('Stock Value')
+                    ->label(__('Stock Value'))
                     ->money('usd', true)
                     ->badge()
                     ->sortable(),
-                TextColumn::make('created_at')
+                TextColumn::make('created_at')->label(__('Created at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
+                TextColumn::make('updated_at')->label(__('Updated at'))
                     ->dateTime()
 
                     ->sortable()

@@ -18,6 +18,21 @@ use UnitEnum;
 
 class PurchaseResource extends Resource
 {
+    public static function getModelLabel(): string
+    {
+        return __('Purchase');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return static::getNavigationLabel();
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Purchases');
+    }
+
     protected static ?string $model = Purchase::class;
 
     protected static string|UnitEnum|null $navigationGroup = 'Purchases';

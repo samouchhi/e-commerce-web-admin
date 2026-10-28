@@ -31,27 +31,27 @@ class PurchaseForm
         return $schema
             ->components([
                 Wizard::make([
-                    Step::make('Purchase Details')
+                    Step::make(__('Purchase Details'))
                         ->columns(['default' => 1, 'lg' => 3])
                         ->schema([
                             Group::make()
                                 ->schema([
                                     Section::make([
-                                        TextInput::make('reference')
+                                        TextInput::make('reference')->label(__('Reference'))
                                             ->prefixIcon('heroicon-o-document-text')
                                             ->default('OR-'.random_int(100000, 999999))
                                             ->disabled()
-                                            ->label('Reference')
+                                            ->label(__('Reference'))
                                             ->dehydrated()
                                             ->required(),
                                         DatePicker::make('purchase_date')
                                             ->prefixIcon('heroicon-o-calendar')
-                                            ->label('Purchase Date')
+                                            ->label(__('Purchase Date'))
                                             ->required()
                                             ->default(now()),
                                         Select::make('supplier_id')
                                             ->prefixIcon('heroicon-o-user')
-                                            ->label('Supplier')
+                                            ->label(__('Supplier'))
                                             ->required()
                                             ->relationship('supplier', 'name')
                                             ->searchable()
@@ -59,7 +59,7 @@ class PurchaseForm
 
                                         TextInput::make('shipping_cost')
                                             ->prefixIcon('heroicon-o-currency-dollar')
-                                            ->label('Shipping Cost')
+                                            ->label(__('Shipping Cost'))
                                             ->required()
                                             ->numeric()
                                             ->default(0)
@@ -74,25 +74,25 @@ class PurchaseForm
 
                             Group::make()
                                 ->schema([
-                                    Section::make('Status')
+                                    Section::make(__('Status'))
                                         ->schema([
-                                            ToggleButtons::make('payment_status')
+                                            ToggleButtons::make('payment_status')->label(__('Payment status'))
                                                 ->inline()
                                                 ->options(PaymentStatus::class),
-                                            ToggleButtons::make('shipping_status')
+                                            ToggleButtons::make('shipping_status')->label(__('Shipping status'))
                                                 ->inline()
-                                                ->label('Shipping Status')
+                                                ->label(__('Shipping Status'))
                                                 ->options(ShippingStatus::class)
                                                 ->required(),
                                         ]),
                                 ])
                                 ->columnSpan(['lg' => 1]),
                         ]),
-                    Step::make('Purchase Items')
+                    Step::make(__('Purchase Items'))
                         ->schema([
                             Group::make()
                                 ->schema([
-                                    Section::make('Purchase Items')
+                                    Section::make(__('Purchase Items'))
 
                                         ->schema([
                                             Repeater::make('items')
@@ -129,20 +129,20 @@ class PurchaseForm
                                                         ->disableOptionsWhenSelectedInSiblingRepeaterItems()
                                                         ->searchable(),
                                                     TextInput::make('quantity')
-                                                        ->label('Quantity')
+                                                        ->label(__('Quantity'))
                                                         ->numeric()
                                                         ->required()
                                                         ->live()
                                                         ->afterStateUpdated(fn ($state, Set $set, $get) => $set('sub_total', $state * $get('unit_price'))),
                                                     Select::make('unit_id')
                                                         ->options(Unit::pluck('short_name', 'id'))
-                                                        ->label('Unit')
+                                                        ->label(__('Unit'))
                                                         ->dehydrated()
                                                         ->required()
                                                         ->live()
                                                         ->disabled(),
                                                     TextInput::make('unit_price')
-                                                        ->label('Price')
+                                                        ->label(__('Price'))
                                                         ->numeric()
                                                         ->required()
                                                         ->disabled()
@@ -152,7 +152,7 @@ class PurchaseForm
                                                         ->afterStateUpdated(fn ($state, Set $set, $get) => $set('sub_total', $state * $get('quantity'))),
 
                                                     TextInput::make('sub_total')
-                                                        ->label('Sub Total')
+                                                        ->label(__('Sub Total'))
                                                         ->numeric()
                                                         ->required()
                                                         ->prefix('$')
@@ -184,30 +184,30 @@ class PurchaseForm
                                 ])
                                 ->columnSpanFull(),
                         ]),
-                    Step::make('Receipt')
+                    Step::make(__('Receipt'))
                         ->schema([
                             Section::make()
                                 ->schema([
                                     FileUpload::make('image_path')
 
-                                        ->label('Upload Receipt')
+                                        ->label(__('Upload Receipt'))
                                         ->directory('attachments/purchases')
                                         ->maxSize(1024),
                                 ])
                                 ->collapsible(),
                             Group::make()
                                 ->schema([
-                                    Section::make('Summary')
+                                    Section::make(__('Summary'))
                                         ->schema([
                                             TextInput::make('items_count')
-                                                ->label('Items Count')
+                                                ->label(__('Items Count'))
                                                 ->numeric()
                                                 ->disabled()
                                                 ->default(0)
                                                 ->dehydrated(),
 
                                             TextInput::make('shipping_cost')
-                                                ->label('Shipping Cost')
+                                                ->label(__('Shipping Cost'))
                                                 ->numeric()
                                                 ->prefix('$')
                                                 ->reactive()
@@ -215,7 +215,7 @@ class PurchaseForm
                                                 ->disabled()
                                                 ->dehydrated(),
                                             TextInput::make('total_price')
-                                                ->label('Total Price')
+                                                ->label(__('Total Price'))
                                                 ->numeric()
                                                 ->prefix('$')
                                                 ->reactive()
@@ -224,7 +224,7 @@ class PurchaseForm
                                                 ->dehydrated(),
 
                                             TextInput::make('grand_total')
-                                                ->label('Grand Total')
+                                                ->label(__('Grand Total'))
                                                 ->numeric()
                                                 ->prefix('$')
                                                 ->disabled()
@@ -243,11 +243,11 @@ class PurchaseForm
                         : null)
                     ->cancelAction(
                         Action::make('backToPurchases')
-                            ->label('Back')
+                            ->label(__('Back'))
                             ->color('gray')
                             ->url(PurchaseResource::getUrl('index'))
                     )
-                    ->previousAction(fn (Action $action): Action => $action->label('Back'))
+                    ->previousAction(fn (Action $action): Action => $action->label(__('Back')))
                     ->contained(false)
                     ->skippable(fn (?Purchase $record): bool => $record !== null)
                     ->columnSpanFull(),

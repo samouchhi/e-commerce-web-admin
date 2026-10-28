@@ -22,21 +22,21 @@ class DiscountsTable
         return $table
             ->columns([
                 ToggleColumn::make('is_active')
-                    ->label('Status')
+                    ->label(__('Status'))
                     ->onIcon(Heroicon::Check)
                     ->offIcon(Heroicon::XMark)
                     ->onColor('success')
                     ->offColor('danger'),
                 ImageColumn::make('image_path')
-                    ->label('Image')
+                    ->label(__('Image'))
                     ->disk('public'),
-                // TextColumn::make('products.name')
-                //     ->label('Products')
+                // TextColumn::make('products.name')->label(__('Name'))
+                //     ->label(__('Products'))
                 //     ->badge()
                 //     ->listWithLineBreaks(),
-                TextColumn::make('name')
+                TextColumn::make('name')->label(__('Name'))
                     ->searchable(),
-                TextColumn::make('description')
+                TextColumn::make('description')->label(__('Description'))
                     ->searchable(),
                 TextColumn::make('value')
                     ->numeric()
@@ -51,13 +51,13 @@ class DiscountsTable
                     ->date()
                     ->sortable(),
                 // IconColumn::make('is_active')
-                //     ->label('Status')
+                //     ->label(__('Status'))
                 //     ->boolean(),
-                TextColumn::make('created_at')
+                TextColumn::make('created_at')->label(__('Created at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
+                TextColumn::make('updated_at')->label(__('Updated at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
