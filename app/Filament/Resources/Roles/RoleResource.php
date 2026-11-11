@@ -79,7 +79,7 @@ class RoleResource extends Resource
                                     ->visible(fn (): bool => static::shield()->isCentralApp() && Utils::isTenancyEnabled())
                                     ->dehydrated(fn (): bool => static::shield()->isCentralApp() && Utils::isTenancyEnabled()),
                                 static::getSelectAllFormComponent()
-                                    ->helperText('Select all permissions'),
+                                    ->helperText(__('Select all permissions')),
 
                             ])
                             ->columns([
@@ -98,7 +98,7 @@ class RoleResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name')
+                TextColumn::make('name')->label(__('Name'))
                     ->weight(FontWeight::Medium)
                     ->label(__('filament-shield::filament-shield.column.name'))
                     ->formatStateUsing(fn (string $state): string => Str::headline($state))
@@ -107,7 +107,7 @@ class RoleResource extends Resource
                     ->badge()
                     ->color('warning')
                     ->label(__('filament-shield::filament-shield.column.guard_name')),
-                TextColumn::make('team.name')
+                TextColumn::make('team.name')->label(__('Name'))
                     ->default('Global')
                     ->badge()
                     ->color(fn (mixed $state): string => str($state)->contains('Global') ? 'gray' : 'primary')

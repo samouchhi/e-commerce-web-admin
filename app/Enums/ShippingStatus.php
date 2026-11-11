@@ -9,40 +9,34 @@ use Filament\Support\Icons\Heroicon;
 
 enum ShippingStatus: string implements HasColor, HasIcon, HasLabel
 {
-    case Processing = 'processing';
-
-    case Shipped = 'shipped';
-
     case Pending = 'pending';
+    case Shipped = 'shipped';
 
     case Delivered = 'delivered';
 
     public function getLabel(): string
     {
         return match ($this) {
-            self::Processing => 'Processing',
-            self::Shipped => 'Shipped',
-            self::Pending => 'Pending',
-            self::Delivered => 'Delivered',
+            self::Pending => __('Pending'),
+            self::Shipped => __('Shipped'),
+            self::Delivered => __('Delivered'),
         };
     }
 
     public function getColor(): string
     {
         return match ($this) {
-            self::Processing => 'warning',
+            self::Pending => 'warning',
             self::Shipped, self::Delivered => 'success',
-            self::Pending => 'danger',
         };
     }
 
     public function getIcon(): Heroicon
     {
         return match ($this) {
-            self::Processing => Heroicon::ArrowPath,
             self::Shipped => Heroicon::Truck,
             self::Delivered => Heroicon::CheckBadge,
-            self::Pending => Heroicon::XCircle,
+            self::Pending => Heroicon::Clock,
         };
     }
 }

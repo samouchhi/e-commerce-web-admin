@@ -6,7 +6,6 @@ use App\Models\GeneralSetting;
 use App\Models\ProductVariant;
 use App\Models\User;
 use Filament\Notifications\Notification;
-use Illuminate\Support\Facades\Auth;
 
 class ProductVariantObserver
 {
@@ -42,6 +41,7 @@ class ProductVariantObserver
 
         Notification::make()
             ->title('Low Stock Alert!')
+            ->category('low-stock')
             ->body("{$productVariant->product->name} | ({$productVariant->name}) has only {$productVariant->stock_qty} items left.")
             ->warning()
             ->sendToDatabase($user);

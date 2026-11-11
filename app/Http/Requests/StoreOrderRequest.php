@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\OrderShippingStatus;
 use App\Enums\PaymentStatus;
-use App\Enums\ShippingStatus;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
 
@@ -37,7 +37,7 @@ class StoreOrderRequest extends FormRequest
             'subtotal_amount' => ['sometimes', 'numeric'],
             'shipping_cost' => ['sometimes', 'numeric'],
             'payment_status' => ['sometimes', new Enum(PaymentStatus::class)],
-            'shipping_status' => ['sometimes', new Enum(ShippingStatus::class)],
+            'shipping_status' => ['sometimes', new Enum(OrderShippingStatus::class)],
             'items' => ['required', 'array', 'min:1'],
             'items.*.product_variant_id' => ['required', 'integer', 'distinct'],
             'items.*.quantity' => ['required', 'integer', 'min:1'],

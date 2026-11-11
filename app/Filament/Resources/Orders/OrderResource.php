@@ -19,9 +19,22 @@ use Filament\Tables\Table;
 
 class OrderResource extends Resource
 {
+    public static function getModelLabel(): string
+    {
+        return __('Order');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return static::getNavigationLabel();
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Orders');
+    }
 
     protected static string|\UnitEnum|null $navigationGroup = 'Orders';
-
 
     protected static ?string $model = Order::class;
 

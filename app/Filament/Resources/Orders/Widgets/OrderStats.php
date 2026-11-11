@@ -11,9 +11,9 @@ class OrderStats extends StatsOverviewWidget
     protected function getStats(): array
     {
         return [
-            Stat::make('Total Orders', OrderResource::getModel()::count()),
-            Stat::make('Pending Orders', OrderResource::getModel()::where('shipping_status', 'pending')->count()),
-            Stat::make('Total Revenue', '$' . number_format(OrderResource::getModel()::where('payment_status', 'paid')->sum('total_amount'), 2)),
+            Stat::make(__('Total Orders'), OrderResource::getModel()::count()),
+            Stat::make(__('Paid Orders'), OrderResource::getModel()::where('payment_status', 'paid')->count()),
+            Stat::make(__('Total Revenue'), '$'.number_format(OrderResource::getModel()::where('payment_status', 'paid')->sum('total_amount'), 2)),
         ];
     }
 }

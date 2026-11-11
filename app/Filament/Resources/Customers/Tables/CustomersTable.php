@@ -2,7 +2,9 @@
 
 namespace App\Filament\Resources\Customers\Tables;
 
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
@@ -15,25 +17,24 @@ class CustomersTable
     {
         return $table
             ->columns([
-                TextColumn::make('name')
+                TextColumn::make('name')->label(__('Name'))
                     ->searchable(),
                 TextColumn::make('email')
-                    ->label('Email address')
+                    ->label(__('Email address'))
                     ->searchable(),
-                TextColumn::make('phone')
+                TextColumn::make('phone')->label(__('Phone'))
                     ->searchable(),
                 TextColumn::make('orders_count')
                     ->counts('orders')
-                    ->label('Orders')
+                    ->label(__('Orders'))
                     ->badge()
                     ->sortable(),
-                TextColumn::make('created_at')
+                TextColumn::make('created_at')->label(__('Created at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
 
-
-                TextColumn::make('updated_at')
+                TextColumn::make('updated_at')->label(__('Updated at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -42,8 +43,11 @@ class CustomersTable
                 //
             ])
             ->recordActions([
-                ViewAction::make(),
-                EditAction::make(),
+                ActionGroup::make([
+                    ViewAction::make(),
+                    EditAction::make(),
+                    DeleteAction::make(),
+                ]),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

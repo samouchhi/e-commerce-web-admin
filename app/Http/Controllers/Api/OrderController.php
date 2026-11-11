@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\OrderShippingStatus;
 use App\Enums\PaymentStatus;
-use App\Enums\ShippingStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Resources\OrderResource;
@@ -58,7 +58,7 @@ class OrderController extends Controller
                 'shipping_cost' => number_format($shippingCents / 100, 2, '.', ''),
                 'total_amount' => number_format($totalCents / 100, 2, '.', ''),
                 'payment_status' => PaymentStatus::Pending,
-                'shipping_status' => ShippingStatus::Pending,
+                'shipping_status' => OrderShippingStatus::Pending,
             ]);
 
             $order->items()->createMany($prepared['items']);

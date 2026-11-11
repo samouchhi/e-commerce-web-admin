@@ -21,24 +21,24 @@ class OrderInfolist
         return $schema
             ->columns(['default' => 1, 'lg' => 3])
             ->components([
-                Section::make('Order overview')
+                Section::make(__('Order overview'))
                     ->icon('heroicon-o-shopping-bag')
                     ->schema([
                         TextEntry::make('order_number')
-                            ->label('Order reference')
+                            ->label(__('Order reference'))
                             ->weight(FontWeight::Bold)
                             ->copyable(),
                         TextEntry::make('created_at')
-                            ->label('Placed on')
+                            ->label(__('Placed on'))
                             ->dateTime('M j, Y · g:i A'),
-                        TextEntry::make('payment_status')->label('Payment')->badge(),
-                        TextEntry::make('shipping_status')->label('Shipping')->badge(),
+                        TextEntry::make('payment_status')->label(__('Payment'))->badge(),
+                        TextEntry::make('shipping_status')->label(__('Shipping'))->badge(),
                     ])
                     ->columns(['default' => 1, 'sm' => 2, 'xl' => 4])
                     ->compact()
                     ->columnSpanFull(),
                 Group::make([
-                    Section::make('Customer note')
+                    Section::make(__('Customer note'))
                         ->icon('heroicon-o-chat-bubble-left-ellipsis')
                         ->visible(fn (Order $record): bool => filled($record->address?->note))
                         ->schema([
@@ -47,7 +47,7 @@ class OrderInfolist
                                 ->prose(),
                         ])
                         ->compact(),
-                    Section::make('Order items')
+                    Section::make(__('Order items'))
                         ->icon('heroicon-o-cube')
                         ->schema([
                             RepeatableEntry::make('items')
@@ -67,17 +67,17 @@ class OrderInfolist
                                         ->imageSize(48)
                                         ->state(fn (OrderItems $record): ?string => $record->productVariant?->product?->images->first()?->image_path),
                                     Group::make([
-                                        TextEntry::make('productVariant.product.name')
+                                        TextEntry::make('productVariant.product.name')->label(__('Name'))
                                             ->hiddenLabel()
                                             ->weight(FontWeight::SemiBold)
-                                            ->placeholder('Product unavailable'),
-                                        TextEntry::make('productVariant.name')
+                                            ->placeholder(__('Product unavailable')),
+                                        TextEntry::make('productVariant.name')->label(__('Name'))
                                             ->hiddenLabel()
                                             ->color('gray')
                                             ->size(TextSize::Small)
-                                            ->placeholder('Variant unavailable'),
+                                            ->placeholder(__('Variant unavailable')),
                                     ]),
-                                    TextEntry::make('quantity')->hiddenLabel()->alignEnd(),
+                                    TextEntry::make('quantity')->label(__('Quantity'))->hiddenLabel()->alignEnd(),
                                     TextEntry::make('unit_price')->hiddenLabel()->money('USD')->alignEnd(),
                                     TextEntry::make('subtotal_price')
                                         ->hiddenLabel()
@@ -87,13 +87,13 @@ class OrderInfolist
                                 ]),
                         ])
                         ->compact(),
-                    Section::make('Payment summary')
+                    Section::make(__('Payment summary'))
                         ->icon('heroicon-o-credit-card')
                         ->schema([
-                            TextEntry::make('subtotal_amount')->label('Subtotal')->money('USD')->inlineLabel()->alignEnd(),
-                            TextEntry::make('shipping_cost')->label('Shipping')->money('USD')->inlineLabel()->alignEnd(),
+                            TextEntry::make('subtotal_amount')->label(__('Subtotal'))->money('USD')->inlineLabel()->alignEnd(),
+                            TextEntry::make('shipping_cost')->label(__('Shipping'))->money('USD')->inlineLabel()->alignEnd(),
                             TextEntry::make('total_amount')
-                                ->label('Order total')
+                                ->label(__('Order total'))
                                 ->money('USD')
                                 ->size(TextSize::Large)
                                 ->weight(FontWeight::Bold)
@@ -105,27 +105,27 @@ class OrderInfolist
                     ->columnSpan(['lg' => 2])
                     ->columnOrder(['default' => 2, 'lg' => 1]),
                 Group::make([
-                    Section::make('Customer & delivery')
+                    Section::make(__('Customer & delivery'))
                         ->icon('heroicon-o-truck')
                         ->schema([
                             TextEntry::make('customer.name')
-                                ->label('Customer')
+                                ->label(__('Customer'))
                                 ->weight(FontWeight::SemiBold)
-                                ->placeholder('Not provided'),
+                                ->placeholder(__('Not provided')),
                             TextEntry::make('address.phone')
-                                ->label('Phone')
+                                ->label(__('Phone'))
                                 ->icon('heroicon-o-phone')
                                 ->copyable()
-                                ->placeholder('Not provided'),
+                                ->placeholder(__('Not provided')),
                             TextEntry::make('address.address')
-                                ->label('Delivery address')
-                                ->placeholder('No delivery address saved'),
-                            TextEntry::make('address.city')->label('City')->placeholder('Not provided'),
+                                ->label(__('Delivery address'))
+                                ->placeholder(__('No delivery address saved')),
+                            TextEntry::make('address.city')->label(__('City'))->placeholder(__('Not provided')),
                             TextEntry::make('logistic.name')
-                                ->label('Delivery service')
+                                ->label(__('Delivery service'))
                                 ->badge()
                                 ->color('gray')
-                                ->placeholder('Not assigned'),
+                                ->placeholder(__('Not assigned')),
                         ])
                         ->compact(),
                 ])

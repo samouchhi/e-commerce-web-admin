@@ -6,6 +6,7 @@ use App\Filament\Resources\Purchases\Pages\CreatePurchase;
 use App\Filament\Resources\Purchases\Pages\EditPurchase;
 use App\Filament\Resources\Purchases\Pages\ListPurchases;
 use App\Filament\Resources\Purchases\Schemas\PurchaseForm;
+use App\Filament\Resources\Purchases\Schemas\PurchaseInfolist;
 use App\Filament\Resources\Purchases\Tables\PurchasesTable;
 use App\Filament\Resources\Purchases\Widgets\PurchaseStats;
 use App\Models\Purchase;
@@ -13,11 +14,25 @@ use BackedEnum;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Tables\Table;
-use Override;
 use UnitEnum;
 
 class PurchaseResource extends Resource
 {
+    public static function getModelLabel(): string
+    {
+        return __('Purchase');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return static::getNavigationLabel();
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Purchases');
+    }
+
     protected static ?string $model = Purchase::class;
 
     protected static string|UnitEnum|null $navigationGroup = 'Purchases';
@@ -34,18 +49,20 @@ class PurchaseResource extends Resource
         return PurchaseForm::configure($schema);
     }
 
+    public static function infolist(Schema $schema): Schema
+    {
+        return PurchaseInfolist::configure($schema);
+    }
+
     public static function table(Table $table): Table
     {
         return PurchasesTable::configure($table);
     }
 
-
     public static function getWidgets(): array
     {
         return [PurchaseStats::class];
     }
-
-
 
     public static function getRelations(): array
     {

@@ -19,10 +19,26 @@ use UnitEnum;
 
 class CustomerResource extends Resource
 {
+    public static function getModelLabel(): string
+    {
+        return __('Customer');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return static::getNavigationLabel();
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Customers');
+    }
+
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();
     }
+
     protected static ?string $model = Customer::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUserGroup;

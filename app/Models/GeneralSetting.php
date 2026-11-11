@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Asignua\FilamentActivityLogPlus\Concerns\LogsActivityPlus;
 use Illuminate\Database\Eloquent\Model;
 
 class GeneralSetting extends Model
 {
+    use LogsActivityPlus;
+
     protected $fillable = [
         'alert_stock',
         'site_name',

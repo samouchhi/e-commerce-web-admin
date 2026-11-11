@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Discounts\Schemas;
 use App\Filament\Resources\Products\Tables\ProductsTable;
 use App\Models\Product;
 use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\ModalTableSelect;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -22,12 +23,22 @@ class DiscountForm
         return $schema
             ->components([
 
-                TextInput::make('name')
+                TextInput::make('name')->label(__('Name'))
                     ->prefixIcon('heroicon-o-tag')
                     ->required(),
-                TextInput::make('description')
+                TextInput::make('description')->label(__('Description'))
                     ->prefixIcon('heroicon-o-document-text')
                     ->required(),
+
+                FileUpload::make('image_path')
+                    ->label(__('Promotion image'))
+                    ->image()
+                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
+                    ->maxSize(5120)
+                    ->disk('public')
+                    ->directory('promotions')
+                    ->preventFilePathTampering()
+                    ->columnSpanFull(),
 
                 TextInput::make('value')
                     ->prefixIcon(
@@ -40,8 +51,8 @@ class DiscountForm
 
                 Select::make('type')
                     ->options([
-                        'percentage' => 'Percentage',
-                        'fixed' => 'Fixed',
+                        'percentage' => __('Percentage'),
+                        'fixed' => __('Fixed'),
                     ])
                     ->live()
                     ->searchable()
@@ -54,17 +65,17 @@ class DiscountForm
                     ->required(),
 
                 ModalTableSelect::make('products')
-                    ->label('Choose Products')
+                    ->label(__('Choose Products'))
                     ->relationship('products', 'name')
                     ->multiple()
                     ->tableConfiguration(ProductsTable::class)
                     ->required(),
 
                 Toggle::make('is_active')
-                    ->label('Enable')
+                    ->label(__('Enable'))
                     ->required(),
                 // Select::make('products')
-                //     ->label('Products')
+                //     ->label(__('Products'))
                 //     ->relationship('products', 'name')
                 //     ->multiple()
                 //     ->searchable()
@@ -82,8 +93,8 @@ class DiscountForm
                         TableColumn::make('Product code'),
                     ])
                     ->schema([
-                        TextEntry::make('name'),
-                        TextEntry::make('product_code'),
+                        TextEntry::make('name')->label(__('Name')),
+                        TextEntry::make('product_code')->label(__('Product code')),
 
                     ])
                     ->contained(false)

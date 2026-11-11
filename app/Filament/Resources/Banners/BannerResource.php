@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Banners;
 use App\Filament\Resources\Banners\Pages\ManageBanners;
 use App\Models\Banner;
 use BackedEnum;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -20,6 +21,21 @@ use Filament\Tables\Table;
 
 class BannerResource extends Resource
 {
+    public static function getModelLabel(): string
+    {
+        return __('Banner');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return static::getNavigationLabel();
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Banners');
+    }
+
     protected static ?string $model = Banner::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPhoto;
@@ -31,13 +47,13 @@ class BannerResource extends Resource
         return $schema
             ->components([
                 TextInput::make('title')
-                    ->placeholder('Optional'),
+                    ->placeholder(__('Optional')),
                 FileUpload::make('image')
                     ->image()
                     ->disk('public')
                     ->directory('banners')
                     ->required(),
-                TextInput::make('sort_order')
+                TextInput::make('sort_order')->label(__('Sort order'))
                     ->required()
                     ->default('0'),
             ]);
@@ -51,13 +67,13 @@ class BannerResource extends Resource
                     ->searchable(),
                 ImageColumn::make('image')
                     ->disk('public'),
-                TextColumn::make('sort_order')
+                TextColumn::make('sort_order')->label(__('Sort order'))
                     ->searchable(),
-                TextColumn::make('created_at')
+                TextColumn::make('created_at')->label(__('Created at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
+                TextColumn::make('updated_at')->label(__('Updated at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -66,8 +82,10 @@ class BannerResource extends Resource
                 //
             ])
             ->recordActions([
-                EditAction::make(),
-                DeleteAction::make(),
+                ActionGroup::make([
+                    EditAction::make(),
+                    DeleteAction::make(),
+                ]),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

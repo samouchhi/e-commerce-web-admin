@@ -5,6 +5,7 @@ namespace App\Filament\Resources\Units;
 use App\Filament\Resources\Units\Pages\ManageUnits;
 use App\Models\Unit;
 use BackedEnum;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -18,6 +19,21 @@ use UnitEnum;
 
 class UnitResource extends Resource
 {
+    public static function getModelLabel(): string
+    {
+        return __('Unit');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return static::getNavigationLabel();
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('Units');
+    }
+
     protected static ?string $model = Unit::class;
 
     protected static string|UnitEnum|null $navigationGroup = 'Products';
@@ -28,9 +44,9 @@ class UnitResource extends Resource
     {
         return $schema
             ->components([
-                TextInput::make('name')
+                TextInput::make('name')->label(__('Name'))
                     ->required(),
-                TextInput::make('short_name')
+                TextInput::make('short_name')->label(__('Short name'))
                     ->required(),
             ]);
     }
@@ -39,16 +55,16 @@ class UnitResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name')
+                TextColumn::make('name')->label(__('Name'))
                     ->searchable(),
-                TextColumn::make('short_name')
+                TextColumn::make('short_name')->label(__('Short name'))
                     ->badge()
                     ->searchable(),
-                TextColumn::make('created_at')
+                TextColumn::make('created_at')->label(__('Created at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('updated_at')
+                TextColumn::make('updated_at')->label(__('Updated at'))
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -57,8 +73,10 @@ class UnitResource extends Resource
                 //
             ])
             ->recordActions([
-                EditAction::make(),
-                DeleteAction::make(),
+                ActionGroup::make([
+                    EditAction::make(),
+                    DeleteAction::make(),
+                ]),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

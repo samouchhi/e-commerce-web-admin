@@ -2,14 +2,16 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Asignua\FilamentActivityLogPlus\Concerns\LogsActivityPlus;
 use Illuminate\Database\Eloquent\Model;
 
 class Unit extends Model
 {
+    use LogsActivityPlus;
+
     protected $fillable = [
         'name',
-        'short_name'
+        'short_name',
     ];
 
     public function product()

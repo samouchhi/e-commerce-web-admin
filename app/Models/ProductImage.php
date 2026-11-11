@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Asignua\FilamentActivityLogPlus\Concerns\LogsActivityPlus;
 use Illuminate\Database\Eloquent\Model;
 
 class ProductImage extends Model
 {
+    use LogsActivityPlus;
+
     protected $fillable = [
         'product_id',
         'image_path',

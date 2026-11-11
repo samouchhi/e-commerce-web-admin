@@ -21,24 +21,24 @@ class ListPurchases extends ListRecords
     public function getTabs(): array
     {
         return [
-            null => Tab::make('All')
-                ->badge(static fn(): int => Purchase::query()->count())
+            null => Tab::make(__('All'))
+                ->badge(static fn (): int => Purchase::query()->count())
                 ->deferBadge(),
-            'processing' => Tab::make()
-                ->badge(static fn(): int => Purchase::query()->where('shipping_status', ShippingStatus::Processing)->count())
-                ->badgeColor(ShippingStatus::Processing->getColor())
+            'pending' => Tab::make()
+                ->badge(static fn (): int => Purchase::query()->where('shipping_status', ShippingStatus::Pending)->count())
+                ->badgeColor(ShippingStatus::Pending->getColor())
                 ->deferBadge()
-                ->query(fn($query) => $query->where('shipping_status', ShippingStatus::Processing)),
+                ->query(fn ($query) => $query->where('shipping_status', ShippingStatus::Pending)),
             'shipped' => Tab::make()
-                ->badge(static fn(): int => Purchase::query()->where('shipping_status', ShippingStatus::Shipped)->count())
+                ->badge(static fn (): int => Purchase::query()->where('shipping_status', ShippingStatus::Shipped)->count())
                 ->badgeColor(ShippingStatus::Shipped->getColor())
                 ->deferBadge()
-                ->query(fn($query) => $query->where('shipping_status', ShippingStatus::Shipped)),
+                ->query(fn ($query) => $query->where('shipping_status', ShippingStatus::Shipped)),
             'delivered' => Tab::make()
-                ->badge(static fn(): int => Purchase::query()->where('shipping_status', ShippingStatus::Delivered)->count())
+                ->badge(static fn (): int => Purchase::query()->where('shipping_status', ShippingStatus::Delivered)->count())
                 ->badgeColor(ShippingStatus::Delivered->getColor())
                 ->deferBadge()
-                ->query(fn($query) => $query->where('shipping_status', ShippingStatus::Delivered)),
+                ->query(fn ($query) => $query->where('shipping_status', ShippingStatus::Delivered)),
 
         ];
     }
@@ -46,9 +46,6 @@ class ListPurchases extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-
-
-
 
             CreateAction::make(),
         ];

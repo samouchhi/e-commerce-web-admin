@@ -2,17 +2,22 @@
 
 namespace App\Providers\Filament;
 
-use Andreia\FilamentUiSwitcher\FilamentUiSwitcherPlugin;
+use App\Filament\Livewire\DatabaseNotifications;
 use App\Filament\Pages\Auth\Login;
+use App\Http\Controllers\OrderPrintController;
 use App\Models\GeneralSetting;
+use Asignua\FilamentActivityLogPlus\ActivityLogPlusPlugin;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
+use Filament\Facades\Filament;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\NavigationGroup;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Colors\Color;
+use Filament\Support\Enums\Width;
 use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -20,8 +25,11 @@ use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Prodstarter\FilamentNotificationCenter\FilamentNotificationCenterPlugin;
+use Prodstarter\FilamentNotificationCenter\NotificationCenterCategory;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -31,14 +39,25 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('dashboard')
             ->path('dashboard')
+            ->authenticatedRoutes(function (): void {
+                Route::get('orders/{order}/print', OrderPrintController::class)
+                    ->name('orders.print');
+            })
+            ->maxContentWidth(Width::Full)
             ->topbar(true)
-            ->databaseNotifications()
+            ->databaseNotifications(livewireComponent: DatabaseNotifications::class)
             ->viteTheme('resources/css/filament/dashboard/theme.css')
 
-            ->brandLogo(fn (): ?string => ($logo = GeneralSetting::query()->value('site_logo'))
+            ->brandLogo(fn (): ?string => ($logo = GeneralSetting::query()->value('site_logo')) && Storage::disk('public')->exists($logo)
                 ? Storage::disk('public')->url($logo)
                 : null)
             ->brandLogoHeight('3rem')
+            ->favicon(
+                fn (): ?string => ($icon = GeneralSetting::query()->value('site_favicon'))
+                    && Storage::disk('public')->exists($icon)
+                    ? Storage::disk('public')->url($icon)
+                    : null
+            )
             ->sidebarCollapsibleOnDesktop()
             ->spa()
             ->login(Login::class)
@@ -49,11 +68,11 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\Filament\Resources')
             ->navigationGroups([
-                'Products',
-                'Orders',
-                'Purchases',
-                'Peoples',
-                'Settings',
+                'Products' => NavigationGroup::make()->label(fn (): string => __('Products')),
+                'Orders' => NavigationGroup::make()->label(fn (): string => __('Orders')),
+                'Purchases' => NavigationGroup::make()->label(fn (): string => __('Purchases')),
+                'Peoples' => NavigationGroup::make()->label(fn (): string => __('Peoples')),
+                'Settings' => NavigationGroup::make()->label(fn (): string => __('Settings')),
 
             ])
             ->discoverPages(
@@ -67,11 +86,18 @@ class AdminPanelProvider extends PanelProvider
                 // FilamentInfoWidget::class,
             ])
             ->plugins([
-                FilamentUiSwitcherPlugin::make()
-                    ->withModeSwitcher(),
+                FilamentNotificationCenterPlugin::make()->categories([
+                    NotificationCenterCategory::make('low-stock')->label('Low stock')->order(1),
+                    NotificationCenterCategory::make('orders')->label('New orders')->order(2),
+                ]),
+                ActivityLogPlusPlugin::make()
+                    ->navigationGroup('Settings')
+                    ->authorizeResource(fn (): bool => Filament::auth()->user()?->can('ViewAny:Activity') ?? false)
+                    ->authorizeHistory(fn (): bool => Filament::auth()->user()?->can('ViewAny:Activity') ?? false),
                 FilamentShieldPlugin::make()
                     ->navigationGroup('Settings'),
             ])
+            ->databaseNotificationsLivewireComponent(DatabaseNotifications::class)
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

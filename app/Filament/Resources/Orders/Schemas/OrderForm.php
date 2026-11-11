@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources\Orders\Schemas;
 
+use App\Enums\OrderShippingStatus;
 use App\Enums\PaymentStatus;
-use App\Enums\ShippingStatus;
 use App\Models\Customer;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
@@ -16,7 +16,7 @@ class OrderForm
     {
         return $schema
             ->components([
-                TextInput::make('order_number')
+                TextInput::make('order_number')->label(__('Order number'))
                     ->required(),
                 Select::make('customer_id')
                     ->relationship('customer', 'name')
@@ -47,14 +47,14 @@ class OrderForm
                     ->numeric()
                     ->default(0)
                     ->prefixIcon('heroicon-m-currency-dollar'),
-                ToggleButtons::make('payment_status')
+                ToggleButtons::make('payment_status')->label(__('Payment status'))
                     ->options(PaymentStatus::class)
                     ->required()
                     ->default(PaymentStatus::Pending),
-                ToggleButtons::make('shipping_status')
-                    ->options(ShippingStatus::class)
+                ToggleButtons::make('shipping_status')->label(__('Shipping status'))
+                    ->options(OrderShippingStatus::class)
                     ->required()
-                    ->default(ShippingStatus::Pending),
+                    ->default(OrderShippingStatus::Pending),
             ]);
     }
 }
