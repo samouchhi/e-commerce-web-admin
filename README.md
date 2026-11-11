@@ -4,6 +4,9 @@ A Laravel-based ecommerce platform for managing products, inventory-related data
 
 ## Demo
 
+<img width="1904" height="941" alt="image" src="https://github.com/user-attachments/assets/4aea9a1c-03ca-4978-81ef-e2fb9d4fec40" />
+
+
 https://demo.chhin.tech/
 
 
