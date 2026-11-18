@@ -7,6 +7,7 @@ use App\Enums\PaymentStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreOrderRequest;
 use App\Http\Resources\OrderResource;
+use App\Models\Customer;
 use App\Models\Logistic;
 use App\Models\Order;
 use App\Models\ProductVariant;
@@ -38,8 +39,17 @@ class OrderController extends Controller
      */
     public function store(StoreOrderRequest $request, OrderStockService $stockService): OrderResource
     {
+        abort_unless($request->user() instanceof Customer, 403);
         $data = $request->validated();
         $order = DB::transaction(function () use ($data, $request, $stockService): Order {
+            $customer = Customer::query()->lockForUpdate()->findOrFail($request->user()->id);
+
+            abort_if(
+                $customer->orders()->where('payment_status', PaymentStatus::Pending)->exists(),
+                409,
+                'Complete your pending checkout or wait for it to expire before placing another order.',
+            );
+
             $prepared = $this->prepareOrderItems($data['items']);
             $shippingCents = isset($data['logistic_id'])
                 ? (int) round((float) Logistic::findOrFail($data['logistic_id'])->price * 100)

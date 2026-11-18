@@ -10,7 +10,10 @@ use Asignua\FilamentActivityLogPlus\ActivityBatch;
 use BezhanSalleh\FilamentShield\Facades\FilamentShield;
 use BezhanSalleh\LanguageSwitch\LanguageSwitch;
 use Filament\Actions\ActionGroup;
+use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -28,6 +31,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        RateLimiter::for('checkout', fn (Request $request): array => [
+            Limit::perMinute(5)->by('customer:'.$request->user()->getAuthIdentifier()),
+            Limit::perMinute(20)->by('ip:'.$request->ip()),
+        ]);
+
         LanguageSwitch::configureUsing(fn (LanguageSwitch $switch): LanguageSwitch => $switch
             ->locales(['en', 'km'])
             ->labels([

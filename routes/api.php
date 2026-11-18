@@ -31,10 +31,7 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::apiResource('products', ProductController::class);
-
-Route::delete('products/{product}/variants/{variant}', [ProductController::class, 'destroyVariant'])
-    ->scopeBindings();
+Route::apiResource('products', ProductController::class)->only(['index', 'show']);
 
 Route::apiResource('categories', CategoryController::class);
 Route::apiResource('logistics', LogisticController::class);
@@ -47,7 +44,8 @@ Route::match(['get', 'post'], 'orders/{order}/payment', [AbaPaymentController::c
     ->middleware(['auth:sanctum', 'throttle:20,1']);
 
 Route::apiResource('orders', OrderController::class)
-    ->middleware('auth:sanctum');
+    ->middleware('auth:sanctum')
+    ->middlewareFor('store', 'throttle:checkout');
 
 Route::get('orders/{order}/verify', [AbaPaymentController::class, 'verifyPayment'])
     ->middleware(['auth:sanctum', 'throttle:30,1']);
